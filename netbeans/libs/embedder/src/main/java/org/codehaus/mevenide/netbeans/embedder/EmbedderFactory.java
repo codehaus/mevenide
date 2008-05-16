@@ -50,6 +50,7 @@ import org.apache.maven.project.build.model.DefaultModelLineage;
 import org.apache.maven.project.build.model.ModelLineage;
 import org.apache.maven.project.build.model.ModelLineageBuilder;
 import org.apache.maven.wagon.events.TransferListener;
+import org.apache.maven.wagon.providers.ssh.knownhost.KnownHostsProvider;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -165,7 +166,15 @@ public final class EmbedderFactory {
 
                         desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
                         desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbWagonManager"); //NOI18N
+                        
+                        //MEVENIDE-634 
+                        desc = plexusContainer.getComponentDescriptor(KnownHostsProvider.ROLE, "file");
+                        desc.getConfiguration().getChild("hostKeyChecking").setValue("no");
 
+                        //MEVENIDE-634 
+                        desc = plexusContainer.getComponentDescriptor(KnownHostsProvider.ROLE, "null");
+                        desc.getConfiguration().getChild("hostKeyChecking").setValue("no");
+                        
                     } catch (ComponentRepositoryException ex) {
                         ex.printStackTrace();
                     }
@@ -174,6 +183,14 @@ public final class EmbedderFactory {
             MavenEmbedder embedder = null;
             try {
                 embedder = new MavenEmbedder(req);
+                try {
+                    //MEVENIDE-634 make all instances non-interactive
+                    WagonManager wagonManager = (WagonManager) embedder.getPlexusContainer().lookup(WagonManager.ROLE);
+                    wagonManager.setInteractive( false );
+                } catch (ComponentLookupException ex) {
+                    ErrorManager.getDefault().notify(ex);
+                }
+                
             } catch (MavenEmbedderException e) {
                 ErrorManager.getDefault().notify(e);
             }
@@ -238,6 +255,15 @@ public final class EmbedderFactory {
                     ComponentRequirement requirement = new ComponentRequirement();
                     requirement.setRole(TransferListener.class.getName());
                     desc.addRequirement(requirement);
+                    
+                    //MEVENIDE-634 
+                    desc = plexusContainer.getComponentDescriptor(KnownHostsProvider.ROLE, "file");
+                    desc.getConfiguration().getChild("hostKeyChecking").setValue("no");
+                    
+                    //MEVENIDE-634 
+                    desc = plexusContainer.getComponentDescriptor(KnownHostsProvider.ROLE, "null");
+                    desc.getConfiguration().getChild("hostKeyChecking").setValue("no");
+                    
                 } catch (ComponentRepositoryException ex) {
                     ex.printStackTrace();
                 }
@@ -248,6 +274,14 @@ public final class EmbedderFactory {
         MavenEmbedder embedder = null;
         try {
             embedder = new MavenEmbedder(req);
+            try {
+                //MEVENIDE-634 make all instances non-interactive
+                WagonManager wagonManager = (WagonManager) embedder.getPlexusContainer().lookup(WagonManager.ROLE);
+                wagonManager.setInteractive( false );
+            } catch (ComponentLookupException ex) {
+                ErrorManager.getDefault().notify(ex);
+            }
+            
         } catch (MavenEmbedderException e) {
             ErrorManager.getDefault().notify(e);
         }
