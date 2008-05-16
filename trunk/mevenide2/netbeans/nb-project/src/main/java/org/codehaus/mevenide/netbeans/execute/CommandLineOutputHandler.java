@@ -21,13 +21,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.maven.embedder.MavenEmbedderLogger;
-import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.Project;
+import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.InputOutput;
@@ -49,6 +50,7 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     private String currentTag;
     Task outTask;
     private MavenEmbedderLogger logger;
+    private Task inTask;
 
     CommandLineOutputHandler() {
     }
@@ -70,10 +72,14 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     }
 
     void setStdIn(OutputStream in) {
-    //TODO
+        inTask = PROCESSOR.post(new Input(in));
     }
 
     void waitFor() {
+        stopIn = true;
+//        if (inTask != null) {
+//            inTask.waitFinished();
+//        }
         if (outTask != null) {
             outTask.waitFinished();
         }
@@ -131,6 +137,55 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
             }
         }
     }
+    
+    private boolean stopIn = false;
+    
+    private class Input implements Runnable {
+
+        private OutputStream str;
+        
+
+        public Input(OutputStream out) {
+            str = out;
+        }
+
+        public void run() {
+            Reader in = inputOutput.getIn();
+            try {
+                while (true) {
+                    while (in.ready()) {
+                        int read = in.read();
+                        if (read != -1) {
+                            str.write(read);
+                        } else {
+                            str.close();
+                            return;
+                        }
+                    }
+                    if (!in.ready() && !stopIn) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    if (stopIn) {
+                        return;
+                    }
+                }
+                
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    str.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+    
 
     @Override
     MavenEmbedderLogger getLogger() {

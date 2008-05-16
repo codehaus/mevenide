@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.monitor.event.EventMonitor;
-import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
@@ -55,6 +54,7 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
     
     private StreamBridge out, err;
     
+    private InputStream in;
     
     private int threshold = MavenEmbedderLogger.LEVEL_INFO;
     
@@ -248,7 +248,10 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
     }
 
     InputStream getIn() {
-        return null;
+        if (in == null) {
+            in = new InputBridge(inputOutput.getIn());
+        }
+        return in;
     }
 
     PrintStream getOut() {
@@ -263,6 +266,21 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
         this.task = task;
     }
     
+    private class InputBridge extends  InputStream {
+        private Reader in;
+        
+        InputBridge(Reader in) {
+            this.in = in;
+        }
+        
+        @Override
+        public int read() throws IOException {
+            return in.read();
+        }
+        
+    }
+            
+    
     private class StreamBridge extends PrintStream {
         StringBuffer buff = new StringBuffer();
         private OutputWriter writer;
@@ -271,105 +289,128 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
             writer = wr;
         }
         
+        @Override
         public void flush() {
             if (buff.length() > 0) {
                 doPrint();
             }
         }
         
+        @Override
         public void print(long l) {
             buff.append(l);
         }
         
+        @Override
         public void print(char[] s) {
             buff.append(s);
         }
         
+        @Override
         public void print(int i) {
             buff.append(i);
         }
         
+        @Override
         public void print(boolean b) {
             buff.append(b);
         }
         
+        @Override
         public void print(char c) {
             buff.append(c);
         }
         
+        @Override
         public void print(float f) {
             buff.append(f);
         }
         
+        @Override
         public void print(double d) {
             buff.append(d);
         }
         
+        @Override
         public void print(Object obj) {
             buff.append(obj.toString());
         }
         
+        @Override
         public void print(String s) {
             buff.append(s);
         }
         
+        @Override
         public void println(double x) {
             buff.append(x);
             doPrint();
         }
         
+        @Override
         public void println(Object x) {
             buff.append(x.toString());
             doPrint();
         }
         
+        @Override
         public void println(float x) {
             buff.append(x);
             doPrint();
         }
         
+        @Override
         public void println(int x) {
             buff.append(x);
             doPrint();
         }
 
+        @Override
         public void println(char x) {
             buff.append(x);
             doPrint();
         }
         
+        @Override
         public void println(boolean x) {
             buff.append(x);
             doPrint();
         }
         
+        @Override
         public void println(String x) {
             buff.append(x);
             doPrint();
         }
         
+        @Override
         public void println(char[] x) {
             buff.append(x);
             doPrint();
         }
         
+        @Override
         public void println() {
             doPrint();
         }
         
+        @Override
         public void println(long x) {
             buff.append(x);
             doPrint();
         }
         
+        @Override
         public void write(int b) {
             buff.append((char)b);
         }
         
+        @Override
         public void write(byte[] b) throws IOException {
             write(b, 0, b.length);
         }
         
+        @Override
         public void write(byte[] b, int off, int len) {
             ByteArrayInputStream bais = new ByteArrayInputStream(b, off, len);
             Reader read = new InputStreamReader(bais);
