@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.netbeans.output;
 
 import junit.framework.*;
+import org.codehaus.mevenide.netbeans.execute.AbstractOutputHandler;
 
 /**
  *
@@ -40,7 +41,7 @@ public class MEVENIDE637Test extends TestCase {
     public void testSeparatorSplit() {
          String aString="Some text \n a and some more .. \n and more..";//linux and unix
          
-         String[] strs = aString.split("\\r |\\n"); //NOI18N
+         String[] strs = AbstractOutputHandler.splitMultiLine(aString);
          
          assertEquals(strs.length, 3);
          assertEquals("Some text ", strs[0]);
@@ -49,17 +50,18 @@ public class MEVENIDE637Test extends TestCase {
          
          aString="Some text \r a and some more .. \r and more..";//Mac
          
-         strs = aString.split("\\r |\\n"); //NOI18N
+         strs = AbstractOutputHandler.splitMultiLine(aString);
          
          assertEquals(strs.length, 3);
+
          assertEquals("Some text ", strs[0]);
          assertEquals(" a and some more .. ", strs[1]);
          assertEquals(" and more..", strs[2]);
          
          aString="Some text \r\n a and some more .. \r\n and more..";//Windows
          
-         strs = aString.split("\\r |\\n"); //NOI18N
-         
+         strs = AbstractOutputHandler.splitMultiLine(aString);
+
          assertEquals(strs.length, 3);
          assertEquals("Some text ", strs[0]);
          assertEquals(" a and some more .. ", strs[1]);
@@ -71,11 +73,12 @@ public class MEVENIDE637Test extends TestCase {
                  "\n\n  example:ExampleProject:jar:1.0-SNAPSHOT\n\nReason:\n\nC:" +
                  "\\ExampleProject\\src\\main\\java\\example\\App.java:[11,8] cannot find symbol" +
                  "\n\nsymbol  : class MyObject\n\nlocation: class example.App";
-         strs = aString.split("\\r |\\n"); //NOI18N
-         System.out.println("AAA:"+strs.length);
-         assertEquals(strs.length, 17);
+         strs = AbstractOutputHandler.splitMultiLine(aString);
+
+         assertEquals(strs.length, 8);
          
          assertEquals("Mojo: ", strs[0]);
          
     }
+ 
 }
