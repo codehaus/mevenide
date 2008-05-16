@@ -42,6 +42,11 @@
             <artifactId>org-openide-io</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-projectapi</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
