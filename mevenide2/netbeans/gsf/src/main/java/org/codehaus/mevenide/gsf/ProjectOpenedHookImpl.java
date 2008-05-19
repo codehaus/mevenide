@@ -14,9 +14,11 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.codehaus.mevenide.gsf;
 
+import org.netbeans.api.project.Project;
+import org.netbeans.modules.gsfpath.api.classpath.ClassPath;
+import org.netbeans.modules.gsfpath.api.classpath.GlobalPathRegistry;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
 
 /**
@@ -25,14 +27,44 @@ import org.netbeans.spi.project.ui.ProjectOpenedHook;
  */
 public class ProjectOpenedHookImpl extends ProjectOpenedHook {
 
+    private Project project;
+
+    ProjectOpenedHookImpl(Project prj) {
+        this.project = prj;
+    }
+
     @Override
     protected void projectOpened() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        /**
+         * @Note:
+         * Register classpaths to GlobalPathRegistry will cause GSF indexer to monitor and indexing them.
+         * 
+         * Per org.netbeans.modules.gsfret.source.GlobalSourcePath#createResources(Request),
+         * Tor' midifications: Treat bootCps as a source path, not a binary -  I want to scan directories.
+         * 
+         * We should here register boot source's classpath instead of binary boot classpath.
+         * 
+         * GlobalPathRegistry.getDefault().register(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
+         */
+//mkleint: what is this? copied from scala project
+//        FileObject scalaStubsFo = ScalaLanguage.getScalaStubFo();
+//        if (scalaStubsFo != null) {
+//            coreLibsCp = ClassPathSupport.createClassPath(new FileObject[]{scalaStubsFo});
+//            GlobalPathRegistry.getDefault().register(ClassPath.BOOT, new ClassPath[]{coreLibsCp});
+//        }
+        
+        CPProvider cpProvider = project.getLookup().lookup(CPProvider.class);
+
+        GlobalPathRegistry.getDefault().register(ClassPath.BOOT, cpProvider.getProjectSourcesClassPaths(ClassPath.BOOT));
+        GlobalPathRegistry.getDefault().register(ClassPath.SOURCE, cpProvider.getProjectSourcesClassPaths(ClassPath.SOURCE));
+        GlobalPathRegistry.getDefault().register(ClassPath.COMPILE, cpProvider.getProjectSourcesClassPaths(ClassPath.COMPILE));
     }
 
     @Override
     protected void projectClosed() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        CPProvider cpProvider = project.getLookup().lookup(CPProvider.class);
+        //GlobalPathRegistry.getDefault().unregister(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
+        GlobalPathRegistry.getDefault().unregister(ClassPath.SOURCE, cpProvider.getProjectSourcesClassPaths(ClassPath.SOURCE));
+        GlobalPathRegistry.getDefault().unregister(ClassPath.COMPILE, cpProvider.getProjectSourcesClassPaths(ClassPath.COMPILE));
     }
-
 }
