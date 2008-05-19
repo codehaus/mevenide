@@ -162,7 +162,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                         new File(getDefaultIndexLocation(), info.getId()), // index folder
                         info.isRemoteDownloadable() ? info.getRepositoryUrl() : null, // repositoryUrl
                         info.isRemoteDownloadable() ? info.getIndexUpdateUrl() : null, // index update url
-                        NB_INDEX);
+                        NB_INDEX, 
+                        false);
             }
         }
     }
@@ -257,7 +258,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                             new File(indexDir, repoId), // index folder
                             null, // repositoryUrl
                             null, // index update url
-                            NB_INDEX);
+                            NB_INDEX, 
+                            false);
 
 
                     if (indexingContext == null) {
