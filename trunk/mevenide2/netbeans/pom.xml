@@ -26,6 +26,7 @@
              <!--module>libs/continuum-rpc</module-->
              <module>continuum</module>
 	     <module>graph</module>
+	     <module>gsf</module>
           </modules>
        </profile>
       
