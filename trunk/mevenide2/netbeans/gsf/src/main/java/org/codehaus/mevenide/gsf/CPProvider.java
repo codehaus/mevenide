@@ -28,7 +28,13 @@ import org.openide.filesystems.FileObject;
 public class CPProvider implements ClassPathProvider {
 
     public ClassPath findClassPath(FileObject file, String type) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TBD
+        return null;
+    }
+
+    ClassPath[] getProjectSourcesClassPaths(String type) {
+        //TBD
+        return new ClassPath[0];
     }
 
 }
