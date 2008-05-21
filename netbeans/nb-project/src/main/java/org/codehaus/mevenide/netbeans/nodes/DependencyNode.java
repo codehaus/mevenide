@@ -109,9 +109,11 @@ public class DependencyNode extends AbstractNode {
             return Children.LEAF;
         }
         Artifact art = look.lookup(Artifact.class);
-        FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(art.getFile()));
-        if (fo != null) {
-            return new JarContentFilterChildren(PackageView.createPackageView(new ArtifactSourceGroup(art)));
+        if (art.getFile() != null) {//#135463
+            FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(art.getFile()));
+            if (fo != null) {
+                return new JarContentFilterChildren(PackageView.createPackageView(new ArtifactSourceGroup(art)));
+            }
         }
         return Children.LEAF;
     }
