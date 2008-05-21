@@ -27,10 +27,12 @@ import java.util.Properties;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.windows.InputOutput;
 
@@ -114,6 +116,14 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             ioput.getErr().close();
             actionStatesAtFinish();
             markFreeTab();
+            RequestProcessor.getDefault().post(new Runnable() { //#103460
+                public void run() {
+                    if (config.getProject() != null) {
+                        ProjectURLWatcher.fireMavenProjectReload(config.getProject());
+                    }
+                }
+            });
+            
         }
     }
     
