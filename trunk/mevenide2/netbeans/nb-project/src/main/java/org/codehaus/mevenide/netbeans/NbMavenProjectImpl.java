@@ -377,10 +377,20 @@ public final class NbMavenProjectImpl implements Project {
             srcs = new ArrayList(srcs);
             srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject("src/main/aspect")).getAbsolutePath());
         }
-        if (!test && getProjectDirectory().getFileObject("src/main/groovy") != null) {
+        //TODO groovy and scala stuff should probably end up in separate module's
+        //ClassPathProvider
+        //TODO the folder should be checked against the configuration of scala/groovy plugin.
+        String groovy = test ? "src/test/groovy" : "src/main/groovy"; //NOI18N
+        if (getProjectDirectory().getFileObject(groovy) != null) {
             srcs = new ArrayList(srcs);
-            srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject("src/main/groovy")).getAbsolutePath());
+            srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject(groovy)).getAbsolutePath());
         }
+        String scala = test ? "src/test/scala" : "src/main/scala"; //NOI18N
+        if (getProjectDirectory().getFileObject(scala) != null) {
+            srcs = new ArrayList(srcs);
+            srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject(scala)).getAbsolutePath());
+        }
+        
         URI[] uris = new URI[srcs.size()];
         Iterator it = srcs.iterator();
         int count = 0;
