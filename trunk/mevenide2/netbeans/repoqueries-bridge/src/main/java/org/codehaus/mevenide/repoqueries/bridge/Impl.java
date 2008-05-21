@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.repoqueries.bridge;
 
+import java.io.File;
 import java.util.List;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
@@ -47,6 +48,22 @@ public class Impl implements RepositoryQueryImplementation {
 
         public boolean hasSource() {
             return info.isSourcesExists();
+        }
+
+        public void downloadArtifact(File newLocation) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public void downloadJavadoc(File newLocation) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public void downloadSources(File newLocation) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public String getMavenId() {
+            return info.getGroupId() + ":" + info.getArtifactId() + ":" + info.getVersion() + ":" + info.getClassifier() + ":" + info.getType();
         }
         
     }
