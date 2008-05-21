@@ -627,7 +627,7 @@ public class RunJarPanel extends javax.swing.JPanel {
             assPlugin.addExecution(exec);
         }
         exec.setPhase("package"); //NOI18N
-        exec.setGoals(Collections.singletonList("directory")); //NOI18N
+        exec.setGoals(Collections.singletonList("directory-single")); //NOI18N
         if (exec.getConfiguration() == null) {
             exec.setConfiguration(new Xpp3Dom(CONFIGURATION_EL)); 
         }
