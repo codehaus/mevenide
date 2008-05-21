@@ -172,7 +172,8 @@ public class ActionProviderImpl implements ActionProvider {
         task.addTaskListener(new TaskListener() {
 
             public void taskFinished(Task task2) {
-                NbMavenProject.fireMavenProjectReload(project);
+//reload is done in executors
+//                NbMavenProject.fireMavenProjectReload(project);
                 RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(RepositoryPreferences.LOCAL_REPO_ID);
                 if (info != null) {
                     RepositoryIndexer.updateIndexWithArtifacts(info, project.getOriginalMavenProject().getDependencyArtifacts());
