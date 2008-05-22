@@ -123,6 +123,7 @@ public class Impl implements RepositoryQueryImplementation {
                     try {
                         wag.connect(repository, wagon.getAuthenticationInfo(repoinfo.getId()));
                         wag.get(artRepo.pathOf(art), newLocation);
+                        return true;
                     } catch (ConnectionException ex) {
                         Exceptions.printStackTrace(ex);
                     } catch (AuthenticationException ex) {
