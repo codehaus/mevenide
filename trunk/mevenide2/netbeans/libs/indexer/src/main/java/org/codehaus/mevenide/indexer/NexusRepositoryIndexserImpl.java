@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
@@ -202,7 +203,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     public void indexRepo(final RepositoryInfo repo) {
         LOGGER.finer("Indexing Context :"+repo);//NOI18N
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
+            MUTEX.writeAccess(new Mutex.ExceptionAction<Object>() {
 
                 public Object run() throws Exception {
                     loadIndexingContext(repo);
@@ -248,7 +249,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     //to be used from external command line tols like mevenide/netbeans/maven-repo-utils
     public void indexRepo(final String repoId, final File repoDir, final File indexDir) {
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
+            MUTEX.writeAccess(new Mutex.ExceptionAction<Object>() {
 
                 public Object run() throws Exception {
                     IndexingContext indexingContext = indexer.addIndexingContext( //
@@ -281,7 +282,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     public void updateIndexWithArtifacts(final RepositoryInfo repo, final Collection<Artifact> artifacts) {
 
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
+            MUTEX.writeAccess(new Mutex.ExceptionAction<Object>() {
 
                 public Object run() throws Exception {
 
@@ -330,7 +331,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
 
     public void deleteArtifactFromIndex(final RepositoryInfo repo, final Artifact artifact) {
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
+            MUTEX.writeAccess(new Mutex.ExceptionAction<Object>() {
 
                 public Object run() throws Exception {
                     checkIndexAvailability(repo);
@@ -379,12 +380,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     }
 
     public Set<String> filterGroupIds(final String prefix, final List<RepositoryInfo> repos) {
-        final Set<String> groups = new TreeSet<String>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<Set<String>>() {
+                public Set<String> run() throws Exception {
+                    Set<String> groups = new TreeSet<String>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos); 
                     List<RepositoryInfo> slowCheck = new ArrayList<RepositoryInfo>();
@@ -434,22 +434,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(slowrepos);
                     }
-                    return null;
+                    return groups;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return groups;
+        return Collections.<String>emptySet();
     }
 
     public List<NBVersionInfo> getRecords(final String groupId, final String artifactId, final String version, List<RepositoryInfo> repos) {
-        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<List<NBVersionInfo>>() {
+                public List<NBVersionInfo> run() throws Exception {
+                    List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -462,22 +461,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return infos;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return infos;
+        return Collections.<NBVersionInfo>emptyList();
     }
 
     public Set<String> getArtifacts(final String groupId, List<RepositoryInfo> repos) {
-        final Set<String> artifacts = new TreeSet<String>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<Set<String>>() {
+                public Set<String> run() throws Exception {
+                    Set<String> artifacts = new TreeSet<String>();
                     BooleanQuery bq = new BooleanQuery();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
@@ -491,22 +489,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return artifacts;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return artifacts;
+        return Collections.<String>emptySet();
     }
 
     public List<NBVersionInfo> getVersions(final String groupId, final String artifactId, List<RepositoryInfo> repos) {
-        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<List<NBVersionInfo>>() {
+                public List<NBVersionInfo> run() throws Exception {
+                    final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -518,22 +515,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return infos;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return infos;
+        return Collections.<NBVersionInfo>emptyList();
     }
     
     public List<NBVersionInfo> findVersionsByClass(final String className, List<RepositoryInfo> repos) {
-        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<List<NBVersionInfo>>() {
+                public List<NBVersionInfo> run() throws Exception {
+                    List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     String clsname = className.replace(".", "/");
@@ -544,22 +540,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return infos;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return infos;
+        return Collections.<NBVersionInfo>emptyList();
     }
     
     public List<NBVersionInfo> findDependencyUsage(final String groupId, final String artifactId, final String version, List<RepositoryInfo> repos) {
-        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<List<NBVersionInfo>>() {
+                public List<NBVersionInfo> run() throws Exception {
+                    List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -572,22 +567,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return infos;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return infos;
+        return Collections.<NBVersionInfo>emptyList();
     }
 
     public List<NBVersionInfo> findByMD5(final String md5, List<RepositoryInfo> repos) {
-        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<List<NBVersionInfo>>() {
+                public List<NBVersionInfo> run() throws Exception {
+                    List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -598,22 +592,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return infos;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return infos;
+        return Collections.<NBVersionInfo>emptyList();
     }
     
     public List<NBVersionInfo> findBySHA1(final String sha1, List<RepositoryInfo> repos) {
-        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<List<NBVersionInfo>>() {
+                public List<NBVersionInfo> run() throws Exception {
+                    List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -624,23 +617,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return infos;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return infos;
+        return Collections.<NBVersionInfo>emptyList();
     }
 
     public List<NBVersionInfo> findArchetypes(List<RepositoryInfo> repos) {
-        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
-
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<List<NBVersionInfo>>() {
+                public List<NBVersionInfo> run() throws Exception {
+                    List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -651,22 +642,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return infos;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return infos;
+        return Collections.<NBVersionInfo>emptyList();
     }
 
     public Set<String> filterPluginArtifactIds(final String groupId, final String prefix, List<RepositoryInfo> repos) {
-        final Set<String> artifacts = new TreeSet<String>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<Set<String>>() {
+                public Set<String> run() throws Exception {
+                    Set<String> artifacts = new TreeSet<String>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -681,23 +671,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return artifacts;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return artifacts;
+        return Collections.<String>emptySet();
     }
 
     public Set<String> filterPluginGroupIds(final String prefix, List<RepositoryInfo> repos) {
-        final Set<String> artifacts = new TreeSet<String>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<Set<String>>() {
+                public Set<String> run() throws Exception {
+                    Set<String> artifacts = new TreeSet<String>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -711,23 +699,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return artifacts;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return artifacts;
+        return Collections.<String>emptySet();
     }
 
     public Set<String> filterArtifactIdForGroupId(final String groupId, final String prefix, List<RepositoryInfo> repos) {
-        final Set<String> artifacts = new TreeSet<String>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<Set<String>>() {
+                public Set<String> run() throws Exception {
+                    Set<String> artifacts = new TreeSet<String>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -742,21 +728,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return artifacts;
                 }
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return artifacts;
+        return Collections.<String>emptySet();
     }
     
     public List<NBVersionInfo> find(final List<QueryField> fields, List<RepositoryInfo> repos) {
-        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-            MUTEX.writeAccess(new Mutex.ExceptionAction() {
-                public Object run() throws Exception {
+            return MUTEX.writeAccess(new Mutex.ExceptionAction<List<NBVersionInfo>>() {
+                public List<NBVersionInfo> run() throws Exception {
+                    List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
                     try {
@@ -783,14 +769,14 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
-                    return null;
+                    return infos;
                 }
 
             });
         } catch (MutexException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return infos;
+        return Collections.<NBVersionInfo>emptyList();
     }
     
     private String toNexusField(String field) {
