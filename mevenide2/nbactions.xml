@@ -46,9 +46,6 @@
         <activatedProfiles>
                 <activatedProfile>experimental</activatedProfile>
         </activatedProfiles>
-        <properties>
-            <netbeans.installation>/home/mkleint/src/trunk/nbbuild/netbeans</netbeans.installation>
-        </properties>
     </action>
     <action>
         <actionName>debug</actionName>
@@ -67,7 +64,6 @@
         <properties>
             <jpda.listen>true</jpda.listen>
             <netbeans.run.params>-J-Xdebug -J-Xnoagent -J-Xrunjdwp:transport=dt_socket,suspend=n,server=n,address=${jpda.address}</netbeans.run.params>
-            <netbeans.installation>/home/mkleint/src/trunk/nbbuild/netbeans</netbeans.installation>
         </properties>
     </action>
     <action>
@@ -90,6 +86,21 @@
                 <goal>nbm:nbm</goal>
                 <goal>nbm:autoupdate</goal>
             </goals>
+            <activatedProfiles>
+                <activatedProfile>experimental</activatedProfile>
+            </activatedProfiles>
+        </action>
+    <action>
+            <actionName>CUSTOM-profile</actionName>
+            <displayName>profile</displayName>
+            <goals>
+                <goal>nbm:directory</goal>
+                <goal>nbm:cluster</goal>
+                <goal>nbm:run-ide</goal>
+            </goals>
+            <properties>
+                <netbeans.run.params>-J-agentpath:/home/mkleint/netbeans-6.0/profiler3/lib/deployed/jdk15/linux/libprofilerinterface.so=/home/mkleint/netbeans-6.0/profiler3/lib,5140</netbeans.run.params>
+            </properties>
             <activatedProfiles>
                 <activatedProfile>experimental</activatedProfile>
             </activatedProfiles>
