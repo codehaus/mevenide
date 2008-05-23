@@ -406,34 +406,15 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         this.projectNameTextField.selectAll();
         ngprovider = (ArchetypeProviderImpl)settings.getProperty(MavenWizardIterator.PROPERTY_CUSTOM_CREATOR);
         final Archetype arch = (Archetype)settings.getProperty(ChooseArchetypePanel.PROP_ARCHETYPE);
-        if (arch.archetypeNg) {
-            lblAdditionalProps.setText(NbBundle.getMessage(BasicPanelVisual.class, "TXT_Checking1"));
-            lblAdditionalProps.setVisible(true);
-            tblAdditionalProps.setVisible(false);
-            jScrollPane1.setVisible(false);
-            RequestProcessor.getDefault().post(new Runnable() {
-                public void run() {
-                    prepareAdditionalProperties(arch);
-                }
-            });
-        } else {
-            tblAdditionalProps.setVisible(false);
-            lblAdditionalProps.setVisible(false);
-            jScrollPane1.setVisible(false);
-            RequestProcessor.getDefault().post(new Runnable() {
-                public void run() {
-                    try {
-                        Artifact art = downloadArchetype(arch);
-                        File fil = art.getFile();
-                    } catch (ArtifactResolutionException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (ArtifactNotFoundException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-            });
-            
-        }
+        lblAdditionalProps.setText(NbBundle.getMessage(BasicPanelVisual.class, "TXT_Checking1"));
+        lblAdditionalProps.setVisible(true);
+        tblAdditionalProps.setVisible(false);
+        jScrollPane1.setVisible(false);
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                prepareAdditionalProperties(arch);
+            }
+        });
     }
     
     private void prepareAdditionalProperties(Archetype arch) {
@@ -457,11 +438,17 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Mnemonics.setLocalizedText(lblAdditionalProps, NbBundle.getMessage(BasicPanelVisual.class, "TXT_Checking2"));
-                lblAdditionalProps.setVisible(true);
-                jScrollPane1.setVisible(true);
-                tblAdditionalProps.setModel(dtm);
-                tblAdditionalProps.setVisible(true);
+                if (dtm.getRowCount() > 0) {
+                    Mnemonics.setLocalizedText(lblAdditionalProps, NbBundle.getMessage(BasicPanelVisual.class, "TXT_Checking2"));
+                    lblAdditionalProps.setVisible(true);
+                    jScrollPane1.setVisible(true);
+                    tblAdditionalProps.setModel(dtm);
+                    tblAdditionalProps.setVisible(true);
+                } else {
+                    tblAdditionalProps.setVisible(false);
+                    lblAdditionalProps.setVisible(false);
+                    jScrollPane1.setVisible(false);
+                }
             }
         });
     }

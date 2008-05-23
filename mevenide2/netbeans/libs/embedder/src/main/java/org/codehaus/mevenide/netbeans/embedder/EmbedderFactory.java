@@ -473,6 +473,7 @@ public final class EmbedderFactory {
      * Maven assumes the env vars are included in execution properties with the "env." prefix.
      * 
      * @param properties
+     * @return 
      */
     public static Properties fillEnvVars(Properties properties) {
         try

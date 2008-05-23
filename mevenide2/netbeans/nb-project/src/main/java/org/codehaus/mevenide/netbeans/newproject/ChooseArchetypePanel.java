@@ -237,12 +237,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             Childs childs = (Childs)manager.getRootContext().getChildren();
-            Archetype arch;
-            if (panel.isArchetypeNG()) {
-                arch = new Archetype(true, true);
-            } else {
-                arch = new Archetype();
-            }
+            Archetype arch = new Archetype();
             arch.setArtifactId(panel.getArtifactId());
             arch.setGroupId(panel.getGroupId());
             arch.setVersion(panel.getVersion().length() == 0 ? "LATEST" : panel.getVersion()); //NOI18N

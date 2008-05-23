@@ -105,19 +105,18 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             }
             
             Set resultSet = new LinkedHashSet();
-            final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N<
+//            final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N<
             dirF.getParentFile().mkdirs();
             
             handle.progress(NbBundle.getMessage(MavenWizardIterator.class, "PRG_Processing_Archetype"), 2);
-            if (archetype.archetypeNg) {
-                ngprovider.runArchetype(dirF.getParentFile(), wiz);
-            } else {
-                final String art = (String)wiz.getProperty("artifactId"); //NOI18N
-                final String ver = (String)wiz.getProperty("version"); //NOI18N
-                final String gr = (String)wiz.getProperty("groupId"); //NOI18N
-                final String pack = (String)wiz.getProperty("package"); //NOI18N
-                runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
-            }
+            ngprovider.runArchetype(dirF.getParentFile(), wiz);
+//            } else {
+//                final String art = (String)wiz.getProperty("artifactId"); //NOI18N
+//                final String ver = (String)wiz.getProperty("version"); //NOI18N
+//                final String gr = (String)wiz.getProperty("groupId"); //NOI18N
+//                final String pack = (String)wiz.getProperty("package"); //NOI18N
+//                runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
+//            }
             handle.progress(3);
             // Always open top dir as a project:
             FileObject fDir = FileUtil.toFileObject(dirF);
