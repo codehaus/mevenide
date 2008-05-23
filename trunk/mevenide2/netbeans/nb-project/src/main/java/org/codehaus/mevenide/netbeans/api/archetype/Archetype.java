@@ -31,9 +31,14 @@ public final class Archetype {
     private String description;
     private String repository;
     public final boolean deletable;
+    /**
+     * @deprecated has no meaning anymore.
+     */
     public final boolean archetypeNg;
     
-    /** Creates a new instance of Archetype */
+    /** Creates a new instance of Archetype 
+     * @deprecated isArchetypeNg is not used anymore.
+     */
     public Archetype(boolean deletable, boolean isArchetypeNg) {
         this.deletable = deletable;
         archetypeNg = isArchetypeNg;
@@ -100,7 +105,8 @@ public final class Archetype {
     
     /**
      * optional property.
-     */ 
+     * @return 
+     */
     public String getRepository() {
         return repository;
     }
