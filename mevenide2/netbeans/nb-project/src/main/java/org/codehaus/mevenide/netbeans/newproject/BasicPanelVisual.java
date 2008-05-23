@@ -36,6 +36,9 @@ import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
@@ -417,6 +420,19 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
             tblAdditionalProps.setVisible(false);
             lblAdditionalProps.setVisible(false);
             jScrollPane1.setVisible(false);
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    try {
+                        Artifact art = downloadArchetype(arch);
+                        File fil = art.getFile();
+                    } catch (ArtifactResolutionException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (ArtifactNotFoundException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            });
+            
         }
     }
     
@@ -425,7 +441,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         dtm.addColumn(NbBundle.getMessage(BasicPanelVisual.class, "COL_Key"));
         dtm.addColumn(NbBundle.getMessage(BasicPanelVisual.class, "COL_Value"));
         try {
-            Artifact art = downloadNGArchetype(arch);
+            Artifact art = downloadArchetype(arch);
             File fil = art.getFile();
             if (fil.exists()) {
                 Map<String, String> props = ngprovider.getAdditionalProperties(art);
@@ -450,7 +466,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         });
     }
 
-    private Artifact downloadNGArchetype(Archetype arch) throws ArtifactResolutionException, ArtifactNotFoundException {
+    private Artifact downloadArchetype(Archetype arch) throws ArtifactResolutionException, ArtifactNotFoundException {
         MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
         Artifact art = online.createArtifact(
                 arch.getGroupId(), 
@@ -505,6 +521,12 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
             hndl.start();
             online.resolve(pom, repos, online.getLocalRepository());
             online.resolve(art, repos, online.getLocalRepository());
+            
+            RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(RepositoryPreferences.LOCAL_REPO_ID);
+            if (info != null) {
+                System.out.println("updating repository");
+                RepositoryIndexer.updateIndexWithArtifacts(info, Collections.singletonList(art));
+            }
         } finally {
             hndl.finish();
             ProgressTransferListener.clearAggregateHandle();
