@@ -37,7 +37,8 @@ public class LookupProviderImpl implements LookupProvider {
         assert prj != null;
         assert nbprj != null;
         //TODO add the classpathprovider
-        return Lookups.fixed(new GSFRecoTemplates(), new ProjectOpenedHookImpl(prj));
+        return Lookups.fixed(new GSFRecoTemplates(), 
+                new ProjectOpenedHookImpl(prj), new CPProvider(prj));
     }
 
     private static class GSFRecoTemplates implements RecommendedTemplates {
