@@ -41,7 +41,7 @@ public class NbmArchetypeProvider implements ArchetypeProvider {
         a = new Archetype(false, true);
         a.setGroupId("org.codehaus.mojo.archetypes"); //NOI18N
         a.setArtifactId("netbeans-platform-app-archetype"); //NOI18N
-        a.setVersion("1.0.1"); //NOI18N
+        a.setVersion("1.0.2"); //NOI18N
         a.setName(NbBundle.getMessage(NbmArchetypeProvider.class, "TIT_Platform_Application_Archetype"));
         a.setDescription(NbBundle.getMessage(NbmArchetypeProvider.class, "DESC_Platform_Application_Archetype"));
         lst.add(a);
