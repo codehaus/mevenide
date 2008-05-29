@@ -33,6 +33,7 @@ public final class RepositoryPreferences {
 
     private static final RepositoryInfo LOCAL;
     private static final RepositoryInfo CENTRAL;
+    private static final RepositoryInfo JAVANET;
     private static RepositoryPreferences instance;
     /**
      * index of local repository
@@ -49,6 +50,9 @@ public final class RepositoryPreferences {
         CENTRAL = new RepositoryInfo("central", TYPE_NEXUS, "Central  Repository",null,
                 "http://repo1.maven.org/maven2",
                 "http://repo1.maven.org/maven2/.index/");//NOI18N
+        JAVANET = new RepositoryInfo("java.net2", TYPE_NEXUS, "Java.net Repository",null,
+                "http://download.java.net/maven/2/",
+                "http://download.java.net/maven/2/.index/");//NOI18N
     }
     private static final String KEY_ID = "repository.id";//NOI18N
     private static final String KEY_TYPE = "repository.type";//NOI18N
@@ -81,6 +85,7 @@ public final class RepositoryPreferences {
             // still not clear how to allow people to delete central or netbeans
             instance.addDefaultRepositoryInfo(LOCAL);
             instance.addDefaultRepositoryInfo(CENTRAL);
+            instance.addDefaultRepositoryInfo(JAVANET);
         }
         return instance;
     }
