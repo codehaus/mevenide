@@ -766,10 +766,15 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                             String fieldName = toNexusField(field.getField());
                             if (fieldName != null) {
                                 Query q;
-                                if (field.getMatch() == QueryField.MATCH_EXACT) {
-                                    q = new TermQuery(new Term(fieldName, field.getValue()));
+                                if (ArtifactInfo.NAMES.equals(fieldName)) {
+                                    String clsname = field.getValue().replace(".", "/"); //NOI18N
+                                    q = indexer.constructQuery(ArtifactInfo.NAMES, clsname.toLowerCase());
                                 } else {
-                                    q = new PrefixQuery(new Term(fieldName, field.getValue()));
+                                    if (field.getMatch() == QueryField.MATCH_EXACT) {
+                                        q = new TermQuery(new Term(fieldName, field.getValue()));
+                                    } else {
+                                        q = new PrefixQuery(new Term(fieldName, field.getValue()));
+                                    }
                                 }
                                 BooleanClause bc = new BooleanClause(q, occur);
                                 bq.add(bc); //NOI18N
