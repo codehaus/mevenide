@@ -31,14 +31,14 @@ public class NbmArchetypeProvider implements ArchetypeProvider {
 
     public List<Archetype> getArchetypes() {
         List<Archetype> lst = new ArrayList<Archetype>();
-        Archetype a = new Archetype(false, true);
+        Archetype a = new Archetype(false);
         a.setGroupId("org.codehaus.mojo.archetypes"); //NOI18N
         a.setArtifactId("nbm-archetype"); //NOI18N
         a.setVersion("1.0.1"); //NOI18N
         a.setName(NbBundle.getMessage(NbmArchetypeProvider.class, "TIT_NBM_Archetype"));
         a.setDescription(NbBundle.getMessage(NbmArchetypeProvider.class, "DESC_NBM_Archetype"));
         lst.add(a);
-        a = new Archetype(false, true);
+        a = new Archetype(false);
         a.setGroupId("org.codehaus.mojo.archetypes"); //NOI18N
         a.setArtifactId("netbeans-platform-app-archetype"); //NOI18N
         a.setVersion("1.0.2"); //NOI18N
