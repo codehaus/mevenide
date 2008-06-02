@@ -15,7 +15,7 @@
          <dependency>
             <groupId>org.codehaus.mevenide.maven</groupId>
             <artifactId>maven-embedder</artifactId>
-            <version>2.1-20080522</version>
+            <version>2.1-20080602</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>
@@ -94,6 +94,32 @@
                     </execution>
                 </executions>
             </plugin>
+            
+          <!--plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <version>1.0-beta-2</version>
+            <executions>
+              <execution>
+                <id>compile-aspects</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <source>1.5</source>
+                  <target>1.5</target>
+                  <weaveDependencies>
+                    <weaveDependency>
+                      <groupId>org.codehaus.mevenide.maven</groupId>
+                      <artifactId>maven-embedder</artifactId>
+                    </weaveDependency>
+                  </weaveDependencies>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin-->
+            
         </plugins>
     </build>
 </project>
