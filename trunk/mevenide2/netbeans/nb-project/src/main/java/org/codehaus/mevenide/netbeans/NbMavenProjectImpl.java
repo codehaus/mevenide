@@ -30,8 +30,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -222,6 +224,10 @@ public final class NbMavenProjectImpl implements Project {
                         }
                     }
                 }
+//            } catch (RuntimeException exc) {
+//                //guard against exceptions that are not processed by the embedder
+//                //#
+//                Logger.getLogger(NbMavenProjectImpl.class.getName()).log(Level.INFO, "Runtime exception thrown while loading maven project at " + getProjectDirectory(), exc);
             } finally {
                 if (project == null) {
                     try {
@@ -404,24 +410,34 @@ public final class NbMavenProjectImpl implements Project {
     }
 
     public URI[] getGeneratedSourceRoots() {
+        
         //TODO more or less a hack.. should be better supported by embedder itself.
         URI uri = FileUtilities.getDirURI(getProjectDirectory(), "target/generated-sources"); //NOI18N
-
+        Set<URI> uris = new HashSet<URI>();
+        
         File fil = new File(uri);
         if (fil.exists()) {
             File[] fils = fil.listFiles(new FileFilter() {
-
                 public boolean accept(File pathname) {
                     return pathname.isDirectory();
                 }
             });
-            URI[] uris = new URI[fils.length];
             for (int i = 0; i < fils.length; i++) {
-                uris[i] = fils[i].toURI();
+                uris.add(fils[i].toURI());
             }
-            return uris;
         }
-        return new URI[0];
+        
+        String[] buildHelpers = PluginPropertyUtils.getPluginPropertyList(this, 
+                "org.codehaus.mojo", 
+                "build-helper-maven-plugin", "sources", "source", "add-source"); //TODO split for sources and test sources..
+        if (buildHelpers != null && buildHelpers.length > 0) {
+            File root = FileUtil.toFile(getProjectDirectory());
+            for (String helper : buildHelpers) {
+                uris.add(FileUtilities.getDirURI(root, helper));
+            }
+        }
+        
+        return uris.toArray(new URI[uris.size()]);
     }
 
     public URI getWebAppDirectory() {
