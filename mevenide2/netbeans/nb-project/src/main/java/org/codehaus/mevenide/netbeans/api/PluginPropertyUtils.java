@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.api;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -125,6 +126,90 @@ public class PluginPropertyUtils {
         }
         return null;
     }
+    
+
+    /**
+     * gets the list of values for the given property, if configured in the current project.
+     * @param multiproperty list's root element (eg. "sourceRoots")
+     * @param singleproperty - list's single value element (eg. "sourceRoot")
+     */
+    public static String[] getPluginPropertyList(Project prj, String groupId, String artifactId, String multiproperty, String singleproperty, String goal) {
+        NbMavenProjectImpl project = prj.getLookup().lookup(NbMavenProjectImpl.class);
+        assert project != null : "Requires a maven project instance"; //NOI18N
+        return getPluginPropertyList(project.getOriginalMavenProject(), groupId, artifactId, multiproperty, singleproperty, goal);
+    }
+    
+    /**
+     * gets the list of values for the given property, if configured in the current project.
+     * @param multiproperty list's root element (eg. "sourceRoots")
+     * @param singleproperty - list's single value element (eg. "sourceRoot")
+     */
+    public static String[] getPluginPropertyList(MavenProject prj, String groupId, String artifactId, String multiproperty, String singleproperty, String goal) {
+        String[] toRet = null;
+        if (prj.getBuildPlugins() == null) {
+            return toRet;
+        }
+        for (Object obj : prj.getBuildPlugins()) {
+            Plugin plug = (Plugin)obj;
+            if (artifactId.equals(plug.getArtifactId()) &&
+                   groupId.equals(plug.getGroupId())) {
+                if (plug.getExecutions() != null) {
+                    for (Object obj2 : plug.getExecutions()) {
+                        PluginExecution exe = (PluginExecution)obj2;
+                        if (exe.getGoals().contains(goal)) {
+                            toRet = checkListConfiguration(prj, exe.getConfiguration(), multiproperty, singleproperty);
+                            if (toRet != null) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (toRet == null) {
+                    toRet = checkListConfiguration(prj, plug.getConfiguration(), multiproperty, singleproperty);
+                }
+            }
+        }
+        if (toRet == null && 
+                //TODO - the plugin configuration probably applies to 
+                //lifecycle plugins only. always checking is wrong, how to get a list of lifecycle plugins though?
+                (Constants.PLUGIN_COMPILER.equals(artifactId) || //NOI18N
+                 Constants.PLUGIN_SUREFIRE.equals(artifactId) || //NOI18N
+                 Constants.PLUGIN_RESOURCES.equals(artifactId))) {  //NOI18N
+            if (prj.getPluginManagement() != null) {
+                for (Object obj : prj.getPluginManagement().getPlugins()) {
+                    Plugin plug = (Plugin)obj;
+                    if (artifactId.equals(plug.getArtifactId()) &&
+                        groupId.equals(plug.getGroupId())) {
+                        toRet = checkListConfiguration(prj, plug.getConfiguration(), multiproperty, singleproperty);
+                        break;
+                    }
+                }
+            }
+        }
+        return toRet;
+    }
+    
+    private static String[] checkListConfiguration(MavenProject prj, Object conf, String multiproperty, String singleproperty) {
+        if (conf != null && conf instanceof Xpp3Dom) {
+            Xpp3Dom dom = (Xpp3Dom)conf;
+            Xpp3Dom source = dom.getChild(multiproperty);
+            if (source != null) {
+                List<String> toRet = new ArrayList<String>();
+                Xpp3Dom[] childs = source.getChildren(singleproperty);
+                NBPluginParameterExpressionEvaluator eval = new NBPluginParameterExpressionEvaluator(prj, EmbedderFactory.getProjectEmbedder().getSettings(), new Properties());
+                for (Xpp3Dom ch : childs) {
+                    try {
+                        Object evaluated = eval.evaluate(ch.getValue().trim());
+                        toRet.add(evaluated != null ? ("" + evaluated) : ch.getValue().trim());
+                    } catch (ExpressionEvaluationException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+                return toRet.toArray(new String[toRet.size()]);
+            }
+        }
+        return null;
+    }    
     
     
     /**
