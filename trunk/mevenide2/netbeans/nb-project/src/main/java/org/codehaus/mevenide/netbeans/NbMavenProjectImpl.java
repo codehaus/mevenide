@@ -224,10 +224,10 @@ public final class NbMavenProjectImpl implements Project {
                         }
                     }
                 }
-//            } catch (RuntimeException exc) {
-//                //guard against exceptions that are not processed by the embedder
-//                //#
-//                Logger.getLogger(NbMavenProjectImpl.class.getName()).log(Level.INFO, "Runtime exception thrown while loading maven project at " + getProjectDirectory(), exc);
+            } catch (RuntimeException exc) {
+                //guard against exceptions that are not processed by the embedder
+                //#136184 NumberFormatException
+                Logger.getLogger(NbMavenProjectImpl.class.getName()).log(Level.INFO, "Runtime exception thrown while loading maven project at " + getProjectDirectory(), exc);
             } finally {
                 if (project == null) {
                     try {
