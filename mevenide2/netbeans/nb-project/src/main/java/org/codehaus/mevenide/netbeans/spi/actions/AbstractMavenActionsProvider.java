@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -101,7 +100,7 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
     public final RunConfig createConfigForDefaultAction(String actionName, Project project, Lookup lookup) {
         FileObject[] fos = extractFileObjectsfromLookup(lookup);
         String relPath = null;
-        String group = null;
+        SourceGroup group = null;
         HashMap<String, String> replaceMap = new HashMap<String, String>();
         if (fos.length > 0) {
             Sources srcs = project.getLookup().lookup(Sources.class);
@@ -109,7 +108,7 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
             for (int i = 0; i < grp.length; i++) {
                 relPath = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0]);
                 if (relPath != null) {
-                    group = grp[i].getName();
+                    group = grp[i];
                     replaceMap.put(CLASSNAME_EXT, fos[0].getNameExt());
                     replaceMap.put(CLASSNAME, fos[0].getName());
                     String pack = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0].getParent());
@@ -135,18 +134,25 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
             }
 
         }
-        if (group != null && group.equals(MavenSourcesImpl.NAME_TESTSOURCE) &&
+        if (group != null && MavenSourcesImpl.NAME_TESTSOURCE.equals(group.getName()) &&
                 ActionProvider.COMMAND_RUN_SINGLE.equals(actionName)) {
+            //TODO how to allow running main() in tests?
             actionName = ActionProvider.COMMAND_TEST_SINGLE;
         }
-        if (group != null && group.equals(MavenSourcesImpl.NAME_TESTSOURCE) &&
+        if (group != null && MavenSourcesImpl.NAME_TESTSOURCE.equals(group.getName()) &&
                 ActionProvider.COMMAND_DEBUG_SINGLE.equals(actionName)) {
+            //TODO how to allow running main() in tests?
             actionName = ActionProvider.COMMAND_DEBUG_TEST_SINGLE;
         }
-        if (group != null && group.equals(MavenSourcesImpl.NAME_SOURCE) &&
+        if (group != null && MavenSourcesImpl.NAME_SOURCE.equals(group.getName()) &&
                 (ActionProvider.COMMAND_TEST_SINGLE.equals(actionName) ||
                 ActionProvider.COMMAND_DEBUG_TEST_SINGLE.equals(actionName))) {
-            //TODO.. get the rel path for test not class..
+            String withExt = replaceMap.get(CLASSNAME_EXT);
+            if (withExt != null && withExt.endsWith(".java")) {
+                replaceMap.put(CLASSNAME_EXT, withExt.replace(".java", "Test.java"));
+                replaceMap.put(CLASSNAME, replaceMap.get(CLASSNAME) + "Test");
+                replaceMap.put(PACK_CLASSNAME, replaceMap.get(PACK_CLASSNAME) + "Test");
+            }
         }
         return mapGoalsToAction(project, actionName, replaceMap);
     }
