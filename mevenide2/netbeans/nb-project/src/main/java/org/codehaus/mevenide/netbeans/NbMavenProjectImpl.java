@@ -416,7 +416,7 @@ public final class NbMavenProjectImpl implements Project {
         Set<URI> uris = new HashSet<URI>();
         
         File fil = new File(uri);
-        if (fil.exists()) {
+        if (fil.exists() && fil.isDirectory()) {
             File[] fils = fil.listFiles(new FileFilter() {
                 public boolean accept(File pathname) {
                     return pathname.isDirectory();
