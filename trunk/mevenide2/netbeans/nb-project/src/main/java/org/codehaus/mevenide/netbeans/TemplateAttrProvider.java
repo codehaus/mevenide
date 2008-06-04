@@ -46,7 +46,7 @@ public class TemplateAttrProvider implements CreateFromTemplateAttributesProvide
             List lst = project.getOriginalMavenProject().getLicenses();
             if (lst != null && lst.size() > 0) {
                 String url = ((License)lst.get(0)).getUrl();
-                FileObject licenses = Repository.getDefault().getDefaultFileSystem().getRoot().getFileObject("Templates/Licenses");
+                FileObject licenses = Repository.getDefault().getDefaultFileSystem().getRoot().getFileObject("Templates/Licenses"); //NOI18N
                 if (url != null && licenses != null) {
                     for (FileObject fo : licenses.getChildren()) {
                         String str = (String)fo.getAttribute("mavenLicenseURL"); //NOI18N

@@ -101,7 +101,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
             Collection<SourceGroup> sg = new HashSet<SourceGroup>();
             for (ProjectClassPathModifierImplementation ext : list) {
                 try {
-                    SourceGroup[] sgs = (SourceGroup[])retVal("getExtensibleSourceGroups", ext, null);
+                    SourceGroup[] sgs = (SourceGroup[])retVal("getExtensibleSourceGroups", ext, null);//NOI18N
                     sg.addAll(Arrays.asList(sgs));
                 } catch (IOException e) {
                     //should not happen at all.
@@ -116,7 +116,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
             Collection<String> retVal = new HashSet<String>();
             for (ProjectClassPathModifierImplementation ext : list) {
                 try {
-                    String[] ret = (String[])retVal("getExtensibleClassPathTypes", ext,
+                    String[] ret = (String[])retVal("getExtensibleClassPathTypes", ext, //NOI18N
                             new Class<?>[] {SourceGroup.class}, arg0 );
                     retVal.addAll(Arrays.asList(ret));
                 } catch (IOException e) {
@@ -132,7 +132,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
                                                            UnsupportedOperationException {
             Collection<? extends ProjectClassPathModifierImplementation> list = context.lookupAll(ProjectClassPathModifierImplementation.class);
             for (ProjectClassPathModifierImplementation ext : list) {
-                Boolean ret = (Boolean)retVal("addLibraries", ext, 
+                Boolean ret = (Boolean)retVal("addLibraries", ext, //NOI18N
                         new Class<?>[] { new Library[0].getClass(), SourceGroup.class, String.class}, arg0, arg1, arg2);
                 if (ret.booleanValue()) {
                     return ret.booleanValue();
@@ -146,7 +146,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
                                                               UnsupportedOperationException {
             Collection<? extends ProjectClassPathModifierImplementation> list = context.lookupAll(ProjectClassPathModifierImplementation.class);
             for (ProjectClassPathModifierImplementation ext : list) {
-                Boolean ret = (Boolean)retVal("removeLibraries", ext, 
+                Boolean ret = (Boolean)retVal("removeLibraries", ext, //NOI18N
                         new Class<?>[] { new Library[0].getClass(), SourceGroup.class, String.class}, arg0, arg1, arg2);
                 if (ret.booleanValue()) {
                     return ret.booleanValue();
@@ -159,7 +159,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
                                                                                      UnsupportedOperationException {
             Collection<? extends ProjectClassPathModifierImplementation> list = context.lookupAll(ProjectClassPathModifierImplementation.class);
             for (ProjectClassPathModifierImplementation ext : list) {
-                Boolean ret = (Boolean)retVal("addRoots", ext, 
+                Boolean ret = (Boolean)retVal("addRoots", ext, //NOI18N
                         new Class<?>[] { new URL[0].getClass(), SourceGroup.class, String.class}, arg0, arg1, arg2);
                 if (ret.booleanValue()) {
                     return ret.booleanValue();
@@ -172,7 +172,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
                                                                                         UnsupportedOperationException {
             Collection<? extends ProjectClassPathModifierImplementation> list = context.lookupAll(ProjectClassPathModifierImplementation.class);
             for (ProjectClassPathModifierImplementation ext : list) {
-                Boolean ret = (Boolean)retVal("removeRoots", ext, 
+                Boolean ret = (Boolean)retVal("removeRoots", ext, //NOI18N
                         new Class<?>[] { new URL[0].getClass(), SourceGroup.class, String.class}, arg0, arg1, arg2);
                 if (ret.booleanValue()) {
                     return ret.booleanValue();
@@ -186,7 +186,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
                                                                                 UnsupportedOperationException {
             Collection<? extends ProjectClassPathModifierImplementation> list = context.lookupAll(ProjectClassPathModifierImplementation.class);
             for (ProjectClassPathModifierImplementation ext : list) {
-                Boolean ret = (Boolean)retVal("addAntArtifacts", ext, 
+                Boolean ret = (Boolean)retVal("addAntArtifacts", ext, //NOI18N
                         new Class<?>[] { new AntArtifact[0].getClass(), new URI[0].getClass(), SourceGroup.class, String.class}, arg0, arg1, arg2, arg3);
                 if (ret.booleanValue()) {
                     return ret.booleanValue();
@@ -200,7 +200,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
                                                                                    UnsupportedOperationException {
             Collection<? extends ProjectClassPathModifierImplementation> list = context.lookupAll(ProjectClassPathModifierImplementation.class);
             for (ProjectClassPathModifierImplementation ext : list) {
-                Boolean ret = (Boolean)retVal("addAntArtifacts", ext, 
+                Boolean ret = (Boolean)retVal("addAntArtifacts", ext, //NOI18N
                         new Class<?>[] { new AntArtifact[0].getClass(), new URI[0].getClass(), SourceGroup.class, String.class}, arg0, arg1, arg2, arg3);
                 if (ret.booleanValue()) {
                     return ret.booleanValue();

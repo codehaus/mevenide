@@ -88,7 +88,7 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         project.doBaseProblemChecks();
         
         //UI logging.. log what was the packaging type for the opened project..
-        LogRecord record = new LogRecord(Level.INFO, "UI_MAVEN_PROJECT_OPENED");
+        LogRecord record = new LogRecord(Level.INFO, "UI_MAVEN_PROJECT_OPENED"); //NOI18N
         record.setLoggerName(UI_LOGGER_NAME); //NOI18N
         record.setParameters(new Object[] {project.getProjectWatcher().getPackagingType()});
         record.setResourceBundle(NbBundle.getBundle(ProjectOpenedHookImpl.class));

@@ -297,7 +297,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
-                setupTaskName("custom", rc, Lookup.EMPTY);
+                setupTaskName("custom", rc, Lookup.EMPTY); //NOI18N
                 runGoal("custom", Lookup.EMPTY, rc, true); //NOI18N
 
                 return;
@@ -352,7 +352,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setUpdateSnapshots(pnl.isUpdateSnapshots());
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
-                setupTaskName("custom", rc, Lookup.EMPTY);
+                setupTaskName("custom", rc, Lookup.EMPTY); //NOI18N
                 runGoal("custom", Lookup.EMPTY, rc, false); //NOI18N
 
             }

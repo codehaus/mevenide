@@ -333,7 +333,7 @@ public final class ModelHandle {
     public static Configuration createDefaultConfiguration() {
         Configuration conf = new Configuration();
         conf.setId(M2Configuration.DEFAULT);
-        conf.setDisplayName("<Default Configuration>");
+        conf.setDisplayName(org.openide.util.NbBundle.getMessage(ModelHandle.class, "TXT_DefautlConfig"));
         conf.setDefault(true);
         return conf;
     }

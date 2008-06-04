@@ -32,6 +32,7 @@ public interface ArchetypeProvider {
     /**
      * return Archetype instances known to this provider. Is called once per
      * New Maven Project wizard invokation.
-     */ 
+     * @return list of archetypes
+     */
     List<Archetype> getArchetypes();
 }

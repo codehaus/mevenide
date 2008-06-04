@@ -182,9 +182,9 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         // these 2 urls are essential (together with central) for correct 
         // resolution of maven pom urls in libraries
         try {
-            urls.add(new URL("http://repo1.maven.org/maven2"));
-            urls.add(new URL("http://download.java.net/maven/2"));
-            urls.add(new URL("http://download.java.net/maven/1"));
+            urls.add(new URL("http://repo1.maven.org/maven2")); //NOI18N
+            urls.add(new URL("http://download.java.net/maven/2"));//NOI18N
+            urls.add(new URL("http://download.java.net/maven/1"));//NOI18N
         } catch (MalformedURLException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -217,7 +217,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
                     if (reposit != null) {
                         reposit.setId(library.getName());
                         reposit.setLayout(result[0]);
-                        reposit.setName("Repository for library " + library);
+                        reposit.setName("Repository for library " + library); //NOI18N - content coming into the pom.xml file
                     }
                 }
             }
@@ -262,13 +262,13 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
                 toRet[2] = toRet[2].substring(1);
             }
             //sort of hack, these 2 are the most probable root paths.
-            if (toRet[2].startsWith("maven/")) {
-                toRet[1] = toRet[1] + "/maven";
-                toRet[2] = toRet[2].substring("maven/".length());
+            if (toRet[2].startsWith("maven/")) {//NOI18N
+                toRet[1] = toRet[1] + "/maven";//NOI18N
+                toRet[2] = toRet[2].substring("maven/".length());//NOI18N
             }
-            if (toRet[2].startsWith("maven2/")) {
-                toRet[1] = toRet[1] + "/maven2";
-                toRet[2] = toRet[2].substring("maven2/".length());
+            if (toRet[2].startsWith("maven2/")) {//NOI18N
+                toRet[1] = toRet[1] + "/maven2";//NOI18N
+                toRet[2] = toRet[2].substring("maven2/".length());//NOI18N
             }
             toRet[2] = toRet[2].replace('/', '.'); //NOI18N
             return toRet;

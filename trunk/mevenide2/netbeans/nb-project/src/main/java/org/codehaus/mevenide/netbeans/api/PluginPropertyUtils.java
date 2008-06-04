@@ -52,7 +52,7 @@ public class PluginPropertyUtils {
     
     
     /**
-     * tried to figure out if the property of the given plugin is customized in the
+     * tries to figure out if the property of the given plugin is customized in the
      * current project and returns it's value if so, otherwise null
      */
     public static String getPluginProperty(Project prj, String groupId, String artifactId, String property, String goal) {
@@ -61,7 +61,7 @@ public class PluginPropertyUtils {
         return getPluginProperty(project.getOriginalMavenProject(), groupId, artifactId, property, goal);
     }
     /**
-     * tried to figure out if the property of the given plugin is customized in the
+     * tries to figure out if the property of the given plugin is customized in the
      * current project and returns it's value if so, otherwise null
      */
     public static String getPluginProperty(MavenProject prj, String groupId, String artifactId, String property, String goal) {
@@ -117,7 +117,7 @@ public class PluginPropertyUtils {
                 NBPluginParameterExpressionEvaluator eval = new NBPluginParameterExpressionEvaluator(prj, EmbedderFactory.getProjectEmbedder().getSettings(), new Properties());
                 try {
                     Object evaluated = eval.evaluate(source.getValue().trim());
-                    return evaluated != null ? ("" + evaluated) : source.getValue().trim();
+                    return evaluated != null ? ("" + evaluated) : source.getValue().trim(); //NOI18N
                 } catch (ExpressionEvaluationException ex) {
                     Exceptions.printStackTrace(ex);
                 }
@@ -200,7 +200,7 @@ public class PluginPropertyUtils {
                 for (Xpp3Dom ch : childs) {
                     try {
                         Object evaluated = eval.evaluate(ch.getValue().trim());
-                        toRet.add(evaluated != null ? ("" + evaluated) : ch.getValue().trim());
+                        toRet.add(evaluated != null ? ("" + evaluated) : ch.getValue().trim());  //NOI18N
                     } catch (ExpressionEvaluationException ex) {
                         Exceptions.printStackTrace(ex);
                     }
