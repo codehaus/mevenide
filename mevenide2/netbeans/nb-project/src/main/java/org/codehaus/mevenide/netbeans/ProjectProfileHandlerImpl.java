@@ -36,7 +36,6 @@ import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -198,7 +197,7 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
                 }
             }
         } catch (ProjectBuildingException ex) {
-            Logger.getLogger(ProjectProfileHandlerImpl.class.getName()).log(Level.FINE, "Error reading model lineage", ex);
+            Logger.getLogger(ProjectProfileHandlerImpl.class.getName()).log(Level.FINE, "Error reading model lineage", ex);//NOI18N
         }
     }
 

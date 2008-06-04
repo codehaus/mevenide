@@ -41,13 +41,13 @@ public class FindArtifactUsages extends AbstractAction {
 
     public void actionPerformed(ActionEvent event) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("<b>");
+        buffer.append("<b>"); //NOI18N
         buffer.append(artifact.getArtifactId());
-        buffer.append("</b>");
-        buffer.append(":");
-        buffer.append("<b>");
+        buffer.append("</b>"); //NOI18N
+        buffer.append(":"); //NOI18N
+        buffer.append("<b>"); //NOI18N
         buffer.append(artifact.getVersion().toString());
-        buffer.append("</b>");
+        buffer.append("</b>"); //NOI18N
 
         UsagesUI uI = new UsagesUI(buffer.toString(), artifact);
         DialogDescriptor dd = new DialogDescriptor(uI, NbBundle.getMessage(

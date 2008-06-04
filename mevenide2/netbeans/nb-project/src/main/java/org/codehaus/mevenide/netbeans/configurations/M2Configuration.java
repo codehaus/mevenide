@@ -34,6 +34,7 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.filesystems.FileObject;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -63,7 +64,7 @@ public class M2Configuration extends AbstractMavenActionsProvider implements Pro
 
     public String getDisplayName() {
         if (DEFAULT.equals(id)) {
-            return "<default config>";
+            return NbBundle.getMessage(M2Configuration.class, "TXT_DefaultConfig");
         }
         return id;
     }

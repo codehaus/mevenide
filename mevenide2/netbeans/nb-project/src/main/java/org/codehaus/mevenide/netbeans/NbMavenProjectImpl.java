@@ -213,7 +213,7 @@ public final class NbMavenProjectImpl implements Project {
                         } else if (e instanceof ProjectBuildingException) {
                             //igonre if the problem is in the project validation codebase, we handle that later..
                             problemReporter.addReport(new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                                    "Cannot load project properly",
+                                    NbBundle.getMessage(NbMavenProjectImpl.class, "TXT_Cannot_Load_Project"),
                                     ((Exception) e).getMessage(), null));
                         } else if (e instanceof MissingModuleException) {
                             MissingModuleException exc = (MissingModuleException)e;
@@ -227,7 +227,7 @@ public final class NbMavenProjectImpl implements Project {
             } catch (RuntimeException exc) {
                 //guard against exceptions that are not processed by the embedder
                 //#136184 NumberFormatException
-                Logger.getLogger(NbMavenProjectImpl.class.getName()).log(Level.INFO, "Runtime exception thrown while loading maven project at " + getProjectDirectory(), exc);
+                Logger.getLogger(NbMavenProjectImpl.class.getName()).log(Level.INFO, "Runtime exception thrown while loading maven project at " + getProjectDirectory(), exc); //NOI18N
             } finally {
                 if (project == null) {
                     try {
@@ -379,9 +379,9 @@ public final class NbMavenProjectImpl implements Project {
 
     public URI[] getSourceRoots(boolean test) {
         List srcs = test ? getOriginalMavenProject().getTestCompileSourceRoots() : getOriginalMavenProject().getCompileSourceRoots();
-        if (!test && getProjectDirectory().getFileObject("src/main/aspect") != null) {
+        if (!test && getProjectDirectory().getFileObject("src/main/aspect") != null) { //NOI18N
             srcs = new ArrayList(srcs);
-            srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject("src/main/aspect")).getAbsolutePath());
+            srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject("src/main/aspect")).getAbsolutePath()); //NOI18N
         }
         //TODO groovy and scala stuff should probably end up in separate module's
         //ClassPathProvider
@@ -428,8 +428,8 @@ public final class NbMavenProjectImpl implements Project {
         }
         
         String[] buildHelpers = PluginPropertyUtils.getPluginPropertyList(this, 
-                "org.codehaus.mojo", 
-                "build-helper-maven-plugin", "sources", "source", "add-source"); //TODO split for sources and test sources..
+                "org.codehaus.mojo", //NOI18N
+                "build-helper-maven-plugin", "sources", "source", "add-source"); //NOI18N //TODO split for sources and test sources..
         if (buildHelpers != null && buildHelpers.length > 0) {
             File root = FileUtil.toFile(getProjectDirectory());
             for (String helper : buildHelpers) {
@@ -500,7 +500,7 @@ public final class NbMavenProjectImpl implements Project {
 
                 public boolean accept(File dir, String name) {
                     //TODO most probably a performance bottleneck of sorts..
-                    return !("java".equalsIgnoreCase(name)) && !("webapp".equalsIgnoreCase(name)) /*NOI18N*/ && VisibilityQuery.getDefault().isVisible(FileUtil.toFileObject(new File(dir, name)));
+                    return !("java".equalsIgnoreCase(name)) && !("webapp".equalsIgnoreCase(name)) /*NOI18N*/ && VisibilityQuery.getDefault().isVisible(FileUtil.toFileObject(new File(dir, name))); //NOI18N
                 }
             });
         }

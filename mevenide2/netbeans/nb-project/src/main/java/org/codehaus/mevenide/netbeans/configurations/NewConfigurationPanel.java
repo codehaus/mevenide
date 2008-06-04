@@ -49,7 +49,7 @@ public class NewConfigurationPanel extends javax.swing.JPanel {
     }
     
     public void setProfiles(List<String> profiles) {
-        String val = "";
+        String val = ""; //NOI18N
         if (profiles != null) {
             for (String prf : profiles) {
                 val = val + prf;
@@ -60,7 +60,7 @@ public class NewConfigurationPanel extends javax.swing.JPanel {
 
     public List<String> getProfiles() {
         String val = txtActivate.getText().trim();
-        String[] splitted = val.split(" ,");
+        String[] splitted = val.split(" ,"); //NOI18N
         List<String> toRet = new ArrayList<String>();
         for (String s : splitted) {
             if (s.trim().length() > 0) {

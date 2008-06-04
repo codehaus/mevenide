@@ -31,7 +31,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileChangeSupport;
 import org.codehaus.mevenide.netbeans.FileChangeSupportEvent;
 import org.codehaus.mevenide.netbeans.FileChangeSupportListener;
-import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -137,7 +136,7 @@ public final class NbMavenProject {
                         ProgressTransferListener.setAggregateHandle(hndl);
                         hndl.start();
                         MavenExecutionRequest req = new DefaultMavenExecutionRequest();
-                        req.setPom(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml")));
+                        req.setPom(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml"))); //NOI18N
                         MavenExecutionResult res = online.readProjectWithDependencies(req); //NOI18N
                         if (res.hasExceptions()) {
                             ok = false;
