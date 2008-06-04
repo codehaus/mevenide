@@ -28,7 +28,6 @@ import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.Project;
-import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.InputOutput;
@@ -153,21 +152,13 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
             Reader in = inputOutput.getIn();
             try {
                 while (true) {
-                    while (in.ready()) {
-                        int read = in.read();
-                        if (read != -1) {
-                            str.write(read);
-                        } else {
-                            str.close();
-                            return;
-                        }
-                    }
-                    if (!in.ready() && !stopIn) {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
+                    int read = in.read();
+                    if (read != -1) {
+                        str.write(read);
+                        str.flush();
+                    } else {
+                        str.close();
+                        return;
                     }
                     if (stopIn) {
                         return;
