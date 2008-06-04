@@ -403,7 +403,7 @@ public final class NbMavenProject implements Project {
         URI uri = FileUtilities.getDirURI(getProjectDirectory(), "target/generated-sources"); //NOI18N
 
         File fil = new File(uri);
-        if (fil.exists()) {
+        if (fil.exists() && fil.isDirectory()) {
             File[] fils = fil.listFiles(new FileFilter() {
 
                 public boolean accept(File pathname) {
