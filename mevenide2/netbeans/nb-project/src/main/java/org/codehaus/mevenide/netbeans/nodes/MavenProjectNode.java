@@ -179,8 +179,6 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
             
         loadLayerActions("Projects/Actions", lst); //NOI18N
         lst.add(null);
-        lst.add(SystemAction.get(ToolsAction.class));
-        lst.add(null);
         if (reporter.getReports().size() > 0) {
             lst.add(new ShowProblemsAction());
         }
