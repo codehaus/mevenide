@@ -27,6 +27,7 @@
              <module>continuum</module>
 	     <module>graph</module>
 	     <module>gsf</module>
+	     <module>profiler</module>
           </modules>
        </profile>
       
@@ -120,7 +121,6 @@
      <module>junit</module>
      <module>nb-repo-browser</module>
      <module>lifecycle-build-plan</module>
-     <!--module>webframeworks</module-->
      <!--module>graph</module-->
       <module>maven-hints</module>
       

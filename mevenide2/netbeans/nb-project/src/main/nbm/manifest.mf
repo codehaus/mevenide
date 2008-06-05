@@ -8,4 +8,4 @@ OpenIDE-Module-Public-Packages: org.codehaus.mevenide.netbeans.api.**, org.codeh
 OpenIDE-Module-Friends: org.codehaus.mevenide.netbeans.j2ee, org.codehaus.mevenide.netbeans.persistence,
  org.codehaus.mevenide.hints, org.codehaus.mevenide.repository, org.codehaus.mevenide.netbeans.feature, 
  org.codehaus.mevenide.junit, org.codehaus.mevenide.netbeans.graph, org.codehaus.mevenide.grammar,
- org.codehaus.mevenide.netbeans.apisupport, org.codehaus.mevenide.buildplan
+ org.codehaus.mevenide.netbeans.apisupport, org.codehaus.mevenide.buildplan, org.codehaus.mevenide.profiler
