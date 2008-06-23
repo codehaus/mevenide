@@ -51,7 +51,7 @@ public class ModInstall extends ModuleInstall {
                 Field frField = persistence.getClass().getSuperclass().getDeclaredField("friendNames"); //NOI18N
                 frField.setAccessible(true);
                 Set friends = (Set)frField.get(persistence);
-                friends.add("org.codehaus.mevenide.netbeans.persistence"); //NOI18N
+                friends.add("org.netbeans.modules.maven.persistence"); //NOI18N
             }
         } catch (Exception ex) {
             ex.printStackTrace();

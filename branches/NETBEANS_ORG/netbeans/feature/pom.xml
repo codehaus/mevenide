@@ -15,11 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>autoupdate</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
             <artifactId>netbeans-repository</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>

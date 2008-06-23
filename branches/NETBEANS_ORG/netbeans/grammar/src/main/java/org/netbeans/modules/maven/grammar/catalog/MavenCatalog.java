@@ -116,7 +116,7 @@ public class MavenCatalog implements CatalogReader, CatalogDescriptor, org.xml.s
      * @return icon representing current state or null
      */
     public java.awt.Image getIcon(int type) {
-        return Utilities.loadImage("org/codehaus/mevenide/netbeans/Maven2Icon.gif"); // NOI18N
+        return Utilities.loadImage("org/netbeans/modules/maven/Maven2Icon.gif"); // NOI18N
     }
     
     /**

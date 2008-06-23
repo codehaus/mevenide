@@ -45,7 +45,7 @@ public class ModInstall extends ModuleInstall {
 
      /*logger*/
     private static final Logger LOGGER = 
-            Logger.getLogger("org.codehaus.mevenide.netbeans.ModuleInstall");//NOI18N
+            Logger.getLogger("org.netbeans.modules.maven.ModuleInstall");//NOI18N
     
     /** Creates a new instance of ModInstall */
     public ModInstall() {

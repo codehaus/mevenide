@@ -353,7 +353,7 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
         @Override
         public Image getIcon(int arg0) {
-            Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/actions/usages/ArtifactBadge.png", true); //NOI18N
+            Image badge = Utilities.loadImage("org/netbeans/modules/maven/actions/usages/ArtifactBadge.png", true); //NOI18N
             return badge;
         }
 
@@ -375,7 +375,7 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
         public VertionNode(NBVersionInfo version) {
             super(Children.LEAF);
             this.version = version;
-            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.png"); //NOI18N
+            setIconBaseWithExtension("org/netbeans/modules/maven/DependencyIcon.png"); //NOI18N
         }
 
         @Override

@@ -5,24 +5,24 @@
     <folder name="Projects">
         <folder name="org-codehaus-mevenide-netbeans">
             <folder name="Lookup">
-                <file name="org-codehaus-mevenide-netbeans-j2ee-J2eeLookupProvider.instance"/>
+                <file name="org-netbeans-modules-maven-j2ee-J2eeLookupProvider.instance"/>
             </folder>  
             <folder name="Customizer">
-                <file name="org-codehaus-mevenide-webframeworks-WebFrameworksPanelProvider.instance">
+                <file name="org-netbeans-modules-maven-webframeworks-WebFrameworksPanelProvider.instance">
                     <attr name="position" intvalue="257"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-j2ee-web-WebRunPanelProvider.instance">
+                <file name="org-netbeans-modules-maven-j2ee-web-WebRunPanelProvider.instance">
                     <attr name="position" intvalue="301"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-j2ee-ejb-EjbRunPanelProvider.instance">
+                <file name="org-netbeans-modules-maven-j2ee-ejb-EjbRunPanelProvider.instance">
                     <attr name="position" intvalue="302"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-j2ee-ear-EarRunPanelProvider.instance">
+                <file name="org-netbeans-modules-maven-j2ee-ear-EarRunPanelProvider.instance">
                     <attr name="position" intvalue="303"/>
                 </file>
             </folder>
             <folder name="Nodes">
-                <file name="org-codehaus-mevenide-netbeans-j2ee-web-WebAppNodeFactory.instance">
+                <file name="org-netbeans-modules-maven-j2ee-web-WebAppNodeFactory.instance">
                     <attr name="position" intvalue="50"/>
                 </file>
             </folder>    

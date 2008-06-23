@@ -106,7 +106,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     
     /*logger*/
     private static final Logger LOGGER = 
-            Logger.getLogger("org.codehaus.mevenide.indexer.RepositoryIndexer");//NOI18N
+            Logger.getLogger("org.netbeans.modules.maven.indexer.RepositoryIndexer");//NOI18N
     
     /*custom Index creators*/
     public static final List<? extends IndexCreator> NB_INDEX = Arrays.asList(

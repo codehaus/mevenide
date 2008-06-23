@@ -249,7 +249,7 @@ public final class EmbedderFactory {
                     ComponentDescriptor desc = new ComponentDescriptor();
                     desc.setRole(TransferListener.class.getName());
                     plexusContainer.addComponentDescriptor(desc);
-                    desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener"); //NOI18N
+                    desc.setImplementation("org.netbeans.maven.embedder.exec.ProgressTransferListener"); //NOI18N
 
                     desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
                     ComponentRequirement requirement = new ComponentRequirement();

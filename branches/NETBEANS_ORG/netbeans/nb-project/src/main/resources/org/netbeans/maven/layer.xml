@@ -18,7 +18,7 @@
     <folder name="OptionsDialog">
         <folder name="Advanced">
             <file name="Maven.instance">
-                <attr name="instanceClass" stringvalue="org.codehaus.mevenide.netbeans.options.MavenAdvancedOption"/>
+                <attr name="instanceClass" stringvalue="org.netbeans.maven.options.MavenAdvancedOption"/>
             </file>
         </folder>
    </folder>
@@ -37,21 +37,21 @@
         <folder name="Project">
             <folder name="Maven2">
                 <attr name="position" intvalue="943"/>
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.newproject.Bundle"/>
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.maven.newproject.Bundle"/>
                 <file name="Archetypes">
                     <attr name="position" intvalue="100"/>
-                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.newproject.Bundle"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.maven.newproject.Bundle"/>
                     <attr name="instantiatingIterator" methodvalue="org.codehaus.mevenide.netbeans.newproject.MavenWizardIterator.createIterator"/>
-                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/newproject/MavenDescription.html"/>
-                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/Maven2Icon.gif"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/maven/newproject/MavenDescription.html"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/netbeans/maven/Maven2Icon.gif"/>
                     <attr name="template" boolvalue="true"/>
                 </file>
                 <file name="Existing">
                     <attr name="position" intvalue="200"/>
-                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.newproject.Bundle"/>
-                    <attr name="instantiatingIterator" methodvalue="org.codehaus.mevenide.netbeans.newproject.ExistingWizardIterator.createIterator"/>
-                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/newproject/ExistingDescription.html"/>
-                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/Maven2Icon.gif"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.maven.newproject.Bundle"/>
+                    <attr name="instantiatingIterator" methodvalue="org.netbeans.maven.newproject.ExistingWizardIterator.createIterator"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/maven/newproject/ExistingDescription.html"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/netbeans/maven/Maven2Icon.gif"/>
                     <attr name="template" boolvalue="true"/>
                 </file>
             </folder>
@@ -59,7 +59,7 @@
         <folder name="Licenses">
             <file name="license-apache20.txt" url="licenses/apache20-license.txt">
                 <attr name="template" boolvalue="true"/>
-                <!--attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.licenses.Bundle"/-->
+                <!--attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.maven.licenses.Bundle"/-->
                 <attr name="mavenLicenseURL" stringvalue="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
             </file>
         </folder>
@@ -67,47 +67,47 @@
     </folder>
     
     <folder name="Projects">
-        <folder name="org-codehaus-mevenide-netbeans">
+        <folder name="org-netbeans-maven">
             <folder name="Nodes">
-                <file name="org-codehaus-mevenide-netbeans-nodes-SourcesNodeFactory.instance">
+                <file name="org-netbeans-maven-nodes-SourcesNodeFactory.instance">
                     <attr name="position" intvalue="100"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance">
+                <file name="org-netbeans-maven-nodes-OtherRootNodeFactory.instance">
                     <attr name="position" intvalue="200"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-nodes-GenSourcesNodeFactory.instance">
+                <file name="org-netbeans-maven-nodes-GenSourcesNodeFactory.instance">
                     <attr name="position" intvalue="300"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance">
+                <file name="org-netbeans-maven-nodes-ModulesNodeFactory.instance">
                     <attr name="position" intvalue="400"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance">
+                <file name="org-netbeans-maven-nodes-DependenciesNodeFactory.instance">
                     <attr name="position" intvalue="500"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance">
+                <file name="org-netbeans-maven-nodes-SiteDocsNodeFactory.instance">
                     <attr name="position" intvalue="600"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-nodes-ProjectFilesNodeFactory.instance">
+                <file name="org-netbeans-maven-nodes-ProjectFilesNodeFactory.instance">
                     <attr name="position" intvalue="700"/>
                 </file>
             </folder>    
             <folder name="Lookup">
-                <file name="org-codehaus-mevenide-netbeans-runjar-J2seLookupProvider.instance"/>
+                <file name="org-netbeans-maven-runjar-J2seLookupProvider.instance"/>
             </folder>    
             <folder name="Customizer">
-                <file name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance">
+                <file name="org-netbeans-maven-customizer-BasicPanelProvider.instance">
                     <attr name="position" intvalue="100"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance">
+                <file name="org-netbeans-maven-customizer-SourcesPanelProvider.instance">
                     <attr name="position" intvalue="200"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-configurations-ConfigurationsPanelProvider.instance">
+                <file name="org-netbeans-maven-configurations-ConfigurationsPanelProvider.instance">
                     <attr name="position" intvalue="212"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance">
+                <file name="org-netbeans-maven-customizer-RunJarPanelProvider.instance">
                     <attr name="position" intvalue="300"/>
                 </file>
-                <file name="org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance">
+                <file name="org-netbeans-maven-customizer-ActionMappingsPanelProvider.instance">
                     <attr name="position" intvalue="400"/>
                 </file>
             </folder>

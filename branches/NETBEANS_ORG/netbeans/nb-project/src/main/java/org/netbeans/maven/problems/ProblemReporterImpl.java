@@ -149,7 +149,7 @@ public final class ProblemReporterImpl implements ProblemReporter, Comparator<Pr
             Collection<? extends ModuleInfo> infos = Lookup.getDefault().lookupAll(ModuleInfo.class);
             boolean foundJ2ee = false;
             for (ModuleInfo info : infos) {
-                if ("org.codehaus.mevenide.netbeans.j2ee".equals(info.getCodeNameBase()) && //NOI18N
+                if ("org.netbeans.modules.maven.j2ee".equals(info.getCodeNameBase()) && //NOI18N
                         info.isEnabled()) {
                     foundJ2ee = true;
                     break;
@@ -166,7 +166,7 @@ public final class ProblemReporterImpl implements ProblemReporter, Comparator<Pr
             Collection<? extends ModuleInfo> infos = Lookup.getDefault().lookupAll(ModuleInfo.class);
             boolean foundApisupport = false;
             for (ModuleInfo info : infos) {
-                if ("org.codehaus.mevenide.netbeans.apisupport".equals(info.getCodeNameBase()) && //NOI18N
+                if ("org.netbeans.modules.maven.apisupport".equals(info.getCodeNameBase()) && //NOI18N
                         info.isEnabled()) {
                     foundApisupport = true;
                     break;
