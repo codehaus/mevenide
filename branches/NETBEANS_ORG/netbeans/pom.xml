@@ -112,7 +112,6 @@
      <module>grammar</module>
      <module>j2ee</module>
      <module>persistence</module>
-     <module>autoupdate</module>
      <module>feature</module>
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
@@ -121,8 +120,8 @@
      <module>junit</module>
      <module>nb-repo-browser</module>
      <module>lifecycle-build-plan</module>
+     <module>maven-hints</module>
      <!--module>graph</module-->
-      <module>maven-hints</module>
       
   </modules>
     <repositories>
