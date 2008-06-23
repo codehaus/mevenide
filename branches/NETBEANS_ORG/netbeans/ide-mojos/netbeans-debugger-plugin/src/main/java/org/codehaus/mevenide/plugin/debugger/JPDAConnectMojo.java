@@ -21,7 +21,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.netbeans.modules.maven.debugger.MavenDebugger;
+import org.netbeans.modules.maven.bridges.debugger.MavenDebugger;
 import org.openide.util.Lookup;
 
 /**

@@ -20,7 +20,7 @@ package org.codehaus.mevenide.plugin.run;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.netbeans.modules.maven.runjar.MavenRunJar;
+import org.netbeans.modules.maven.bridges.runjar.MavenRunJar;
 import org.openide.util.Lookup;
 
 /**

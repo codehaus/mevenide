@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.netbeans.modules.maven.reloadnbm;
+package org.netbeans.modules.maven.bridges.reloadnbm;
 
 import java.io.File;
 import org.apache.maven.plugin.MojoExecutionException;

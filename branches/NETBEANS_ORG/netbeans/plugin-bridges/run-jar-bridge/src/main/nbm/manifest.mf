@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/netbeans/modules/maven/runjar/Bundle.properties
-OpenIDE-Module-Public-Packages: org.netbeans.modules.maven.runjar.*
+OpenIDE-Module-Localizing-Bundle: org/netbeans/modules/maven/bridges/runjar/Bundle.properties
+OpenIDE-Module-Public-Packages: org.netbeans.modules.maven.bridges.runjar.*
 AutoUpdate-Show-In-Client: false
 

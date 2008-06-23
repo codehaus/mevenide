@@ -145,10 +145,10 @@ public final class EmbedderFactory {
                 public void customize(PlexusContainer plexusContainer) {
                     try {
                         ComponentDescriptor desc = plexusContainer.getComponentDescriptor(ArtifactFactory.ROLE);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbArtifactFactory"); //NOI18N
+                        desc.setImplementation("org.netbeans.maven.embedder.NbArtifactFactory"); //NOI18N
                         
                         desc = plexusContainer.getComponentDescriptor("org.apache.maven.extension.ExtensionManager");
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbExtensionManager"); //NOI18N
+                        desc.setImplementation("org.netbeans.maven.embedder.NbExtensionManager"); //NOI18N
 
                         desc = plexusContainer.getComponentDescriptor(ResolutionListener.ROLE);
                         if (desc == null) {
@@ -156,16 +156,16 @@ public final class EmbedderFactory {
                             desc.setRole(ResolutionListener.ROLE);
                             plexusContainer.addComponentDescriptor(desc);
                         }
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.MyResolutionListener"); //NOI18N
+                        desc.setImplementation("org.netbeans.maven.embedder.MyResolutionListener"); //NOI18N
 
                         desc = plexusContainer.getComponentDescriptor(ArtifactResolver.ROLE);
                         ComponentRequirement requirement = new ComponentRequirement();
                         requirement.setRole(ResolutionListener.ROLE);
                         desc.addRequirement(requirement);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbArtifactResolver"); //NOI18N
+                        desc.setImplementation("org.netbeans.maven.embedder.NbArtifactResolver"); //NOI18N
 
                         desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbWagonManager"); //NOI18N
+                        desc.setImplementation("org.netbeans.maven.embedder.NbWagonManager"); //NOI18N
                         
                         //MEVENIDE-634 
                         desc = plexusContainer.getComponentDescriptor(KnownHostsProvider.ROLE, "file");
@@ -319,9 +319,9 @@ public final class EmbedderFactory {
 
             // from netbeans allow just Lookup and the mevenide bridges
             plexusRealm.importFrom(nbRealm.getId(), "org.openide.util");
-            plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.mevenide.bridges");
+            plexusRealm.importFrom(nbRealm.getId(), "org.netbeans.modules.maven.bridges");
             //have custom lifecycle executor to collect all projects in reactor..
-            plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.mevenide.netbeans.embedder.exec"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.netbeans.maven.embedder.exec"); //NOI18N
             //hack to enable reports, default package is EVIL!
             plexusRealm.addURL(rootPackageFolder.toURI().toURL());
         } catch (NoSuchRealmException ex) {
@@ -363,7 +363,7 @@ public final class EmbedderFactory {
             public void customize(PlexusContainer plexusContainer) {
                 //have custom lifecycle executor to collect all projects in reactor..
                 ComponentDescriptor desc = plexusContainer.getComponentDescriptor(LifecycleExecutor.ROLE);
-                desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor"); //NOI18N
+                desc.setImplementation("org.netbeans.maven.embedder.exec.MyLifecycleExecutor"); //NOI18N
                 try {
                     PlexusConfiguration oldConf = desc.getConfiguration();
                     XmlPlexusConfiguration conf = new XmlPlexusConfiguration(oldConf.getName());
@@ -374,7 +374,7 @@ public final class EmbedderFactory {
                 }
                 
                 desc = plexusContainer.getComponentDescriptor("org.apache.maven.lifecycle.plan.BuildPlanner");
-                desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.NBBuildPlanner"); //NOI18N
+                desc.setImplementation("org.netbeans.maven.embedder.exec.NBBuildPlanner"); //NOI18N
                 try {
                     PlexusConfiguration oldConf = desc.getConfiguration();
                     XmlPlexusConfiguration conf = new XmlPlexusConfiguration(oldConf.getName());
@@ -387,7 +387,7 @@ public final class EmbedderFactory {
                     desc = new ComponentDescriptor();
                     desc.setRole(TransferListener.class.getName());
                     plexusContainer.addComponentDescriptor(desc);
-                    desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener"); //NOI18N
+                    desc.setImplementation("org.netbeans.maven.embedder.exec.ProgressTransferListener"); //NOI18N
                     desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
                     ComponentRequirement requirement = new ComponentRequirement();
                     requirement.setRole(TransferListener.class.getName());

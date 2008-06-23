@@ -14,9 +14,8 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.netbeans.modules.maven.runjar;
+package org.netbeans.modules.maven.bridges.debugger;
 
-import java.io.File;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -26,14 +25,11 @@ import org.apache.maven.project.MavenProject;
  *
  * @author mkleint
  */
-public interface MavenRunJar {
+public interface MavenDebugger {
     
-    /**
-     * executes the jar project in the IDE
-     * @returns the return exit code of the project execution
-     */
-    int runJarProject(MavenProject project, Log log, String finalName,
-            File jarLocation, File workDirectory, String executable, String parameters,
-            String jvmParameters, String debugJvmParameters, boolean waitForFinish) throws MojoFailureException, MojoExecutionException;
+    void attachDebugger(MavenProject project, Log log, String name, 
+            final String transport,
+            final String host, 
+            final String address) throws MojoFailureException, MojoExecutionException;
     
 }

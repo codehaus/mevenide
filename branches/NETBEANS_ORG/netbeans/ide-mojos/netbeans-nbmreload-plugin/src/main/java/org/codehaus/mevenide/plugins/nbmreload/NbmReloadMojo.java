@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.netbeans.modules.maven.reloadnbm.MavenNBMReload;
+import org.netbeans.modules.maven.bridges.reloadnbm.MavenNBMReload;
 import org.openide.util.Lookup;
 
 

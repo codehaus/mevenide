@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.netbeans.modules.maven.deployment;
+package org.netbeans.modules.maven.bridges.deployment;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;

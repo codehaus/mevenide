@@ -24,7 +24,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.netbeans.modules.maven.runjar.MavenRunJar;
+import org.netbeans.modules.maven.bridges.runjar.MavenRunJar;
 import org.netbeans.maven.api.Constants;
 import org.netbeans.maven.api.output.OutputUtils;
 import org.netbeans.maven.classpath.BootClassPathImpl;

@@ -25,7 +25,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 import org.netbeans.core.startup.TestModuleDeployer;
-import org.netbeans.modules.maven.reloadnbm.MavenNBMReload;
+import org.netbeans.modules.maven.bridges.reloadnbm.MavenNBMReload;
 
 /**
  *
