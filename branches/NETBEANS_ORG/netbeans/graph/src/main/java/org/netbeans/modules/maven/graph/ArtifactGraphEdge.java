@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.graph;
+package org.netbeans.modules.maven.graph;
 
 /**
  *

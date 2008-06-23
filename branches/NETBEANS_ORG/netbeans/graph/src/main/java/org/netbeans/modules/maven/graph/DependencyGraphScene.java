@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.netbeans.graph;
+package org.netbeans.modules.maven.graph;
 
 import java.awt.Color;
 import java.awt.Point;

@@ -16,7 +16,7 @@
  */
 
 
-package org.codehaus.mevenide.netbeans.graph;
+package org.netbeans.modules.maven.graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.netbeans.maven.embedder.EmbedderFactory;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;

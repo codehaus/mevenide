@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.graph;
+package org.netbeans.modules.maven.graph;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
