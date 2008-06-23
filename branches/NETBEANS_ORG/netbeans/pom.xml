@@ -23,8 +23,6 @@
       <profile>
           <id>experimental</id>
           <modules>
-             <!--module>libs/continuum-rpc</module-->
-             <module>continuum</module>
 	     <module>graph</module>
 	     <module>gsf</module>
 	     <module>profiler</module>
