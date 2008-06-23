@@ -19,13 +19,11 @@ package org.netbeans.modules.maven.j2ee.ejb;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
 import org.apache.maven.profiles.Profile;
 import org.netbeans.maven.api.Constants;
 import org.netbeans.maven.api.customizer.support.ComboBoxUpdater;
 import org.netbeans.maven.api.customizer.ModelHandle;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.modules.maven.j2ee.MavenDeploymentImpl;
 import org.netbeans.modules.maven.j2ee.POHImpl;
 import org.netbeans.api.project.Project;

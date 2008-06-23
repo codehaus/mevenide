@@ -33,14 +33,14 @@ import org.netbeans.maven.execute.BeanRunConfig;
 import org.netbeans.maven.customizer.ActionMappings;
 import org.netbeans.maven.customizer.PropertySplitter;
 import org.netbeans.maven.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.StringUtils;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.netbeans.maven.NbMavenProjectImpl;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
+import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 
 /**
  *

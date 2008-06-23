@@ -32,9 +32,9 @@ import org.apache.maven.project.MavenProject;
 import org.netbeans.maven.configurations.M2Configuration;
 import org.netbeans.maven.customizer.CustomizerProviderImpl;
 import org.netbeans.maven.execute.ActionToGoalUtils;
-import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
+import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.openide.util.NbBundle;
 
 /**

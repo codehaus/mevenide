@@ -32,11 +32,11 @@ public class Installer extends ModuleInstall {
                 Field frField = persistence.getClass().getSuperclass().getDeclaredField("friendNames"); //NOI18N
                 frField.setAccessible(true);
                 Set friends = (Set)frField.get(persistence);
-                friends.add("org.codehaus.mevenide.netbeans.apisupport"); //NOI18N
+                friends.add("org.netbeans.modules.maven.apisupport"); //NOI18N
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            new IllegalStateException("Cannot fix dependencies for org.codehaus.mevenide.netbeans.apisupport. " + //NOI18N
+            new IllegalStateException("Cannot fix dependencies for org.netbeans.modules.maven.apisupport. " + //NOI18N
                     "Please log a report at http://jira.codehaus.org/browse/MEVENIDE"); //NOI18N
         }
     }

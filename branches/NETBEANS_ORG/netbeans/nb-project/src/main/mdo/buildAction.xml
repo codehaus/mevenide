@@ -5,7 +5,7 @@
     <defaults>
         <default>
             <key>package</key>
-            <value>org.codehaus.mevenide.netbeans.execute.model</value>
+            <value>org.netbeans.modules.maven.execute.model</value>
         </default>
     </defaults>
 

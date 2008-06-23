@@ -27,10 +27,10 @@ import org.netbeans.maven.configurations.M2Configuration;
 import org.netbeans.maven.customizer.CustomizerProviderImpl;
 import org.netbeans.maven.embedder.MavenSettingsSingleton;
 import org.netbeans.maven.execute.UserActionGoalProvider;
-import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
-import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
+import org.netbeans.modules.maven.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 
 /**
  * Some random utility methods to allow post creation modifications of the project model.

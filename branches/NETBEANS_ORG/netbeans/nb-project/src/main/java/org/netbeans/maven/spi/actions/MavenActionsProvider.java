@@ -18,8 +18,8 @@
 package org.netbeans.maven.spi.actions;
 
 import org.netbeans.maven.api.execute.RunConfig;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.openide.util.Lookup;
 
 /**

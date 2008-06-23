@@ -18,8 +18,8 @@
 package org.netbeans.maven.execute;
 
 import org.netbeans.maven.NbMavenProjectImpl;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.openide.filesystems.FileUtil;
 
 /**

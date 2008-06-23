@@ -27,9 +27,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
+import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.Repository;
 

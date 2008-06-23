@@ -23,7 +23,7 @@ import org.netbeans.maven.api.PluginPropertyUtils;
 import org.netbeans.maven.api.NbMavenProject;
 import org.netbeans.maven.api.execute.RunConfig;
 import org.netbeans.maven.spi.actions.AbstractMavenActionsProvider;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.SubprojectProvider;
@@ -40,7 +40,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     private AbstractMavenActionsProvider platformDelegate = new AbstractMavenActionsProvider() {
 
         protected InputStream getActionDefinitionStream() {
-            String path = "/org/codehaus/mevenide/netbeans/apisupport/platformActionMappings.xml"; //NOI18N
+            String path = "/org/netbeans/modules/maven/apisupport/platformActionMappings.xml"; //NOI18N
             InputStream in = getClass().getResourceAsStream(path);
             assert in != null : "no instream for " + path; //NOI18N
             return in;
@@ -54,7 +54,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     private AbstractMavenActionsProvider ideDelegate = new AbstractMavenActionsProvider() {
 
         protected InputStream getActionDefinitionStream() {
-            String path = "/org/codehaus/mevenide/netbeans/apisupport/ideActionMappings.xml"; //NOI18N
+            String path = "/org/netbeans/modules/maven/apisupport/ideActionMappings.xml"; //NOI18N
             InputStream in = getClass().getResourceAsStream(path);
             assert in != null : "no instream for " + path; //NOI18N
             return in;
