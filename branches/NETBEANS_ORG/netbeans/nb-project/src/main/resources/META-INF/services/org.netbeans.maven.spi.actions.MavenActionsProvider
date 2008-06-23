@@ -1,0 +1,4 @@
+org.netbeans.maven.execute.NbGlobalActionGoalProvider
+#position=121
+org.netbeans.maven.execute.DefaultActionGoalProvider
+#position=666

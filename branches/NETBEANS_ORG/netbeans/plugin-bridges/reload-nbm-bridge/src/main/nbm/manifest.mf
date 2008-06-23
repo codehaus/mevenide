@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: org/netbeans/modules/maven/reloadnbm/Bundle.properties
+OpenIDE-Module-Public-Packages: oorg.netbeans.modules.maven.reloadnbm.*
+AutoUpdate-Show-In-Client: false

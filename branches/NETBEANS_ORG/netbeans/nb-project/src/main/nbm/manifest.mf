@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: org/netbeans/maven/Bundle.properties
+OpenIDE-Module-Layer: org/netbeans/maven/layer.xml
+OpenIDE-Module-Install: org/netbeans/maven/ModInstall.class
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module-Recommends: MavenKit
+OpenIDE-Module-Public-Packages: org.netbeans.maven.api.**, org.netbeans.maven.spi.**, org.netbeans.maven.execute.model.**
+OpenIDE-Module-Friends: org.netbeans.modules.maven.j2ee, org.netbeans.modules.maven.persistence,
+ org.netbeans.modules.maven.hints, org.codehaus.mevenide.repository, org.codehaus.mevenide.netbeans.feature,
+ org.codehaus.mevenide.junit, org.netbeans.modules.maven.graph, org.netbeans.modules.maven.grammar,
+ org.netbeans.modules.maven.apisupport, org.netbeans.modules.maven.buildplan, org.netbeans.modules.maven.profiler
