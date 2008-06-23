@@ -15,11 +15,11 @@
  *  under the License.
  */
 
-package org.codehaus.mevenide.profiler;
+package org.netbeans.modules.maven.profiler;
 
 import java.io.InputStream;
-import org.codehaus.mevenide.netbeans.api.NbMavenProject;
-import org.codehaus.mevenide.netbeans.spi.actions.AbstractMavenActionsProvider;
+import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.maven.spi.actions.AbstractMavenActionsProvider;
 import org.netbeans.api.project.Project;
 import org.openide.util.Lookup;
 

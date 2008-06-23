@@ -1,6 +1,6 @@
 <nbm>
    <moduleType>eager</moduleType>
-   <codeNameBase>org.codehaus.mevenide.profiler/1</codeNameBase>
+   <codeNameBase>org.netbeans.modules.maven.profiler/1</codeNameBase>
    <cluster>mevenide</cluster>
    <manifest>src/main/nbm/manifest.mf</manifest>
    <homepageUrl>http://mevenide.codehaus.org/m2-site</homepageUrl>

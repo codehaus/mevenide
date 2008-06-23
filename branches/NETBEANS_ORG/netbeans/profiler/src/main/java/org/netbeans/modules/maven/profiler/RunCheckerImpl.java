@@ -15,10 +15,10 @@
  *  under the License.
  */
 
-package org.codehaus.mevenide.profiler;
+package org.netbeans.modules.maven.profiler;
 
-import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
-import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
+import org.netbeans.maven.api.execute.PrerequisitesChecker;
+import org.netbeans.maven.api.execute.RunConfig;
 import org.netbeans.api.project.Project;
 
 /**
