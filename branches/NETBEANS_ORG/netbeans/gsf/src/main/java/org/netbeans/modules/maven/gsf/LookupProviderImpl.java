@@ -1,12 +1,12 @@
 /*
  *  Copyright 2008 mkleint.
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +15,9 @@
  *  under the License.
  */
 
-package org.codehaus.mevenide.gsf;
+package org.netbeans.modules.maven.gsf;
 
-import org.codehaus.mevenide.netbeans.api.NbMavenProject;
+import org.netbeans.maven.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.LookupProvider;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
@@ -31,13 +31,13 @@ import org.openide.util.lookup.Lookups;
 public class LookupProviderImpl implements LookupProvider {
 
     public Lookup createAdditionalLookup(Lookup baseContext) {
-        
+
         NbMavenProject nbprj = baseContext.lookup(NbMavenProject.class);
         Project prj = baseContext.lookup(Project.class);
         assert prj != null;
         assert nbprj != null;
         //TODO add the classpathprovider
-        return Lookups.fixed(new GSFRecoTemplates(), 
+        return Lookups.fixed(new GSFRecoTemplates(),
                 new ProjectOpenedHookImpl(prj), new CPProvider(prj));
     }
 
@@ -48,7 +48,7 @@ public class LookupProviderImpl implements LookupProvider {
                 "scala-classes"
             };
         }
-        
+
     }
-            
+
 }

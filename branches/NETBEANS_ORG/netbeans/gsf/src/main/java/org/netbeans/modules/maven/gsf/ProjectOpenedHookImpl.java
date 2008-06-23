@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.codehaus.mevenide.gsf;
+package org.netbeans.modules.maven.gsf;
 
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.gsfpath.api.classpath.ClassPath;

@@ -1,12 +1,12 @@
 /*
  *  Copyright 2008 mkleint.
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.codehaus.mevenide.gsf;
+package org.netbeans.modules.maven.gsf;
 
 import java.io.File;
 import java.net.URI;
@@ -25,9 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.api.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.netbeans.maven.api.FileUtilities;
+import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.maven.api.PluginPropertyUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.gsfpath.api.classpath.ClassPath;
 import org.netbeans.modules.gsfpath.spi.classpath.ClassPathFactory;
@@ -43,16 +43,16 @@ public class CPProvider implements ClassPathProvider {
     private static final int TYPE_SRC = 0;
     private static final int TYPE_TESTSRC = 1;
     private static final int TYPE_UNKNOWN = -1;
-    
+
     private Project project;
     private ClassPath[] cache = new ClassPath[3];
     private NbMavenProject mavenProject;
-    
+
     public CPProvider(Project prj) {
         this.project = prj;
         mavenProject = prj.getLookup().lookup(NbMavenProject.class);
     }
-    
+
     public URI getScalaDirectory(boolean test) {
         //TODO hack, should be supported somehow to read this..
         String prop = PluginPropertyUtils.getPluginProperty(project, "org.scala.tools",
@@ -64,12 +64,12 @@ public class CPProvider implements ClassPathProvider {
 
         return FileUtilities.getDirURI(project.getProjectDirectory(), prop);
     }
-    
+
     public URI getGroovyDirectory(boolean test) {
         String prop = test ? "src/test/groovy" : "src/main/groovy"; //NOI18N
         return FileUtilities.getDirURI(project.getProjectDirectory(), prop);
     }
-    
+
     public URI[] getSourceRoots(boolean test) {
         List<URI> uris = new ArrayList<URI>();
         uris.add(getScalaDirectory(test));
@@ -79,7 +79,7 @@ public class CPProvider implements ClassPathProvider {
         //TODO src/main/java as well?
         return uris.toArray(new URI[0]);
     }
-    
+
     private ClassPath getSourcepath(int type) {
         ClassPath cp = cache[type];
         if (cp == null) {
@@ -92,9 +92,9 @@ public class CPProvider implements ClassPathProvider {
         }
         return cp;
     }
-    
-    
-    
+
+
+
 
     public ClassPath findClassPath(FileObject file, String type) {
         int fileType = getType(file);
@@ -114,7 +114,7 @@ public class CPProvider implements ClassPathProvider {
             return getSourcepath(fileType);
         }
     }
-    
+
     private int getType(FileObject file) {
         if (isChildOf(file, getSourceRoots(false))) {
             return TYPE_SRC;
@@ -122,9 +122,9 @@ public class CPProvider implements ClassPathProvider {
         if (isChildOf(file, getSourceRoots(true))) {
             return TYPE_TESTSRC;
         }
-        
+
 //        //MEVENIDE-613, #125603 need to check later than the actual java sources..
-//        // sometimes the root of resources is the basedir for example that screws up 
+//        // sometimes the root of resources is the basedir for example that screws up
 //        // test sources.
 //        if (isChildOf(file, project.getResources(false))) {
 //            return TYPE_SRC;
@@ -134,7 +134,7 @@ public class CPProvider implements ClassPathProvider {
 //        }
         return TYPE_UNKNOWN;
     }
-    
+
 
     ClassPath[] getProjectSourcesClassPaths(String type) {
         ClassPath[] srcs = new ClassPath[2];
@@ -151,7 +151,7 @@ public class CPProvider implements ClassPathProvider {
         }
         return false;
     }
-    
+
     public static FileObject[] convertStringsToFileObjects(List<String> strings) {
         FileObject[] fos = new FileObject[strings.size()];
         int index = 0;
