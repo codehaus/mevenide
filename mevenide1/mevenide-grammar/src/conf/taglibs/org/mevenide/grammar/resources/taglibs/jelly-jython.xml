@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!-- code completion definition for the jelly-tag library -->
-
-<taglib name="jelly:jython">
-    <tag name="script"/>
-    <!-- the rest is dynamic -->
-</taglib>

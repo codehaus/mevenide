@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/mevenide/goals/Bundle.properties
-
-
