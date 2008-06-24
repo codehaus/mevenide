@@ -64,7 +64,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
+import hidden.org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.netbeans.modules.maven.embedder.exec.MyLifecycleExecutor;
 import org.netbeans.modules.maven.embedder.exec.NBBuildPlanner;
 import org.netbeans.modules.maven.embedder.exec.ProgressTransferListener;

@@ -28,7 +28,7 @@ import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.profiles.io.jdom.ProfilesJDOMWriter;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.io.jdom.SettingsJDOMWriter;
-import org.codehaus.plexus.util.IOUtil;
+import hidden.org.codehaus.plexus.util.IOUtil;
 import org.jdom.DefaultJDOMFactory;
 import org.jdom.Document;
 import org.jdom.JDOMException;
