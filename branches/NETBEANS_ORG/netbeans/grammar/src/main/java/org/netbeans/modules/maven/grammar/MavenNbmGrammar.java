@@ -42,7 +42,7 @@ public class MavenNbmGrammar extends AbstractSchemaBasedGrammar {
     }
     
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/nbm-1.0.0.xsd"); //NOI18N
+        return getClass().getResourceAsStream("/org/netbeans/modules/maven/grammar/nbm-1.0.0.xsd"); //NOI18N
     }
     
 

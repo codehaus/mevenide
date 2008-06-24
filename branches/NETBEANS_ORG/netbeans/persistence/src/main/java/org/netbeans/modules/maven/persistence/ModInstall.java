@@ -55,7 +55,7 @@ public class ModInstall extends ModuleInstall {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            new IllegalStateException("Cannot fix dependencies for org.codehaus.mevenide.netbeans.persistence. " + //NOI18N
+            new IllegalStateException("Cannot fix dependencies for org.netbeans.modules.maven.persistence. " + //NOI18N
                     "Please log a report at http://jira.codehaus.org/browse/MEVENIDE"); //NOI18N
         }
     }

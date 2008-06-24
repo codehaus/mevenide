@@ -19,8 +19,8 @@ package org.netbeans.modules.maven.apisupport;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.maven.api.archetype.Archetype;
-import org.netbeans.maven.api.archetype.ArchetypeProvider;
+import org.netbeans.modules.maven.api.archetype.Archetype;
+import org.netbeans.modules.maven.api.archetype.ArchetypeProvider;
 import org.openide.util.NbBundle;
 
 /**

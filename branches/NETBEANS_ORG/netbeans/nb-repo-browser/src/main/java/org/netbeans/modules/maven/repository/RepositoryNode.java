@@ -23,9 +23,9 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
-import org.netbeans.maven.indexer.api.RepositoryIndexer;
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryPreferences;
+import org.netbeans.modules.maven.indexer.api.RepositoryIndexer;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
 import org.netbeans.modules.maven.repository.register.RepositoryRegisterUI;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -57,9 +57,9 @@ public class RepositoryNode extends AbstractNode {
     @Override
     public Image getIcon(int arg0) {
         if (info.isRemoteDownloadable()) {
-            return Utilities.loadImage("org/codehaus/mevenide/repository/remoterepo.png", true); //NOI18N
+            return Utilities.loadImage("org/netbeans/modules/maven/repository/remoterepo.png", true); //NOI18N
         }
-        return Utilities.loadImage("org/codehaus/mevenide/repository/localrepo.png", true); //NOI18N
+        return Utilities.loadImage("org/netbeans/modules/maven/repository/localrepo.png", true); //NOI18N
     }
 
     @Override

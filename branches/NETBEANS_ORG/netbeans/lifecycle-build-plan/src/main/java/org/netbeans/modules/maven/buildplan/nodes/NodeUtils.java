@@ -42,7 +42,7 @@ public class NodeUtils {
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/wait.gif");
+                return Utilities.loadImage("org/netbeans/modules/maven/buildplan/nodes/wait.gif");
             }
         };
         nd.setName("Loading"); //NOI18N

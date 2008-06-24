@@ -42,7 +42,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.StringTokenizer;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.web.api.webmodule.WebModule;

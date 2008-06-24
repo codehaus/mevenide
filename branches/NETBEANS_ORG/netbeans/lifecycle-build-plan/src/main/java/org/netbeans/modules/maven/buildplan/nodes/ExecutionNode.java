@@ -41,7 +41,7 @@ public class ExecutionNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/executionId.png");
+        return Utilities.loadImage("org/netbeans/modules/maven/buildplan/nodes/executionId.png");
     }
 
     @Override

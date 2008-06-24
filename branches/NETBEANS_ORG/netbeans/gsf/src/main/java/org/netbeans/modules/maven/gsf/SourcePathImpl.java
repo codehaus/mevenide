@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.gsfpath.spi.classpath.ClassPathImplementation;
 import org.netbeans.modules.gsfpath.spi.classpath.PathResourceImplementation;
 import org.netbeans.modules.gsfpath.spi.classpath.support.ClassPathSupport;

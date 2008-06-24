@@ -20,7 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import org.netbeans.maven.api.FileUtilities;
+import org.netbeans.modules.maven.api.FileUtilities;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
 import org.openide.filesystems.FileObject;

@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
 import org.apache.maven.artifact.Artifact;
-import org.netbeans.maven.api.ModelUtils;
+import org.netbeans.modules.maven.api.ModelUtils;
 import org.netbeans.modules.maven.repository.dependency.ui.AddDependencyUI;
 import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;

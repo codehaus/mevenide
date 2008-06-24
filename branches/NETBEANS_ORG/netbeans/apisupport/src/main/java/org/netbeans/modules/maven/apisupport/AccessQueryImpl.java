@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.codehaus.plexus.util.IOUtil;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.queries.AccessibilityQueryImplementation;
@@ -56,7 +56,7 @@ public class AccessQueryImpl implements AccessibilityQueryImplementation {
      * @return
      */
     public Boolean isPubliclyAccessible(FileObject pkg) {
-        FileObject srcdir = org.netbeans.maven.api.FileUtilities.convertStringToFileObject(mavenProject.getMavenProject().getBuild().getSourceDirectory());
+        FileObject srcdir = org.netbeans.modules.maven.api.FileUtilities.convertStringToFileObject(mavenProject.getMavenProject().getBuild().getSourceDirectory());
         if (srcdir != null) {
             String path = FileUtil.getRelativePath(srcdir, pkg);
             if (path != null) {

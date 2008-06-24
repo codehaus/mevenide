@@ -31,7 +31,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
-import org.netbeans.maven.api.customizer.ModelHandle;
+import org.netbeans.modules.maven.api.customizer.ModelHandle;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.web.api.webmodule.ExtenderController;
 import org.netbeans.modules.web.spi.webmodule.WebModuleExtender;

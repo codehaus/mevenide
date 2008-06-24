@@ -18,8 +18,8 @@
 package org.netbeans.modules.maven.profiler;
 
 import java.io.InputStream;
-import org.netbeans.maven.api.NbMavenProject;
-import org.netbeans.maven.spi.actions.AbstractMavenActionsProvider;
+import org.netbeans.modules.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.spi.actions.AbstractMavenActionsProvider;
 import org.netbeans.api.project.Project;
 import org.openide.util.Lookup;
 
@@ -45,7 +45,7 @@ public class ProfilerActionsProvider extends AbstractMavenActionsProvider {
 
     @Override
     protected InputStream getActionDefinitionStream() {
-            String path = "/org/codehaus/mevenide/profiler/ActionMappings.xml"; //NOI18N
+            String path = "/org/netbeans/modules/maven/profiler/ActionMappings.xml"; //NOI18N
             InputStream in = getClass().getResourceAsStream(path);
             assert in != null : "no instream for " + path; //NOI18N
             return in;

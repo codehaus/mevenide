@@ -17,7 +17,7 @@
 
 package org.netbeans.modules.maven.gsf;
 
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.LookupProvider;
 import org.netbeans.spi.project.ui.RecommendedTemplates;

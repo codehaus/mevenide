@@ -39,10 +39,10 @@ public class MavenCatalog implements CatalogReader, CatalogDescriptor, org.xml.s
     private static final String ASSEMBLY_1_0_0 = "http://maven.apache.org/xsd/assembly-1.0.0.xsd"; // NOI18N
     private static final String ID_ASSEMBLY_1_0_0 = "SCHEMA:" + ASSEMBLY_1_0_0; // NOI18N
             
-    private static final String URL_POM_4_0_0 ="nbres:/org/codehaus/mevenide/grammar/maven-4.0.0.xsd"; // NOI18N
-    private static final String URL_SETTINGS_1_0_0 ="nbres:/org/codehaus/mevenide/grammar/settings-1.0.0.xsd"; // NOI18N
-    private static final String URL_PROFILES_1_0_0 ="nbres:/org/codehaus/mevenide/grammar/profiles-1.0.0.xsd"; // NOI18N
-    private static final String URL_ASSEMBLY_1_0_0 ="nbres:/org/codehaus/mevenide/grammar/assembly-1.0.0.xsd"; // NOI18N
+    private static final String URL_POM_4_0_0 ="nbres:/org/netbeans/modules/maven/grammar/maven-4.0.0.xsd"; // NOI18N
+    private static final String URL_SETTINGS_1_0_0 ="nbres:/org/netbeans/modules/maven/grammar/settings-1.0.0.xsd"; // NOI18N
+    private static final String URL_PROFILES_1_0_0 ="nbres:/org/netbeans/modules/maven/grammar/profiles-1.0.0.xsd"; // NOI18N
+    private static final String URL_ASSEMBLY_1_0_0 ="nbres:/org/netbeans/modules/maven/grammar/assembly-1.0.0.xsd"; // NOI18N
     
     /** Creates a new instance of MavenCatalog */
     public MavenCatalog() {

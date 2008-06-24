@@ -29,7 +29,7 @@ import org.apache.maven.lifecycle.model.Phase;
 import org.apache.maven.lifecycle.plan.BuildPlan;
 import org.apache.maven.project.MavenProject;
 import org.netbeans.modules.maven.buildplan.nodes.MojoNode;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.openide.filesystems.FileObject;

@@ -19,8 +19,8 @@ package org.netbeans.modules.maven.apisupport;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.netbeans.maven.api.output.OutputProcessor;
-import org.netbeans.maven.api.output.OutputProcessorFactory;
+import org.netbeans.modules.maven.api.output.OutputProcessor;
+import org.netbeans.modules.maven.api.output.OutputProcessorFactory;
 import org.netbeans.api.project.Project;
 
 /**

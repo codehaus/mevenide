@@ -48,7 +48,7 @@ public class MojoNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/mojo.png");
+        return Utilities.loadImage("org/netbeans/modules/maven/buildplan/nodes/mojo.png");
     }
 
     @Override

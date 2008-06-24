@@ -18,7 +18,7 @@ package org.netbeans.modules.maven.buildplan;
 
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
-import org.netbeans.maven.spi.lifecycle.MavenBuildPlanSupport;
+import org.netbeans.modules.maven.spi.lifecycle.MavenBuildPlanSupport;
 
 /**
  *

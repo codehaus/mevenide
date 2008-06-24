@@ -17,8 +17,8 @@
 
 package org.netbeans.modules.maven.j2ee;
 
-import org.netbeans.maven.api.execute.RunConfig;
-import org.netbeans.maven.api.execute.PrerequisitesChecker;
+import org.netbeans.modules.maven.api.execute.RunConfig;
+import org.netbeans.modules.maven.api.execute.PrerequisitesChecker;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;

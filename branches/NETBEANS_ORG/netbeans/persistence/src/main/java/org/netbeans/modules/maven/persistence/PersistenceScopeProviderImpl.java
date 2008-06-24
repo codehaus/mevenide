@@ -16,7 +16,7 @@
  */
 package org.netbeans.modules.maven.persistence;
 
-import org.netbeans.maven.api.classpath.ProjectSourcesClassPathProvider;
+import org.netbeans.modules.maven.api.classpath.ProjectSourcesClassPathProvider;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScope;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;

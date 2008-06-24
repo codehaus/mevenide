@@ -24,10 +24,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.netbeans.modules.maven.grammar.AbstractSchemaBasedGrammar.MyTextElement;
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryPreferences;
-import org.netbeans.maven.indexer.api.RepositoryQueries;
-import org.netbeans.maven.indexer.api.RepositoryUtil;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
+import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
+import org.netbeans.modules.maven.indexer.api.RepositoryUtil;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
@@ -58,7 +58,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
     }
 
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/settings-1.0.0.xsd"); //NOI18N
+        return getClass().getResourceAsStream("/org/netbeans/modules/maven/grammar/settings-1.0.0.xsd"); //NOI18N
     }
 
     @Override

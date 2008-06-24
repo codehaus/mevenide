@@ -28,13 +28,13 @@ import java.util.Set;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.apache.maven.artifact.Artifact;
-import org.netbeans.maven.indexer.api.NBVersionInfo;
-import org.netbeans.maven.indexer.api.QueryField;
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryPreferences;
-import org.netbeans.maven.indexer.api.RepositoryQueries;
-import org.netbeans.maven.indexer.api.RepositoryUtil;
-import org.netbeans.maven.api.CommonArtifactActions;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.QueryField;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
+import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
+import org.netbeans.modules.maven.indexer.api.RepositoryUtil;
+import org.netbeans.modules.maven.api.CommonArtifactActions;
 import org.netbeans.modules.maven.repository.dependency.AddAsDependencyAction;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -158,7 +158,7 @@ private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/repository/empty.png");
+                return Utilities.loadImage("org/netbeans/modules/maven/repository/empty.png");
             }
 
             @Override
@@ -234,7 +234,7 @@ private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
         @Override
         public Image getIcon(int arg0) {
-            Image badge = Utilities.loadImage("org/codehaus/mevenide/repository/ArtifactBadge.png", true); //NOI18N
+            Image badge = Utilities.loadImage("org/netbeans/modules/maven/repository/ArtifactBadge.png", true); //NOI18N
 
             return badge;
         }
@@ -266,7 +266,7 @@ private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             setName(versionInfo.getVersion());
             setDisplayName(versionInfo.getVersion() + " [ " + versionInfo.getType() + (versionInfo.getClassifier() != null ? ("," + versionInfo.getClassifier()) : "") + " ] " + " - " + versionInfo.getRepoId());
 
-            setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
+            setIconBaseWithExtension("org/netbeans/modules/maven/repository/DependencyJar.gif"); //NOI18N
 
         }
 
@@ -307,12 +307,12 @@ private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             java.awt.Image retValue = super.getIcon(param);
             if (hasJavadoc) {
                 retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/codehaus/mevenide/repository/DependencyJavadocIncluded.png"),//NOI18N
+                        Utilities.loadImage("org/netbeans/modules/maven/repository/DependencyJavadocIncluded.png"),//NOI18N
                         12, 12);
             }
             if (hasSources) {
                 retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/codehaus/mevenide/repository/DependencySrcIncluded.png"),//NOI18N
+                        Utilities.loadImage("org/netbeans/modules/maven/repository/DependencySrcIncluded.png"),//NOI18N
                         12, 8);
             }
             return retValue;

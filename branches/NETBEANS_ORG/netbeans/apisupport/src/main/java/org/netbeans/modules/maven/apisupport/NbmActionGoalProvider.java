@@ -18,11 +18,11 @@ package org.netbeans.modules.maven.apisupport;
 
 import java.io.File;
 import java.io.InputStream;
-import org.netbeans.maven.spi.actions.MavenActionsProvider;
-import org.netbeans.maven.api.PluginPropertyUtils;
-import org.netbeans.maven.api.NbMavenProject;
-import org.netbeans.maven.api.execute.RunConfig;
-import org.netbeans.maven.spi.actions.AbstractMavenActionsProvider;
+import org.netbeans.modules.maven.spi.actions.MavenActionsProvider;
+import org.netbeans.modules.maven.api.PluginPropertyUtils;
+import org.netbeans.modules.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.execute.RunConfig;
+import org.netbeans.modules.maven.spi.actions.AbstractMavenActionsProvider;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;

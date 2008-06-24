@@ -29,7 +29,7 @@ import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
-import org.netbeans.maven.embedder.EmbedderFactory;
+import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;

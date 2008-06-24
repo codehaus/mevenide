@@ -18,8 +18,8 @@
 package org.netbeans.modules.maven.j2ee.web;
 
 import java.util.ArrayList;
-import org.netbeans.maven.api.Constants;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.Constants;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.j2ee.J2eeMavenSourcesImpl;
 import org.netbeans.modules.maven.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;

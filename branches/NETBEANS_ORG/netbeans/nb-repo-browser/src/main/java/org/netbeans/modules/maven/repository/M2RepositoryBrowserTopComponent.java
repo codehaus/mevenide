@@ -25,10 +25,10 @@ import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultEditorKit;
-import org.netbeans.maven.indexer.api.QueryField;
-import org.netbeans.maven.indexer.api.RepositoryIndexer;
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryPreferences;
+import org.netbeans.modules.maven.indexer.api.QueryField;
+import org.netbeans.modules.maven.indexer.api.RepositoryIndexer;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
 import org.netbeans.modules.maven.repository.register.RepositoryRegisterUI;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -53,7 +53,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
 
     private static M2RepositoryBrowserTopComponent instance;
     /** path to the icon used by the component and its open action */
-    static final String ICON_PATH = "org/codehaus/mevenide/repository/MavenRepoBrowser.png"; //NOI18N
+    static final String ICON_PATH = "org/netbeans/modules/maven/repository/MavenRepoBrowser.png"; //NOI18N
     private static final String PREFERRED_ID = "M2RepositoryBrowserTopComponent"; //NOI18N
     private BeanTreeView btv;
     private ExplorerManager manager;
@@ -73,9 +73,9 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         map.put("delete", ExplorerUtils.actionDelete(manager, true));
         associateLookup(ExplorerUtils.createLookup(manager, map));
         pnlBrowse.add(btv, BorderLayout.CENTER);
-        btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/refreshRepo.png"))); //NOI18N
-        btnAddRepo.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/AddRepo.png"))); //NOI18N
-        btnFind.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/FindInRepo.png"))); //NOI18N
+        btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/modules/maven/repository/refreshRepo.png"))); //NOI18N
+        btnAddRepo.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/modules/maven/repository/AddRepo.png"))); //NOI18N
+        btnFind.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/modules/maven/repository/FindInRepo.png"))); //NOI18N
         btnIndex.setText(null);
         btnAddRepo.setText(null);
         btnFind.setText(null);

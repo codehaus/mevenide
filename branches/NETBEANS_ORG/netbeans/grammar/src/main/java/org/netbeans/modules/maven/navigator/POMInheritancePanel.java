@@ -31,7 +31,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.build.model.ModelLineage;
 import org.apache.maven.project.build.model.ModelLineageIterator;
-import org.netbeans.maven.embedder.EmbedderFactory;
+import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.openide.actions.EditAction;
 import org.openide.cookies.EditCookie;
 import org.openide.explorer.ExplorerManager;
@@ -179,7 +179,7 @@ public class POMInheritancePanel extends javax.swing.JPanel implements ExplorerM
     
     private static class WaitNode extends AbstractNode {
         
-        private Image waitIcon = Utilities.loadImage("org/codehaus/mevenide/navigator/wait.gif"); // NOI18N
+        private Image waitIcon = Utilities.loadImage("org/netbeans/modules/maven/navigator/wait.gif"); // NOI18N
         
         WaitNode( ) {
             super( Children.LEAF );
@@ -243,7 +243,7 @@ public class POMInheritancePanel extends javax.swing.JPanel implements ExplorerM
     
     private static class POMNode extends AbstractNode {
         
-        private Image icon = Utilities.loadImage("org/codehaus/mevenide/navigator/Maven2Icon.gif"); // NOI18N
+        private Image icon = Utilities.loadImage("org/netbeans/modules/maven/navigator/Maven2Icon.gif"); // NOI18N
         private boolean readonly = false;
         private POMNode(File key, Model mdl, Lookup lkp) {
             super( Children.LEAF, lkp);

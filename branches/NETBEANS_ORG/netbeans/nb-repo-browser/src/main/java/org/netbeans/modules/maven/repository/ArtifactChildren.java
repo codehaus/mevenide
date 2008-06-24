@@ -18,10 +18,10 @@ package org.netbeans.modules.maven.repository;
 
 import java.util.Collections;
 
-import org.netbeans.maven.indexer.api.NBVersionInfo;
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryQueries;
-import org.netbeans.maven.indexer.api.RepositoryUtil;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
+import org.netbeans.modules.maven.indexer.api.RepositoryUtil;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.RequestProcessor;

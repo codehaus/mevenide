@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryQueries;
-import org.netbeans.maven.indexer.api.RepositoryUtil;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
+import org.netbeans.modules.maven.indexer.api.RepositoryUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -45,7 +45,7 @@ public class GroupListChildren extends Children.Keys {
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/repository/wait.gif");
+                return Utilities.loadImage("org/netbeans/modules/maven/repository/wait.gif");
             }
          
         };

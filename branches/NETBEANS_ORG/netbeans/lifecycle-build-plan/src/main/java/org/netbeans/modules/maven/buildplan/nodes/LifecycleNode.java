@@ -31,8 +31,8 @@ import org.apache.maven.project.MavenProject;
 import org.netbeans.modules.maven.buildplan.BuildPlanGroup;
 import org.netbeans.modules.maven.buildplan.BuildPlanUtil;
 import org.netbeans.modules.maven.buildplan.BuildPlanView;
-import org.netbeans.maven.embedder.exec.NBBuildPlanner;
-import org.netbeans.maven.embedder.exec.ProgressTransferListener;
+import org.netbeans.modules.maven.embedder.exec.NBBuildPlanner;
+import org.netbeans.modules.maven.embedder.exec.ProgressTransferListener;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
@@ -63,7 +63,7 @@ public class LifecycleNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/lifecycle.png");
+        return Utilities.loadImage("org/netbeans/modules/maven/buildplan/nodes/lifecycle.png");
     }
 
     @Override

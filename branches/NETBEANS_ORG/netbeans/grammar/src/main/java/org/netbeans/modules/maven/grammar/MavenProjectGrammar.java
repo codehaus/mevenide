@@ -39,11 +39,11 @@ import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.netbeans.maven.indexer.api.NBVersionInfo;
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryPreferences;
-import org.netbeans.maven.indexer.api.RepositoryQueries;
-import org.netbeans.maven.embedder.EmbedderFactory;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
+import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
+import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jdom.Document;
@@ -78,7 +78,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     }
     
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/maven-4.0.0.xsd"); //NOI18N
+        return getClass().getResourceAsStream("/org/netbeans/modules/maven/grammar/maven-4.0.0.xsd"); //NOI18N
     }
     
     @Override

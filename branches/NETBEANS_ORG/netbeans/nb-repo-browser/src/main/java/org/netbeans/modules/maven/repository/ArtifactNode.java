@@ -18,10 +18,10 @@ package org.netbeans.modules.maven.repository;
 
 import java.awt.Image;
 
-import org.netbeans.maven.indexer.api.NBArtifactInfo;
-import org.netbeans.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.NBArtifactInfo;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
 
-import org.netbeans.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -66,7 +66,7 @@ public class ArtifactNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-        Image badge = Utilities.loadImage("org/codehaus/mevenide/repository/ArtifactBadge.png", true); //NOI18N
+        Image badge = Utilities.loadImage("org/netbeans/modules/maven/repository/ArtifactBadge.png", true); //NOI18N
         return badge;
     }
 

@@ -3,8 +3,8 @@ package org.netbeans.modules.maven.apisupport;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Set;
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryPreferences;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
 import org.openide.modules.ModuleInstall;
 
 /**

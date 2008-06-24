@@ -63,7 +63,7 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/buildplangoals.png");
+                return Utilities.loadImage("org/netbeans/modules/maven/buildplan/nodes/buildplangoals.png");
             }
 
             @Override

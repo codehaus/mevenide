@@ -2,9 +2,9 @@ package org.netbeans.modules.maven.grammar;
 
 import java.io.File;
 import java.net.URI;
-import org.netbeans.maven.api.FileUtilities;
-import org.netbeans.maven.api.PluginPropertyUtils;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.FileUtilities;
+import org.netbeans.modules.maven.api.PluginPropertyUtils;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;

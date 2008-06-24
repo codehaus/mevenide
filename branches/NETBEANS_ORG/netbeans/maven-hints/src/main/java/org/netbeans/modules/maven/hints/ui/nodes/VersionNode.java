@@ -18,7 +18,7 @@ package org.netbeans.modules.maven.hints.ui.nodes;
 
 import javax.swing.Action;
 
-import org.netbeans.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Utilities;
@@ -51,7 +51,7 @@ public class VersionNode extends AbstractNode {
                     
                     );
         
-        setIconBaseWithExtension("org/codehaus/mevenide/hints/DependencyJar.gif"); //NOI18N
+        setIconBaseWithExtension("org/netbeans/modules/maven/hints/DependencyJar.gif"); //NOI18N
     }
 
     @Override
@@ -65,12 +65,12 @@ public class VersionNode extends AbstractNode {
         java.awt.Image retValue = super.getIcon(param);
         if (hasJavadoc) {
             retValue = Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/codehaus/mevenide/hints/DependencyJavadocIncluded.png"),//NOI18N
+                    Utilities.loadImage("org/netbeans/modules/maven/hints/DependencyJavadocIncluded.png"),//NOI18N
                     12, 12);
         }
         if (hasSources) {
             retValue = Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/codehaus/mevenide/hints/DependencySrcIncluded.png"),//NOI18N
+                    Utilities.loadImage("org/netbeans/modules/maven/hints/DependencySrcIncluded.png"),//NOI18N
                     12, 8);
         }
         return retValue;

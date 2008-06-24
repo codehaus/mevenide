@@ -19,10 +19,10 @@ package org.netbeans.modules.maven.repository;
 import javax.swing.Action;
 import org.apache.maven.artifact.Artifact;
 
-import org.netbeans.maven.indexer.api.NBVersionInfo;
-import org.netbeans.maven.indexer.api.RepositoryInfo;
-import org.netbeans.maven.indexer.api.RepositoryUtil;
-import org.netbeans.maven.api.CommonArtifactActions;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryUtil;
+import org.netbeans.modules.maven.api.CommonArtifactActions;
 import org.netbeans.modules.maven.repository.dependency.AddAsDependencyAction;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -75,7 +75,7 @@ public class VersionNode extends AbstractNode {
         } else {
             setName(versionInfo.getGroupId() + ":" + versionInfo.getArtifactId() + ":" + versionInfo.getVersion()); //NOI18N
         }
-        setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
+        setIconBaseWithExtension("org/netbeans/modules/maven/repository/DependencyJar.gif"); //NOI18N
     }
 
     @Override
@@ -114,12 +114,12 @@ public class VersionNode extends AbstractNode {
         java.awt.Image retValue = super.getIcon(param);
         if (hasJavadoc) {
             retValue = Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/codehaus/mevenide/repository/DependencyJavadocIncluded.png"),//NOI18N
+                    Utilities.loadImage("org/netbeans/modules/maven/repository/DependencyJavadocIncluded.png"),//NOI18N
                     12, 12);
         }
         if (hasSources) {
             retValue = Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/codehaus/mevenide/repository/DependencySrcIncluded.png"),//NOI18N
+                    Utilities.loadImage("org/netbeans/modules/maven/repository/DependencySrcIncluded.png"),//NOI18N
                     12, 8);
         }
         return retValue;

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.netbeans.maven.api.ProjectProfileHandler;
+import org.netbeans.modules.maven.api.ProjectProfileHandler;
 import org.jdom.Element;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -41,7 +41,7 @@ public class MavenProfilesGrammar extends AbstractSchemaBasedGrammar {
     }
     
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/profiles-1.0.0.xsd"); //NOI18N
+        return getClass().getResourceAsStream("/org/netbeans/modules/maven/grammar/profiles-1.0.0.xsd"); //NOI18N
     }
     
 

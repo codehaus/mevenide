@@ -16,8 +16,8 @@
  */
 package org.netbeans.modules.maven.j2ee.ejb;
 
-import org.netbeans.maven.api.Constants;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.Constants;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;

@@ -19,8 +19,8 @@ package org.netbeans.modules.maven.j2ee;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import org.netbeans.maven.api.NbMavenProject;
-import org.netbeans.maven.spi.actions.AbstractMavenActionsProvider;
+import org.netbeans.modules.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.spi.actions.AbstractMavenActionsProvider;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -46,7 +46,7 @@ public class J2eeActionsProvider extends AbstractMavenActionsProvider {
     
     
     public InputStream getActionDefinitionStream() {
-        String path = "/org/codehaus/mevenide/netbeans/j2ee/webActionMappings.xml"; //NOI18N
+        String path = "/org/netbeans/modules/maven/j2ee/webActionMappings.xml"; //NOI18N
         InputStream in = getClass().getResourceAsStream(path);
         assert in != null : "no instream for " + path;  //NOI18N
         return in;

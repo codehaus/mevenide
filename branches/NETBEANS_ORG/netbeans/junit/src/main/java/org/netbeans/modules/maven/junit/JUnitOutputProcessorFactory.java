@@ -20,9 +20,9 @@ package org.netbeans.modules.maven.junit;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.netbeans.maven.api.execute.RunConfig;
-import org.netbeans.maven.api.output.ContextOutputProcessorFactory;
-import org.netbeans.maven.api.output.OutputProcessor;
+import org.netbeans.modules.maven.api.execute.RunConfig;
+import org.netbeans.modules.maven.api.output.ContextOutputProcessorFactory;
+import org.netbeans.modules.maven.api.output.OutputProcessor;
 import org.netbeans.api.project.Project;
 
 /**

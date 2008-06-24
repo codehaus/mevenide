@@ -17,8 +17,8 @@
 
 package org.netbeans.modules.maven.profiler;
 
-import org.netbeans.maven.api.execute.PrerequisitesChecker;
-import org.netbeans.maven.api.execute.RunConfig;
+import org.netbeans.modules.maven.api.execute.PrerequisitesChecker;
+import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.api.project.Project;
 
 /**

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.Icon;
 import org.apache.maven.project.MavenProject;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.jdom.Document;
 import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;

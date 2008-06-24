@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import javax.swing.event.ChangeListener;
-import org.netbeans.maven.spi.nodes.NodeUtils;
+import org.netbeans.modules.maven.spi.nodes.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.apisupport.project.spi.NbModuleProvider;
 import org.netbeans.modules.apisupport.project.spi.NodeFactoryUtils;
@@ -122,7 +122,7 @@ public class ImportantFilesNodeFactory implements NodeFactory {
         }
         
         private Image getIcon(boolean opened) {
-            Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/apisupport/config-badge.gif", true); //NOI18N
+            Image badge = Utilities.loadImage("org/netbeans/modules/maven/apisupport/config-badge.gif", true); //NOI18N
             return Utilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
         }
         

@@ -42,7 +42,7 @@ public class PhaseNode extends AbstractNode{
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/phase.png");
+        return Utilities.loadImage("org/netbeans/modules/maven/buildplan/nodes/phase.png");
     }
 
     @Override

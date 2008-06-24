@@ -16,7 +16,7 @@
  */
 package org.netbeans.modules.maven.persistence;
 
-import org.netbeans.maven.api.classpath.ProjectSourcesClassPathProvider;
+import org.netbeans.modules.maven.api.classpath.ProjectSourcesClassPathProvider;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.j2ee.persistence.api.metadata.orm.EntityMappingsMetadata;

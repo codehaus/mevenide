@@ -19,7 +19,7 @@ package org.netbeans.modules.maven.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.maven.indexer.api.QueryField;
+import org.netbeans.modules.maven.indexer.api.QueryField;
 
 /**
  *

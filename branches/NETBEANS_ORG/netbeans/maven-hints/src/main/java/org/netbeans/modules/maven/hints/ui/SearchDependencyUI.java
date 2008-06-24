@@ -34,9 +34,9 @@ import javax.swing.event.DocumentListener;
 import org.apache.maven.model.Dependency;
 import org.netbeans.modules.maven.hints.ui.nodes.ArtifactNode;
 import org.netbeans.modules.maven.hints.ui.nodes.VersionNode;
-import org.netbeans.maven.indexer.api.NBVersionInfo;
-import org.netbeans.maven.indexer.api.RepositoryQueries;
-import org.netbeans.maven.api.NbMavenProject;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -295,7 +295,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/hints/wait.gif");
+                return Utilities.loadImage("org/netbeans/modules/maven/hints/wait.gif");
             }
 
             @Override
@@ -314,7 +314,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/hints/empty.png");
+                return Utilities.loadImage("org/netbeans/modules/maven/hints/empty.png");
             }
 
             @Override
