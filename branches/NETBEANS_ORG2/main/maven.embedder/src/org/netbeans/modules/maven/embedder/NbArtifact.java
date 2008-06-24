@@ -36,7 +36,7 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.artifact.versioning.VersionRange;
-import org.codehaus.plexus.util.IOUtil;
+import hidden.org.codehaus.plexus.util.IOUtil;
 
 /**
  *
