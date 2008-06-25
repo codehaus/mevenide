@@ -40,7 +40,6 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
             <class-path-extension>
                 <runtime-relative-path>ext/nexus-indexer-1.0-beta-4-SNAPSHOT-shaded.jar</runtime-relative-path>
                 <binary-origin>external/nexus-indexer-1.0-beta-4-SNAPSHOT-shaded.jar</binary-origin>
@@ -49,6 +48,10 @@
                 <runtime-relative-path>ext/lucene-core-2.3.1.jar</runtime-relative-path>
                 <binary-origin>external/lucene-core-2.3.1.jar</binary-origin>
             </class-path-extension>
+            <public-packages>
+                <package>org.netbeans.modules.maven.indexer.api</package>
+                <package>org.netbeans.modules.maven.indexer.spi</package>
+            </public-packages>
         </data>
     </configuration>
 </project>
