@@ -17,11 +17,11 @@
 
 package org.netbeans.modules.maven.configurations;
 
+import hidden.org.codehaus.plexus.util.StringUtils;
 import java.util.List;
 import org.netbeans.modules.maven.M2AuxilaryConfigImpl;
 import org.netbeans.modules.maven.NbMavenProjectImpl;
 import org.netbeans.modules.maven.api.ProjectProfileHandler;
-import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.xml.XMLUtil;

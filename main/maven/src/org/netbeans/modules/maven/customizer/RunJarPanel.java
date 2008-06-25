@@ -17,6 +17,7 @@
 
 package org.netbeans.modules.maven.customizer;
 
+import hidden.org.codehaus.plexus.util.IOUtil;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.util.MissingResourceException;
@@ -55,7 +56,6 @@ import org.netbeans.modules.maven.NbMavenProjectImpl;
 import org.netbeans.modules.maven.api.Constants;
 import org.netbeans.modules.maven.execute.ActionToGoalUtils;
 import org.netbeans.modules.maven.options.MavenVersionSettings;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
