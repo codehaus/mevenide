@@ -33,7 +33,6 @@ import org.netbeans.modules.maven.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
-import org.netbeans.modules.projectapi.TimedWeakReference;
 import org.netbeans.spi.project.SubprojectProvider;
 import org.openide.filesystems.FileAttributeEvent;
 import org.openide.filesystems.FileChangeListener;
@@ -64,8 +63,8 @@ public class ExecutionPrecacheManager implements PropertyChangeListener, ChangeL
     
     private static ExecutionPrecacheManager instance;
     
-    private final Map<Project, TimedWeakReference<HashMap<String, MavenJavaExecutor>>> cache = 
-            new WeakHashMap<Project, TimedWeakReference<HashMap<String, MavenJavaExecutor>>>();
+//    private final Map<Project, TimedWeakReference<HashMap<String, MavenJavaExecutor>>> cache =
+//            new WeakHashMap<Project, TimedWeakReference<HashMap<String, MavenJavaExecutor>>>();
     
     public static ExecutionPrecacheManager getInstance() {
         if (instance == null) {
