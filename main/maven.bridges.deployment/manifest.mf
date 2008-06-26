@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
 OpenIDE-Module: org.netbeans.modules.maven.bridges.deployment/1
 OpenIDE-Module-Localizing-Bundle: org/netbeans/modules/maven/bridges/deployment/Bundle.properties
-OpenIDE-Module-Public-Packages: org.netbeans.modules.maven.bridges.deployment.*
 AutoUpdate-Show-In-Client: false
 OpenIDE-Module-Specification-Version: 1.0
 
