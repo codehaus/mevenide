@@ -32,7 +32,7 @@ import org.netbeans.modules.maven.api.PluginPropertyUtils;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.j2ee.ear.model.ApplicationMetadataModelImpl;
 import org.netbeans.modules.maven.spi.debug.AdditionalDebuggedProjects;
-import org.codehaus.plexus.util.StringInputStream;
+import hidden.org.codehaus.plexus.util.StringInputStream;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.api.ejbjar.Car;

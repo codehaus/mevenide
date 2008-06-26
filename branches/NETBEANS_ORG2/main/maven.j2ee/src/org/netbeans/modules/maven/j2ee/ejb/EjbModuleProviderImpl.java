@@ -180,11 +180,6 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     }
     
     @Override
-    public boolean useDefaultServer() {
-        return serverInstanceID == null;
-    }
-    
-    @Override
     public FileObject[] getSourceRoots() {
 //        System.out.println("EjbMP: getsourceroots");
 

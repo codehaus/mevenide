@@ -215,10 +215,6 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         return MavenDeploymentImpl.DEV_NULL;
     }
     
-    @Override
-    public boolean useDefaultServer() {
-        return serverInstanceID == null;
-    }
     
     @Override
     public FileObject[] getSourceRoots() {
