@@ -151,13 +151,6 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
 
     }
     
-    /** If the module wants to specify a target server instance for deployment
-     * it needs to override this method to return false.
-     */
-    @Override
-    public boolean useDefaultServer() {
-        return serverInstanceID == null;
-    }
     
     /** Id of server isntance for deployment. The default implementation returns
      * the default server instance selected in Server Registry.
