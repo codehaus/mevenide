@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import hidden.org.codehaus.plexus.util.IOUtil;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
@@ -61,7 +63,7 @@ public class ModInstall extends ModuleInstall {
                 in = new FileInputStream(zipFile);
                 FileUtil.extractJar(fo, in);
             } catch (IOException exc) {
-                
+                Logger.getLogger(ModInstall.class.getName()).log(Level.FINE, "Cannot extract zip into " + expandedPath, exc); //NOI18N
             } finally {
                 IOUtil.close(in);
             }
