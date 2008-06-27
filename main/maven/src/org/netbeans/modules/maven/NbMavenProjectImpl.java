@@ -78,6 +78,7 @@ import org.openide.filesystems.*;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.Lookup.Template;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
@@ -89,6 +90,7 @@ import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ProxyLookup;
 
 /**
  * the ultimate source for all maven project like. Most code in mevenide takes this
@@ -150,6 +152,7 @@ public final class NbMavenProjectImpl implements Project {
         fileObject = projectFO;
         folderFileObject = folder;
         projectInfo = new Info();
+        lookup = new LazyLookup(projectInfo);
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
@@ -508,12 +511,31 @@ public final class NbMavenProjectImpl implements Project {
     }
 
 
-    public synchronized Lookup getLookup() {
-        if (lookup == null) {
-            lookup = createBasicLookup();
-            lookup = LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-netbeans-modules-maven/Lookup"); //NOI18N
-        }
+    public Lookup getLookup() {
         return lookup;
+    }
+
+    // in 6.5 the ProjectInformation icon is used in project open dialog.
+    // however we don't want this call to initiate the comple lookup of the project
+    //as that's time consuming and suboptimal to do for all projects in the filechooser.
+    private class LazyLookup extends ProxyLookup {
+        private Lookup lookup;
+        boolean initialized = false;
+        LazyLookup(ProjectInformation info) {
+            setLookups(Lookups.fixed(info));
+        }
+
+        @Override
+        protected synchronized void beforeLookup(Template<?> template) {
+            if (!initialized && !ProjectInformation.class.equals(template.getType())) {
+                initialized = true;
+                lookup = createBasicLookup();
+                setLookups(lookup);
+                setLookups(lookup, LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-netbeans-modules-maven/Lookup")); //NOI18N
+            }
+            super.beforeLookup(template);
+        }
+
     }
 
     private Lookup createBasicLookup() {
