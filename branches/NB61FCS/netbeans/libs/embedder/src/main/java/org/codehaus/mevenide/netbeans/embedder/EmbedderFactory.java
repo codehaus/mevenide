@@ -300,7 +300,10 @@ public final class EmbedderFactory {
         // kind of separation layer between the netbeans classloading world and maven classworld.
         try {
             ClassRealm nbRealm = world.newRealm("netbeans", loader);
-            ClassRealm plexusRealm = world.newRealm("plexus.core");
+            //MEVENIDE-647
+            ClassRealm plexusRealm = world.newRealm("plexus.core", loader.getParent()); //NOI18N
+            //loader.getParent() contains rt.jar+tools.jar (what's what we want) but also openide.modules, openide.util and startup (that's what we don't want but probably can live with)
+
             // these are all packages that are from the embedder jar..
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.doxia");
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.plexus");
