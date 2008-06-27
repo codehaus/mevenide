@@ -531,7 +531,7 @@ public final class NbMavenProjectImpl implements Project {
                 initialized = true;
                 lookup = createBasicLookup();
                 setLookups(lookup);
-                setLookups(lookup, LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-netbeans-modules-maven/Lookup")); //NOI18N
+                setLookups(LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-netbeans-modules-maven/Lookup")); //NOI18N
             }
             super.beforeLookup(template);
         }
