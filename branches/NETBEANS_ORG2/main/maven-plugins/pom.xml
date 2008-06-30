@@ -11,7 +11,7 @@
     <url>http://maven.netbeans.org</url>
     <issueManagement>
         <system>issuezilla</system>
-        <url>http://jira.codehaus.org/browse/MEVENIDE</url>
+        <url>http://www.netbeans.org/issues/enter_bug.cgi?component=maven</url>
     </issueManagement>
     <developers>
         <developer>
@@ -45,30 +45,20 @@
             <name>netbeans.org Repository</name>
             <url>scpexe://deadlock.netbeans.org:222/home/mkleint/rsync-central</url>
         </repository>
-        <snapshotRepository>
-            <id>snapshots-upload</id>
-            <name>netbeans.org Development Repository</name>
-            <url>scpexe://deadlock.netbeans.org:222/home/mkleint/rsync-central</url>
-        </snapshotRepository>
-        <site>
-            <id>site-upload</id>
-            <name>Netbeans Website</name>
-            <url>dav:https://dav.codehaus.org/mevenide/m2-site/</url>
-        </site>
     </distributionManagement>
     
     <repositories>
         <repository>
             <id>netbeans</id>
             <name>repository hosting netbeans.org api artifacts</name>
-            <url>http://deadlock.netbeans.org/maven-central-rsync</url>
+            <url>http://deadlock.netbeans.org/maven-rsync-central</url>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>netbeans</id>
             <name>repository hosting netbeans.org api artifacts</name>
-            <url>http://deadlock.netbeans.org/maven-central-rsync</url>
+            <url>http://deadlock.netbeans.org/maven-rsync-central</url>
         </pluginRepository>
     </pluginRepositories>
     <modules>
