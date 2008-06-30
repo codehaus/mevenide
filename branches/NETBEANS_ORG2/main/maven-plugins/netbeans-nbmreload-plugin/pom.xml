@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-maven-bridges-nbmreload</artifactId>
+            <artifactId>org-netbeans-modules-maven-bridges-reloadnbm</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
