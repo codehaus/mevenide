@@ -30,7 +30,20 @@ public interface MavenRunJar {
     
     /**
      * executes the jar project in the IDE
-     * @returns the return exit code of the project execution
+     * @param project
+     * @param log
+     * @param finalName
+     * @param jarLocation
+     * @param workDirectory 
+     * @param executable 
+     * @param parameters 
+     * @param jvmParameters
+     * @param debugJvmParameters 
+     * @param waitForFinish 
+     * @param waitForFinish 
+     * @return the return exit code of the project execution
+     * @throws MojoFailureException
+     * @throws MojoExecutionException
      */
     int runJarProject(MavenProject project, Log log, String finalName,
             File jarLocation, File workDirectory, String executable, String parameters,
