@@ -92,7 +92,10 @@ public class ActionProviderImpl implements ActionProvider {
         COMMAND_RENAME,
         COMMAND_MOVE,
         COMMAND_COPY,
-        "nbmreload" //TODO make actionproviders mergeble //NOI18N
+        "nbmreload", //TODO make actionproviders mergeble //NOI18N
+        "profile",
+        "profile.file",
+        "profile.test"
 
     };
 
