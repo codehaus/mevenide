@@ -165,8 +165,7 @@ public class ActionMappings extends javax.swing.JPanel {
         btnSetup.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnSetup.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //TODO when #109538 gets fixed.
-                OptionsDisplayer.getDefault().open(); //NOI18N - the id is the name of instance in layers.
+                OptionsDisplayer.getDefault().open(OptionsDisplayer.ADVANCED + "/Maven"); //NOI18N - the id is the name of instance in layers.
             }
             
         });
@@ -430,7 +429,7 @@ public class ActionMappings extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     
 private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-    NotifyDescriptor.InputLine nd = new NotifyDescriptor.InputLine(org.openide.util.NbBundle.getMessage(ActionMappings.class, "TIT_Add_action"), org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_AddAction"));
+    NotifyDescriptor.InputLine nd = new NotifyDescriptor.InputLine(org.openide.util.NbBundle.getMessage(ActionMappings.class, "TIT_Add_action"), org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_AddAction"));//GEN-HEADEREND:event_btnAddActionPerformed
     Object ret = DialogDisplayer.getDefault().notify(nd);
     if (ret == NotifyDescriptor.OK_OPTION) {
         NetbeansActionMapping nam = new NetbeansActionMapping();
@@ -449,7 +448,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        Object obj = lstMappings.getSelectedValue();
+        Object obj = lstMappings.getSelectedValue();//GEN-HEADEREND:event_btnRemoveActionPerformed
         if (obj == null) {
             return;
         }
@@ -486,7 +485,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }//GEN-LAST:event_btnRemoveActionPerformed
     
     private void lstMappingsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstMappingsValueChanged
-        Object obj = lstMappings.getSelectedValue();
+        Object obj = lstMappings.getSelectedValue();//GEN-HEADEREND:event_lstMappingsValueChanged
         if (obj == null) {
             clearFields();
         } else {
