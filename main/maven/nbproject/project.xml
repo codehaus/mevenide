@@ -280,7 +280,19 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages>
+            <friend-packages>
+                <friend>org.netbeans.modules.maven.apisupport</friend>
+                <friend>org.netbeans.modules.maven.buildplan</friend>
+                <friend>org.netbeans.modules.maven.grammar</friend>
+                <friend>org.netbeans.modules.maven.graph</friend>
+                <friend>org.netbeans.modules.maven.gsf</friend>
+                <friend>org.netbeans.modules.maven.hints</friend>
+                <friend>org.netbeans.modules.maven.j2ee</friend>
+                <friend>org.netbeans.modules.maven.junit</friend>
+                <friend>org.netbeans.modules.maven.kit</friend>
+                <friend>org.netbeans.modules.maven.persistence</friend>
+                <friend>org.netbeans.modules.maven.profiler</friend>
+                <friend>org.netbeans.modules.maven.repository</friend>
                 <package>org.netbeans.modules.maven.api</package>
                 <package>org.netbeans.modules.maven.api.archetype</package>
                 <package>org.netbeans.modules.maven.api.classpath</package>
@@ -298,7 +310,7 @@
                 <package>org.netbeans.modules.maven.spi.grammar</package>
                 <package>org.netbeans.modules.maven.spi.lifecycle</package>
                 <package>org.netbeans.modules.maven.spi.nodes</package>
-            </public-packages>
+            </friend-packages>
         </data>
     </configuration>
 </project>
