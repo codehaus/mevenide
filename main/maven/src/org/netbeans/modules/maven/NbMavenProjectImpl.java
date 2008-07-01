@@ -84,6 +84,7 @@ import org.openide.util.lookup.Lookups;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.modules.maven.operations.OperationsImpl;
 import org.netbeans.modules.maven.api.problem.ProblemReport;
+import org.netbeans.modules.maven.execute.BackwardCompatibilityWithMevenideChecker;
 import org.netbeans.modules.maven.queries.MavenBinaryForSourceQueryImpl;
 import org.netbeans.modules.maven.queries.MavenFileEncodingQueryImpl;
 import org.netbeans.spi.project.support.LookupProviderSupport;
@@ -573,7 +574,8 @@ public final class NbMavenProjectImpl implements Project {
                     UILookupMergerSupport.createRecommendedTemplatesMerger(),
                     LookupProviderSupport.createSourcesMerger(),
                     new CPExtenderLookupMerger(extender),
-                    new CPModifierLookupMerger(extender)
+                    new CPModifierLookupMerger(extender),
+                    new BackwardCompatibilityWithMevenideChecker()
                 });
         return staticLookup;
     }

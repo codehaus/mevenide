@@ -36,11 +36,13 @@ public interface RunConfig {
 
     /**
      * project that is being used for execution, can be null.
-     */ 
+     * @return 
+     */
     Project getProject();
     /**
      * goals to be executed.
-     */ 
+     * @return a list of goals to run
+     */
     List<String> getGoals();
 
     String getExecutionName();
