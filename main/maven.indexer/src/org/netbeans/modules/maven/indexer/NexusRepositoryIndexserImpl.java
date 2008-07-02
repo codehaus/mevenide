@@ -66,6 +66,7 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.Mutex;
@@ -119,6 +120,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
      */
     static final Mutex MUTEX = new Mutex();
     private Lookup lookup;
+
+    //#138102
+    public static String createLocalRepositoryPath(FileObject fo) {
+        return EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir();
+    }
 
     public NexusRepositoryIndexserImpl() {
         //to prevent MaxClauseCount exception (will investigate better way)

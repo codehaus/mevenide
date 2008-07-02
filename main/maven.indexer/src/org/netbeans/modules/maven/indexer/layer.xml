@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+    <folder name="Projects">
+        <folder name="org-netbeans-modules-maven">
+            <folder name="Repositories">
+                <file name="local.instance">
+                    <attr name="position" intvalue="50"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.modules.maven.indexer.Bundle"/>
+                    <attr name="provider" stringvalue="nexus"/>
+                    <attr name="path" methodvalue="org.netbeans.modules.maven.indexer.NexusRepositoryIndexserImpl.createLocalRepositoryPath"/>
+                    <attr name="instanceOf" stringvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo" />
+                    <attr name="instanceCreate" methodvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo.createRepositoryInfo" />                
+                </file>
+                <file name="central.instance">
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.modules.maven.indexer.Bundle"/>
+                    <attr name="position" intvalue="100"/>
+                    <attr name="provider" stringvalue="nexus"/>
+                    <attr name="repoUrl" stringvalue="http://repo1.maven.org/maven2"/>
+                    <attr name="repoIndexUrl" stringvalue="http://repo1.maven.org/maven2/.index"/>
+                    <attr name="instanceOf" stringvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo" />
+                    <attr name="instanceCreate" methodvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo.createRepositoryInfo" />
+                </file>
+                <file name="java.net2.instance">
+                    <attr name="position" intvalue="150"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.modules.maven.indexer.Bundle"/>
+                    <attr name="provider" stringvalue="nexus"/>
+                    <attr name="repoUrl" stringvalue="http://download.java.net/maven/2/"/>
+                    <attr name="repoIndexUrl" stringvalue="http://download.java.net/maven/2/.index/"/>
+                    <attr name="instanceOf" stringvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo" />
+                    <attr name="instanceCreate" methodvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo.createRepositoryInfo" />
+                </file>
+            </folder>    
+        </folder>
+    </folder>
+ 
+</filesystem>

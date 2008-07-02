@@ -16,12 +16,14 @@
  */
 package org.netbeans.modules.maven.indexer.api;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.prefs.BackingStoreException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import org.netbeans.modules.maven.embedder.EmbedderFactory;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
@@ -31,9 +33,6 @@ import org.openide.util.NbPreferences;
  */
 public final class RepositoryPreferences {
 
-    private static final RepositoryInfo LOCAL;
-    private static final RepositoryInfo CENTRAL;
-    private static final RepositoryInfo JAVANET;
     private static RepositoryPreferences instance;
     /**
      * index of local repository
@@ -44,23 +43,10 @@ public final class RepositoryPreferences {
     public static final String TYPE_NEXUS = "nexus"; //NOI18N
     
 
-    static {
-        LOCAL = new RepositoryInfo(LOCAL_REPO_ID, TYPE_NEXUS, "Local Repository",
-                EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(), null, null);//NOI18N
-        CENTRAL = new RepositoryInfo("central", TYPE_NEXUS, "Central  Repository", null,
-                "http://repo1.maven.org/maven2", //NOI18N
-                "http://repo1.maven.org/maven2/.index/");//NOI18N
-        JAVANET = new RepositoryInfo("java.net2", TYPE_NEXUS, "Java.net Repository", null,
-                "http://download.java.net/maven/2/",//NOI18N
-                "http://download.java.net/maven/2/.index/");//NOI18N
-    }
-    private static final String KEY_ID = "repository.id";//NOI18N
-    private static final String KEY_TYPE = "repository.type";//NOI18N
-    private static final String KEY_NAME = "repository.name";//NOI18N
-    private static final String KEY_PATH = "repository.path";//NOI18N
-    private static final String KEY_INDEX_URL = "repository.index.url";//NOI18N
-    private static final String KEY_REPO_URL = "repository.repo.url";//NOI18N
-    private static final String KEY_REMOVED = "repository.removed"; //NOI18N
+    static final String KEY_TYPE = "provider";//NOI18N
+    static final String KEY_PATH = "path";//NOI18N
+    static final String KEY_INDEX_URL = "repoIndexUrl";//NOI18N
+    static final String KEY_REPO_URL = "repoUrl";//NOI18N
     /*index settings */
     public static final String PROP_INDEX_FREQ = "indexUpdateFrequency"; //NOI18N
     public static final String PROP_LAST_INDEX_UPDATE = "lastIndexUpdate"; //NOI18N
@@ -77,20 +63,24 @@ public final class RepositoryPreferences {
         return NbPreferences.root().node("org/netbeans/modules/maven/nexus/indexing"); //NOI18N
     }
 
+    //#138102
+    private FileObject getSystemFsRoot() {
+        return org.openide.filesystems.Repository.getDefault().getDefaultFileSystem().findResource("Projects/org-netbeans-modules-maven/Repositories"); //NOI18N
+    }
+
     public synchronized static RepositoryPreferences getInstance() {
         if (instance == null) {
             instance = new RepositoryPreferences();
-            //not very nice but need the repos to be inserted when not present
-            // and to to overwrite potencial edits.
-            // still not clear how to allow people to delete central or netbeans
-            instance.addDefaultRepositoryInfo(LOCAL);
-            instance.addDefaultRepositoryInfo(CENTRAL);
-            instance.addDefaultRepositoryInfo(JAVANET);
         }
         return instance;
     }
 
     public RepositoryInfo getRepositoryInfoById(String id) {
+        assert getSystemFsRoot() != null;
+        FileObject fo = getSystemFsRoot().getFileObject(id);
+        if (fo != null) {
+            return RepositoryInfo.createRepositoryInfo(fo);
+        }
         for (RepositoryInfo ri : getRepositoryInfos()) {
             if (ri.getId().equals(id)) {
                 return ri;
@@ -101,24 +91,9 @@ public final class RepositoryPreferences {
 
     public List<RepositoryInfo> getRepositoryInfos() {
         List<RepositoryInfo> toRet = new ArrayList<RepositoryInfo>();
-        Preferences pref = getPreferences();
-        try {
-            String[] keys = pref.keys();
-            for (String key : keys) {
-                if (!key.startsWith(KEY_ID)) {
-                    continue;
-                }
-                String id = pref.get(key, null);
-                String name = pref.get(KEY_NAME + "." + id, null);
-                String type = pref.get(KEY_TYPE + "." + id, null);
-                String path = pref.get(KEY_PATH + "." + id, null);
-                String repourl = pref.get(KEY_REPO_URL + "." + id, null);
-                String indexurl = pref.get(KEY_INDEX_URL + "." + id, null);
-                RepositoryInfo info = new RepositoryInfo(id, type, name, path, repourl, indexurl);
-                toRet.add(info);
-            }
-        } catch (BackingStoreException ex) {
-            Exceptions.printStackTrace(ex);
+        for (FileObject fo : getSystemFsRoot().getChildren()) {
+            RepositoryInfo ri = RepositoryInfo.createRepositoryInfo(fo);
+            toRet.add(ri);
         }
         return toRet;
     }
@@ -128,61 +103,31 @@ public final class RepositoryPreferences {
      * @param info
      */
     public synchronized void addOrModifyRepositoryInfo(RepositoryInfo info) {
-        Preferences pref = getPreferences();
-        pref.put(KEY_ID + "." + info.getId(), info.getId());
-        pref.put(KEY_TYPE + "." + info.getId(), info.getType());
-        pref.put(KEY_NAME + "." + info.getId(), info.getName());
-        if (info.getRepositoryPath() != null) {
-            pref.put(KEY_PATH + "." + info.getId(), info.getRepositoryPath());
-        } else {
-            pref.remove(KEY_PATH + "." + info.getId());
+        try {
+            FileObject fo = getSystemFsRoot().getFileObject(info.getId());
+            if (fo == null) {
+                fo = getSystemFsRoot().createData(info.getId());
+            }
+            fo.setAttribute(KEY_TYPE, info.getType());
+            fo.setAttribute(KEY_PATH, info.getRepositoryPath());
+            fo.setAttribute(KEY_REPO_URL, info.getRepositoryUrl());
+            fo.setAttribute(KEY_INDEX_URL, info.getIndexUpdateUrl());
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
-        if (info.getRepositoryUrl() != null) {
-            pref.put(KEY_REPO_URL + "." + info.getId(), info.getRepositoryUrl());
-        } else {
-            pref.remove(KEY_REPO_URL + "." + info.getId());
-        }
-        if (info.getIndexUpdateUrl() != null) {
-            pref.put(KEY_INDEX_URL + "." + info.getId(), info.getIndexUpdateUrl());
-        } else {
-            pref.remove(KEY_INDEX_URL + "." + info.getId());
-        }
-        pref.remove(KEY_REMOVED + "." + info.getId());
-        //todo fire repository added
     }
     
-    /**
-     * To be used from modules adding default instances of repositories.
-     * Such repository will only be really added if not present yet and not removed by user.
-     * @param info
-     */
-    public synchronized void addDefaultRepositoryInfo(RepositoryInfo info) {
-        Preferences pref = getPreferences();
-        if (pref.getBoolean(KEY_REMOVED + "." + info.getId(), false)) {
-            //user removed the setting.
-            return;
-        }
-        if (getRepositoryInfoById(info.getId()) != null) {
-            //user possibly changed the setting..
-            return;
-        }
-        addOrModifyRepositoryInfo(info);
-    }
     
     public void removeRepositoryInfo(RepositoryInfo info) {
-        if (getRepositoryInfoById(info.getId()) != null) {
-            Preferences pref = getPreferences();
-            pref.remove(KEY_ID + "." + info.getId());
-            pref.remove(KEY_TYPE + "." + info.getId());
-            pref.remove(KEY_NAME + "." + info.getId());
-            pref.remove(KEY_PATH + "." + info.getId());
-            pref.remove(KEY_REPO_URL + "." + info.getId());
-            pref.remove(KEY_INDEX_URL + "." + info.getId());
-            pref.putBoolean(KEY_REMOVED + "." + info.getId(), true);
+        FileObject fo = getSystemFsRoot().getFileObject(info.getId());
+        if (fo != null) {
+            try {
+                fo.delete();
+            } catch (IOException x) {
+                Logger.getLogger(RepositoryPreferences.class.getName()).log(Level.FINE, "Cannot delete repository in system filesystem", x); //NOI18N
+            }
         }
     }
-
-    
 
     public void setIndexUpdateFrequency(int fr) {
         getPreferences().putInt(PROP_INDEX_FREQ, fr);
@@ -193,11 +138,11 @@ public final class RepositoryPreferences {
     }
 
     public Date getLastIndexUpdate(String repoId) {
-        return new Date(getPreferences().getLong(PROP_LAST_INDEX_UPDATE+"."+repoId, 0));
+        return new Date(getPreferences().getLong(PROP_LAST_INDEX_UPDATE + "."+repoId, 0));
     }
 
     public void setLastIndexUpdate(String repoId,Date date) {
-        getPreferences().putLong(PROP_LAST_INDEX_UPDATE+"."+repoId, date.getTime());
+        getPreferences().putLong(PROP_LAST_INDEX_UPDATE + "." + repoId, date.getTime());
     }
 
     public boolean isIncludeSnapshots() {

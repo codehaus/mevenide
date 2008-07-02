@@ -4,3 +4,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module-Public-Packages: org.netbeans.modules.maven.indexer.api.*, org.netbeans.modules.maven.indexer.spi.*
 OpenIDE-Module-Specification-Version: 1.0
 OpenIDE-Module: org.netbeans.modules.maven.indexer/1
+OpenIDE-Module-Layer: org/netbeans/modules/maven/indexer/layer.xml
+
