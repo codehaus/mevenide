@@ -9,7 +9,7 @@
     <folder name="Menu">
         <folder name="Window">
             <file name="M2RepositoryBrowserAction.shadow">
-                <attr name="originalFile" stringvalue="Actions/Window/org-org-netbeans-modules-maven-repository-M2RepositoryBrowserAction.instance"/>
+                <attr name="originalFile" stringvalue="Actions/Window/org-netbeans-modules-maven-repository-M2RepositoryBrowserAction.instance"/>
                 <attr name="position" intvalue="1105"/>
             </file>
         </folder>
