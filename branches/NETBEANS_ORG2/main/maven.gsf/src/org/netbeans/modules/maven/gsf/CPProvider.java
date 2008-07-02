@@ -19,6 +19,8 @@ package org.netbeans.modules.maven.gsf;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -30,10 +32,12 @@ import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.PluginPropertyUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.gsfpath.api.classpath.ClassPath;
+import org.netbeans.modules.gsf.LanguageRegistry;
 import org.netbeans.modules.gsfpath.spi.classpath.ClassPathFactory;
 import org.netbeans.modules.gsfpath.spi.classpath.ClassPathProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -77,6 +81,18 @@ public class CPProvider implements ClassPathProvider {
         uris.addAll(Arrays.asList(mavenProject.getResources(test)));
         uris.add(mavenProject.getWebAppDirectory());
         //TODO src/main/java as well?
+
+        // Additional libraries - such as the JavaScript ones
+        // copied from php project, otherwise jaascript completion doesn't work.
+        // introduces an implementation dependency on gsf support
+        for (URL url : LanguageRegistry.getInstance().getLibraryUrls()) {
+            try {
+                uris.add(url.toURI());
+            } catch (URISyntaxException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
         return uris.toArray(new URI[0]);
     }
 
