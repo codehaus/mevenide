@@ -55,40 +55,37 @@ public class ModInstall extends ModuleInstall {
     public void restored() {
         super.restored();
 
-
         projectsListener = new OpenProjectsListener();
         OpenProjects.getDefault().addPropertyChangeListener(projectsListener);
-        int freq = RepositoryPreferences.getInstance().getIndexUpdateFrequency();
-        List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
-        for (final RepositoryInfo ri : ris) {
-            //check this repo can be index
-            if (!ri.isRemoteDownloadable() && !ri.isLocal()) {
-                continue;
-            }
-            if (freq != RepositoryPreferences.FREQ_NEVER) {
-                boolean run = false;
-                if (freq == RepositoryPreferences.FREQ_STARTUP) {
-                    LOGGER.finer("Index At Startup :"+ri.getId());//NOI18N
-                    run = true;
-                } else if (freq == RepositoryPreferences.FREQ_ONCE_DAY && checkDiff(ri.getId(),86400000L)) {
-                    LOGGER.finer("Index Once a Day :"+ri.getId());//NOI18N
-                    run = true;
-                } else if (freq == RepositoryPreferences.FREQ_ONCE_WEEK && checkDiff(ri.getId(),604800000L)) {
-                    LOGGER.finer("Index once a Week :"+ri.getId());//NOI18N
-                    run = true;
-                }
-                if (run) {
-                    RequestProcessor.getDefault().post(new Runnable() {
-
-                        public void run() {
-                            if (ri.getIndexUpdateUrl() != null) {
-                                RepositoryIndexer.indexRepo(ri);
-                            }
+        final int freq = RepositoryPreferences.getInstance().getIndexUpdateFrequency();
+        //#138102
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
+                for (final RepositoryInfo ri : ris) {
+                    //check this repo can be indexed
+                    if (!ri.isRemoteDownloadable() && !ri.isLocal()) {
+                        continue;
+                    }
+                    if (freq != RepositoryPreferences.FREQ_NEVER) {
+                        boolean run = false;
+                        if (freq == RepositoryPreferences.FREQ_STARTUP) {
+                            LOGGER.finer("Index At Startup :"+ri.getId());//NOI18N
+                            run = true;
+                        } else if (freq == RepositoryPreferences.FREQ_ONCE_DAY && checkDiff(ri.getId(),86400000L)) {
+                            LOGGER.finer("Index Once a Day :"+ri.getId());//NOI18N
+                            run = true;
+                        } else if (freq == RepositoryPreferences.FREQ_ONCE_WEEK && checkDiff(ri.getId(),604800000L)) {
+                            LOGGER.finer("Index once a Week :"+ri.getId());//NOI18N
+                            run = true;
                         }
-                    }, MILIS_IN_MIN * 2);
+                        if (run  && ri.getIndexUpdateUrl() != null) {
+                            RepositoryIndexer.indexRepo(ri);
+                        }
+                    }
                 }
             }
-        }
+        }, MILIS_IN_MIN * 2);
     }
 
     private boolean checkDiff(String repoid,long amount) {

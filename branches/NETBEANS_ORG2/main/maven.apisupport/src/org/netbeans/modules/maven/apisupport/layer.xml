@@ -4,6 +4,17 @@
 <filesystem>
     <folder name="Projects">
         <folder name="org-netbeans-modules-maven">
+            <folder name="Repositories">
+                <file name="netbeans.instance">
+                    <attr name="position" intvalue="250"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.modules.maven.apisupport.Bundle"/>
+                    <attr name="provider" stringvalue="nexus"/>
+                    <attr name="repoUrl" stringvalue="http://deadlock.netbeans.org/maven2/"/>
+                    <attr name="repoIndexUrl" stringvalue="http://deadlock.netbeans.org/maven2/.index/netbeans/"/>
+                    <attr name="instanceOf" stringvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo" />
+                    <attr name="instanceCreate" methodvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo.createRepositoryInfo"/>>
+                </file>
+            </folder>
             <folder name="Lookup">
                 <file name="org-netbeans-modules-maven-apisupport-MavenApisupportLookupProvider.instance"/>
             </folder>
