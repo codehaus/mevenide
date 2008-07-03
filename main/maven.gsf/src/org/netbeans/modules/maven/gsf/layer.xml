@@ -6,6 +6,11 @@
             <folder name="Lookup">
                 <file name="org-netbeans-modules-maven-gsf-LookupProviderImpl.instance"/>
             </folder>
+            <folder name="Nodes">
+                <file name="org-netbeans-modules-maven-gsf-SourcesNodeFactory.instance">
+                    <attr name="position" intvalue="139"/>
+                </file>
+            </folder>
         </folder>
     </folder>
 

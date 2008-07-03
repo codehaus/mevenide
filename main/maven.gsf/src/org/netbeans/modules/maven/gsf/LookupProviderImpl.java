@@ -36,9 +36,12 @@ public class LookupProviderImpl implements LookupProvider {
         Project prj = baseContext.lookup(Project.class);
         assert prj != null;
         assert nbprj != null;
+        CPProvider cpp = new CPProvider(prj);
         //TODO add the classpathprovider
         return Lookups.fixed(new GSFRecoTemplates(),
-                new ProjectOpenedHookImpl(prj), new CPProvider(prj));
+                new ProjectOpenedHookImpl(prj), 
+                cpp,
+                new GsfMavenSourcesImpl(cpp, prj));
     }
 
     private static class GSFRecoTemplates implements RecommendedTemplates {
