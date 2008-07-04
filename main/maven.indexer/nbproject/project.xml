@@ -5,8 +5,8 @@
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>org.netbeans.modules.maven.indexer</code-name-base>
             <class-path-extension>
-                <runtime-relative-path>ext/nexus-indexer-1.0-beta-4-SNAPSHOT-shaded.jar</runtime-relative-path>
-                <binary-origin>external/nexus-indexer-1.0-beta-4-SNAPSHOT-shaded.jar</binary-origin>
+                <runtime-relative-path>ext/nexus-indexer-1.0-beta-4-shaded.jar</runtime-relative-path>
+                <binary-origin>external/nexus-indexer-1.0-beta-4-shaded.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/lucene-core-2.3.1.jar</runtime-relative-path>
