@@ -313,15 +313,16 @@ public final class EmbedderFactory {
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.plexus"); //NOI18N
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.classworlds"); //NOI18N
             plexusRealm.importFrom(nbRealm.getId(), "org.apache.maven"); //NOI18N
-            plexusRealm.importFrom(nbRealm.getId(), "org.apache.commons.cli"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.apache.commons"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.apache.log4j"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.apache.xbean"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.apache.xerces"); //NOI18N
             plexusRealm.importFrom(nbRealm.getId(), "META-INF/maven"); //NOI18N
             plexusRealm.importFrom(nbRealm.getId(), "META-INF/plexus"); //NOI18N
             plexusRealm.importFrom(nbRealm.getId(), "com.jcraft.jsch"); //NOI18N
             plexusRealm.importFrom(nbRealm.getId(), "org.aspectj"); //NOI18N
-            plexusRealm.importFrom(nbRealm.getId(), "org.jdom"); //NOI18N
-            plexusRealm.importFrom(nbRealm.getId(), "org.w3c.dom"); //NOI18N
-            plexusRealm.importFrom(nbRealm.getId(), "org.w3c.tidy"); //NOI18N
-            plexusRealm.importFrom(nbRealm.getId(), "org.xml.sax"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.cyberneko"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.easymock"); //NOI18N
             plexusRealm.importFrom(nbRealm.getId(), "hidden.org.codehaus.plexus"); //NOI18N
 
             // from netbeans allow just Lookup and the mevenide bridges
