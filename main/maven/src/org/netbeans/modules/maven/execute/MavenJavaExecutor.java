@@ -38,11 +38,6 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.settings.Activation;
-import org.apache.maven.settings.ActivationProperty;
-import org.apache.maven.settings.Profile;
-import org.apache.maven.settings.Repository;
-import org.apache.maven.settings.RepositoryPolicy;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.modules.maven.embedder.exec.ProgressTransferListener;
@@ -141,27 +136,29 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                     LOGGER.log(Level.FINE, ex.getMessage(), ex);
                 }
             }
-            File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);//NOI18N
-            //TODO we should get completely rid of this..
-            Profile myProfile = new Profile();
-            if (repoRoot != null) {
-                //can happen when users don't install the repository module.
-                myProfile.setId(PROFILE_PUBLIC);//NOI18N
-                Repository repo = new Repository();
-                repo.setUrl("file://" + repoRoot.getAbsolutePath());//NOI18N
-                repo.setId("netbeansIDE-repo-internal");//NOI18N
-                RepositoryPolicy snap = new RepositoryPolicy();
-                snap.setEnabled(false);
-                repo.setSnapshots(snap);
-                repo.setName("NetBeans IDE internal Repository hosting plugins that are executable in NetBeans IDE only.");//NOI18N
-                myProfile.addPluginRepository(repo);
-                Activation act = new Activation();
-                ActivationProperty prop = new ActivationProperty();
-                prop.setName("netbeans.execution");//NOI18N
-                prop.setValue("true");//NOI18N
-                act.setProperty(prop);
-                myProfile.setActivation(act);
-            }
+//mkleint: not relevant anymore, we don't ship the repository, rely on central repo instead.
+//            File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);//NOI18N
+//            //TODO we should get completely rid of this..
+//            Profile myProfile = new Profile();
+//            if (repoRoot != null) {
+//                //can happen when users don't install the repository module.
+//                myProfile.setId(PROFILE_PUBLIC);//NOI18N
+//                Repository repo = new Repository();
+//                repo.setUrl("file://" + repoRoot.getAbsolutePath());//NOI18N
+//                repo.setId("netbeansIDE-repo-internal");//NOI18N
+//                RepositoryPolicy snap = new RepositoryPolicy();
+//                snap.setEnabled(false);
+//                repo.setSnapshots(snap);
+//                repo.setName("NetBeans IDE internal Repository hosting plugins that are executable in NetBeans IDE only.");//NOI18N
+//                myProfile.addPluginRepository(repo);
+//                Activation act = new Activation();
+//                ActivationProperty prop = new ActivationProperty();
+//                prop.setName("netbeans.execution");//NOI18N
+//                prop.setValue("true");//NOI18N
+//                act.setProperty(prop);
+//                myProfile.setActivation(act);
+//            }
+            
             //TODO we need to reenact the custom dynamic profile.
 //            Settings settings = embedder.buildSettings( userSettingsPath,
 //                    globalSettingsPath,
