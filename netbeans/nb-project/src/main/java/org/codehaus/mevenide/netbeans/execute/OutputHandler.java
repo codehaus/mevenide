@@ -21,6 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -35,6 +37,8 @@ import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.openide.execution.ExecutorTask;
+import org.openide.util.Exceptions;
+import org.openide.util.RequestProcessor;
 import org.openide.util.io.NullOutputStream;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
@@ -54,6 +58,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     
     private StreamBridge out, err;
     
+    private InputStream in;
     
     private int threshold = MavenEmbedderLogger.LEVEL_INFO;
     
@@ -63,6 +68,8 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     private boolean doCancel = false;
 
     private ExecutorTask task;
+
+    private static final RequestProcessor PROCESSOR = new RequestProcessor("Maven Embedded Input Redirection", 5); //NOI18N    
     
     
     private List<ProgressContributor> progress = new ArrayList<ProgressContributor>();
@@ -247,7 +254,19 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     }
 
     InputStream getIn() {
-        return null;
+        if (in == null) {
+            try {
+                PipedInputStream inS = new PipedInputStream();
+                PipedOutputStream ouS = new PipedOutputStream();
+                inS.connect(ouS);
+                CommandLineOutputHandler.Input inp = new CommandLineOutputHandler.Input(ouS, inputOutput);
+                PROCESSOR.post(inp);
+                in = inS;
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return in;
     }
 
     PrintStream getOut() {
@@ -260,6 +279,19 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     void requestCancel(ExecutorTask task) {
         doCancel = true;
         this.task = task;
+    }
+
+    private class InputBridge extends  InputStream {
+        private Reader in;
+
+        InputBridge(Reader in) {
+            this.in = in;
+        }
+        @Override
+        public int read() throws IOException {
+            return in.read();
+        }
+
     }
     
     private class StreamBridge extends PrintStream {

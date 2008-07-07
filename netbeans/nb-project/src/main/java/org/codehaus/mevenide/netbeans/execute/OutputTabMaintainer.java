@@ -90,6 +90,7 @@ public abstract class OutputTabMaintainer {
                     reassignAdditionalContext(vals);
                     try {
                         io.getOut().reset();
+                        io.getIn().reset();                        
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -104,6 +105,7 @@ public abstract class OutputTabMaintainer {
         //                }
         if (io == null) {
             io = IOProvider.getDefault().getIO(name, createNewTabActions());
+            io.setInputVisible(true);
         }
         return io;
     }    
