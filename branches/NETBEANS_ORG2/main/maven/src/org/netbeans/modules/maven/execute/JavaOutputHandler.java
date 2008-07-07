@@ -21,6 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -35,6 +37,8 @@ import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
 import org.openide.execution.ExecutorTask;
+import org.openide.util.Exceptions;
+import org.openide.util.RequestProcessor;
 import org.openide.util.io.NullOutputStream;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
@@ -71,6 +75,9 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
     private ProgressContributor cont;
     private int total = 10;
     private int count = 0;
+
+    private static final RequestProcessor PROCESSOR = new RequestProcessor("Maven Embedded Input Redirection", 5); //NOI18N
+
     
     JavaOutputHandler() {
     }
@@ -249,7 +256,16 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
 
     InputStream getIn() {
         if (in == null) {
-            in = new InputBridge(inputOutput.getIn());
+            try {
+                PipedInputStream inS = new PipedInputStream();
+                PipedOutputStream ouS = new PipedOutputStream();
+                inS.connect(ouS);
+                CommandLineOutputHandler.Input inp = new CommandLineOutputHandler.Input(ouS, inputOutput);
+                PROCESSOR.post(inp);
+                in = inS;
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
         return in;
     }
@@ -266,19 +282,6 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
         this.task = task;
     }
     
-    private class InputBridge extends  InputStream {
-        private Reader in;
-        
-        InputBridge(Reader in) {
-            this.in = in;
-        }
-        
-        @Override
-        public int read() throws IOException {
-            return in.read();
-        }
-        
-    }
             
     
     private class StreamBridge extends PrintStream {
