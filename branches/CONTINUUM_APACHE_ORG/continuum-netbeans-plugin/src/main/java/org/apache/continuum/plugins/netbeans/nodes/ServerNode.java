@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.continuum.nodes;
+package org.apache.continuum.plugins.netbeans.nodes;
 
 import java.awt.event.ActionEvent;
 import java.util.Collections;
@@ -23,9 +23,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.apache.maven.continuum.xmlrpc.project.ProjectGroupSummary;
-import org.codehaus.mevenide.continuum.ContinuumClient;
-import org.codehaus.mevenide.continuum.ContinuumSettings2;
-import org.codehaus.mevenide.continuum.forms.MavenProjectForm;
+import org.apache.continuum.plugins.netbeans.ContinuumClient;
+import org.apache.continuum.plugins.netbeans.ContinuumSettings2;
+import org.apache.continuum.plugins.netbeans.ui.MavenProjectForm;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -49,7 +49,7 @@ public class ServerNode extends AbstractNode {
         
         setName(client.getServerInfo().toString());
         setDisplayName(client.getServerInfo().getXmlRpcUrl().toString());
-        setIconBaseWithExtension("org/codehaus/mevenide/continuum/threeBrands.gif");
+        setIconBaseWithExtension("org/apache/continuum/plugins/netbeans/threeBrands.gif");
     }
 
     public Action[] getActions(boolean b) {

@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.continuum.nodes;
+package org.apache.continuum.plugins.netbeans.nodes;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -36,8 +36,8 @@ import org.apache.maven.continuum.xmlrpc.project.BuildDefinition;
 import org.apache.maven.continuum.xmlrpc.project.Project;
 import org.apache.maven.continuum.xmlrpc.project.ProjectDependency;
 import org.apache.maven.continuum.xmlrpc.project.ProjectDeveloper;
-import org.codehaus.mevenide.continuum.ContinuumClient;
-import org.codehaus.mevenide.continuum.ServerInfo;
+import org.apache.continuum.plugins.netbeans.ContinuumClient;
+import org.apache.continuum.plugins.netbeans.ServerInfo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -69,11 +69,11 @@ public class ProjectNode extends AbstractNode {
         setDisplayName(project.getName());
         String executor = project.getExecutorId();
         if ("maven2".equals(executor)) {
-            setIconBaseWithExtension("org/codehaus/mevenide/continuum/Maven2Icon.gif");
+            setIconBaseWithExtension("org/apache/continuum/plugins/netbeans/Maven2Icon.gif");
         } else if ("maven1".equals(executor)) {
-            setIconBaseWithExtension("org/codehaus/mevenide/continuum/MavenIcon.gif");
+            setIconBaseWithExtension("org/apache/continuum/plugins/netbeans/MavenIcon.gif");
         } else if ("ant".equals(executor)) {
-            setIconBaseWithExtension("org/codehaus/mevenide/continuum/ant-freeform.png");
+            setIconBaseWithExtension("org/apache/continuum/plugins/netbeans/ant-freeform.png");
         }
         refreshTask = client.getQueue().create(new RepeatingRefresher());
     }
@@ -82,21 +82,21 @@ public class ProjectNode extends AbstractNode {
         Image img = super.getIcon(param);
         int state = project.getState();
         if (state == 2) {
-            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-ok.png"),
+            return Utilities.mergeImages(img, Utilities.loadImage("org/apache/continuum/plugins/netbeans/state-ok.png"),
                     16, 8);
         }
         // fail or error
         if (state == 3 || state == 4) {
             return Utilities.mergeImages(
                     img,
-                    Utilities.loadImage("org/codehaus/mevenide/continuum/state-error.png"),
+                    Utilities.loadImage("org/apache/continuum/plugins/netbeans/state-error.png"),
                     16, 8);
         }
         // many running states
         if (state == 5 || state == 6 || state == 7 || state == 8) {
             return Utilities.mergeImages(
                     img,
-                    Utilities.loadImage("org/codehaus/mevenide/continuum/state-running.png"),
+                    Utilities.loadImage("org/apache/continuum/plugins/netbeans/state-running.png"),
                     16, 8);
         }
         return img;
@@ -106,21 +106,21 @@ public class ProjectNode extends AbstractNode {
         Image img = super.getOpenedIcon(param);
         int state = project.getState();
         if (state == 2) {
-            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-ok.png"),
+            return Utilities.mergeImages(img, Utilities.loadImage("org/apache/continuum/plugins/netbeans/state-ok.png"),
                     16, 8);
         }
         // fail or error
         if (state == 3 || state == 4) {
             return Utilities.mergeImages(
                     img,
-                    Utilities.loadImage("org/codehaus/mevenide/continuum/state-error.png"),
+                    Utilities.loadImage("org/apache/continuum/plugins/netbeans/state-error.png"),
                     16, 8);
         }
         // many running states
         if (state == 6 || state == 7 || state == 8) {
             return Utilities.mergeImages(
                     img,
-                    Utilities.loadImage("org/codehaus/mevenide/continuum/state-running.png"),
+                    Utilities.loadImage("org/apache/continuum/plugins/netbeans/state-running.png"),
                     16, 8);
         }
         return img;

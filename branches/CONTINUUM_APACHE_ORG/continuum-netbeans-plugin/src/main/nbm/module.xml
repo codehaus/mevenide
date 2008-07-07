@@ -1,9 +1,9 @@
 <nbm>
    <moduleType>normal</moduleType>
-   <codeNameBase>org.codehaus.mevenide.continuum/1</codeNameBase>
-   <cluster>mevenide</cluster>
+   <codeNameBase>org.apache.continuum.plugins.netbeans/1</codeNameBase>
+   <cluster>netbeans-continuum</cluster>
    <manifest>src/main/nbm/manifest.mf</manifest>
-   <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
+   <distributionUrl>http://continuum.apache.org/netbeans/plugin</distributionUrl>
    <licenseName>Apache License, Version 2.0</licenseName>
    <licenseFile>license.txt</licenseFile>
    <dependencies>

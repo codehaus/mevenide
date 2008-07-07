@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.continuum.nodes;
+package org.apache.continuum.plugins.netbeans.nodes;
 
 import java.awt.event.ActionEvent;
 import java.net.MalformedURLException;
@@ -23,8 +23,8 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.codehaus.mevenide.continuum.ContinuumSettings2;
-import org.codehaus.mevenide.continuum.options.SingleServer;
+import org.apache.continuum.plugins.netbeans.ContinuumSettings2;
+import org.apache.continuum.plugins.netbeans.ui.SingleServer;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -45,7 +45,7 @@ public class RootNode extends AbstractNode {
         super(new RootChildren());
         setName("continuumRoot");
         setDisplayName("Continuum servers");
-        setIconBaseWithExtension("org/codehaus/mevenide/continuum/ContinuumServer.png");
+        setIconBaseWithExtension("org/apache/continuum/plugins/netbeans/ContinuumServer.png");
     }
 
     public static RootNode getInstance() {
