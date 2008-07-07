@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <parent>
-        <groupId>org.codehaus.mevenide</groupId>
-        <artifactId>netbeans</artifactId>
-        <version>3.2-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.codehaus.mevenide</groupId>
     <artifactId>continuum</artifactId>
     <packaging>nbm</packaging>
     <version>3.2-SNAPSHOT</version>
@@ -14,13 +10,9 @@
     <description>Support for Apache Continuum continuous integration servers.</description>
     <properties>
         <continuum.release>1.1</continuum.release>
+        <netbeans.release>RELEASE60</netbeans.release>
     </properties>
     <dependencies>
-        <!--dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>continuum-rpc</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency-->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
@@ -106,9 +98,48 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <compilerVersion>1.5</compilerVersion>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
+                <version>2.7-alpha-2</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <descriptor>src/main/nbm/module.xml</descriptor>
+                        <keystorealias>mevenide2</keystorealias>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.netbeans.nbbuild</groupId>
+                            <artifactId>tasks</artifactId>
+                            <version>6.0</version>
+                        </dependency>
+                    </dependencies>
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>netbeans</id>
+            <name>repository hosting netbeans.org api artifacts</name>
+            <url>http://deadlock.netbeans.org/maven2</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    
 </project>
