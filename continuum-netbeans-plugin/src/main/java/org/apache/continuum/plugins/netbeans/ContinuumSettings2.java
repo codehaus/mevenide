@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.continuum;
+package org.apache.continuum.plugins.netbeans;
 
 import java.util.ArrayList;
 import java.util.List;

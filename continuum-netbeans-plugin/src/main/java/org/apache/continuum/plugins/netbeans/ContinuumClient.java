@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.codehaus.mevenide.continuum;
+package org.apache.continuum.plugins.netbeans;
 
 import org.apache.maven.continuum.xmlrpc.client.ContinuumXmlRpcClient;
 import org.openide.util.RequestProcessor;

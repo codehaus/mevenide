@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.continuum.nodes;
+package org.apache.continuum.plugins.netbeans.nodes;
 
 import org.apache.maven.continuum.model.project.Project;
 import org.apache.maven.continuum.model.scm.ScmResult;

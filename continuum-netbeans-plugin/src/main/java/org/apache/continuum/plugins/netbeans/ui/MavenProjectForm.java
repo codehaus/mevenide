@@ -1,4 +1,4 @@
-package org.codehaus.mevenide.continuum.forms;
+package org.apache.continuum.plugins.netbeans.ui;
 
 public class MavenProjectForm extends javax.swing.JPanel {
 
@@ -21,7 +21,6 @@ public class MavenProjectForm extends javax.swing.JPanel {
 
         pomUrlLabel.setText(org.openide.util.NbBundle.getMessage(MavenProjectForm.class, "MavenProjectForm.pomUrlLabel.text")); // NOI18N
 
-        pomUrlTextField.setText(org.openide.util.NbBundle.getMessage(MavenProjectForm.class, "MavenProjectForm.pomUrlTextField.text")); // NOI18N
         pomUrlTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pomUrlTextFieldActionPerformed(evt);

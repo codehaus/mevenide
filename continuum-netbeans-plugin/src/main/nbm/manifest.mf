@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/continuum/Bundle.properties
-OpenIDE-Module-Layer: org/codehaus/mevenide/continuum/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/apache/continuum/plugins/netbeans/Bundle.properties
+OpenIDE-Module-Layer: org/apache/continuum/plugins/netbeans/layer.xml
 OpenIDE-Module-Public-Packages: -

@@ -15,13 +15,13 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.continuum.options;
+package org.apache.continuum.plugins.netbeans.ui;
 
 import java.awt.Dimension;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.mevenide.continuum.ServerInfo;
+import org.apache.continuum.plugins.netbeans.ServerInfo;
 import org.openide.util.Exceptions;
 
 /**

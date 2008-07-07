@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.continuum;
+package org.apache.continuum.plugins.netbeans;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;

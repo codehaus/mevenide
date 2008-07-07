@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.continuum.nodes;
+package org.apache.continuum.plugins.netbeans.nodes;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -30,7 +30,7 @@ import javax.swing.UIManager;
 import org.apache.maven.continuum.xmlrpc.project.Project;
 import org.apache.maven.continuum.xmlrpc.project.ProjectGroupSummary;
 import org.apache.maven.continuum.xmlrpc.project.ProjectSummary;
-import org.codehaus.mevenide.continuum.ContinuumClient;
+import org.apache.continuum.plugins.netbeans.ContinuumClient;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -53,7 +53,7 @@ public class ProjectGroupNode extends AbstractNode {
 
     private Image getIcon(boolean opened) {
         Icon baseIcon = UIManager.getIcon(opened ? "Tree.openIcon" : "Tree.closedIcon"); 
-        Image badge = Utilities.loadImage("org/codehaus/mevenide/continuum/continuum-badge.png", true); //NOI18N
+        Image badge = Utilities.loadImage("org/apache/continuum/plugins/netbeans/continuum-badge.png", true); //NOI18N
         return Utilities.mergeImages(Utilities.icon2Image(baseIcon), badge, 8, 8);
     }
 
