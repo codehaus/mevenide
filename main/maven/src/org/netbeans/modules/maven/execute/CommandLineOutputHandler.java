@@ -49,7 +49,8 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     private String currentTag;
     Task outTask;
     private MavenEmbedderLogger logger;
-    private Task inTask;
+    private Input inp;
+
 
     CommandLineOutputHandler() {
     }
@@ -71,11 +72,12 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     }
 
     void setStdIn(OutputStream in) {
-        inTask = PROCESSOR.post(new Input(in));
+        inp  = new Input(in, inputOutput);
+        PROCESSOR.post(inp);
     }
 
     void waitFor() {
-        stopIn = true;
+        inp.stopInput();
 //        if (inTask != null) {
 //            inTask.waitFinished();
 //        }
@@ -137,16 +139,21 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
         }
     }
     
-    private boolean stopIn = false;
     
-    private class Input implements Runnable {
-
+    static class Input implements Runnable {
+        private InputOutput inputOutput;
         private OutputStream str;
-        
+        private boolean stopIn = false;
 
-        public Input(OutputStream out) {
+        public Input(OutputStream out, InputOutput inputOutput) {
             str = out;
+            this.inputOutput = inputOutput;
         }
+
+        public void stopInput() {
+            stopIn = true;
+        }
+
 
         public void run() {
             Reader in = inputOutput.getIn();

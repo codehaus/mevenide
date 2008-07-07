@@ -90,6 +90,7 @@ public abstract class OutputTabMaintainer {
                     reassignAdditionalContext(vals);
                     try {
                         io.getOut().reset();
+                        io.getIn().reset();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
