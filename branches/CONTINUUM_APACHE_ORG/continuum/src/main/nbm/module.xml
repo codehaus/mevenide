@@ -1,0 +1,40 @@
+<nbm>
+   <moduleType>normal</moduleType>
+   <codeNameBase>org.codehaus.mevenide.continuum/1</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
+   <licenseName>Apache License, Version 2.0</licenseName>
+   <licenseFile>license.txt</licenseFile>
+   <dependencies>
+        <dependency>
+            <id>org.netbeans.api:org-jdesktop-layout</id>
+        </dependency>        
+        <dependency>
+            <id>org.apache.maven.continuum:continuum-xmlrpc-client</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-util</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-io</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-dialogs</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-explorer</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-nodes</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-windows</id>
+        </dependency>
+      <dependency>
+          <id>commons-logging:commons-logging</id>
+	  <type>spec</type>
+          <explicitValue>org.netbeans.libs.commons_logging/1 &gt; 1.0</explicitValue>
+      </dependency>
+   </dependencies> 
+</nbm>
