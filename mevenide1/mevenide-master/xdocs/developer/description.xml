@@ -1,5 +1,0 @@
-      <p>
-        Mevenide actually comes as three separate modules (plus the maven-eclipse-plugin-plugin) : mevenide-core, 
-    	goals-grabber and mevenide-ui-eclipse. This document provides informations about the relationships 
-    	between those modules and describes some guidelines developers should follow.
-      </p>

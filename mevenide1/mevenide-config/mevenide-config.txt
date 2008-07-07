@@ -1,9 +1,0 @@
-org.mevenide.environment..*
-  ILocationFinder : 
-    o Lookup properties needed for maven execution (or ones we want to present to the user) in  various places !
-        + SysEnvironment 
-        + Properties : ~/build.properties, $project_home/buidl.properties and $project_home/project.properties
-        + Aggregator
-
-org.mevenide.properties..*
-   o Properties reading/writing : primary goal is to _careful_ write a properties file (in rspect to the structure of the file being overwritten)

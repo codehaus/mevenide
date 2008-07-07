@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/gsf/Bundle.properties
-OpenIDE-Module-Layer: org/codehaus/mevenide/gsf/layer.xml
-OpenIDE-Module-Public-Packages: -
