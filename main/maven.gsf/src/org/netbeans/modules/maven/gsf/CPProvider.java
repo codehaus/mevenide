@@ -76,11 +76,11 @@ public class CPProvider implements ClassPathProvider {
 
     public URI[] getSourceRoots(boolean test) {
         List<URI> uris = new ArrayList<URI>();
+        uris.addAll(Arrays.asList(getJavaDirectories(test)));
         uris.add(getScalaDirectory(test));
         uris.add(getGroovyDirectory(test));
         uris.addAll(Arrays.asList(mavenProject.getResources(test)));
         uris.add(mavenProject.getWebAppDirectory());
-        //TODO src/main/java as well?
 
         // Additional libraries - such as the JavaScript ones
         // copied from php project, otherwise jaascript completion doesn't work.
@@ -94,6 +94,26 @@ public class CPProvider implements ClassPathProvider {
         }
 
         return uris.toArray(new URI[0]);
+    }
+
+    private URI[] getJavaDirectories(boolean test) {
+        List<String> srcs = test ? mavenProject.getMavenProject().getTestCompileSourceRoots()
+                                 : mavenProject.getMavenProject().getCompileSourceRoots();
+        URI[] generated = mavenProject.getGeneratedSourceRoots();
+        URI[] uris = new URI[srcs.size() + generated.length];
+        Iterator it = srcs.iterator();
+        int count = 0;
+        while (it.hasNext()) {
+            String str = (String) it.next();
+            File fil = FileUtil.normalizeFile(new File(str));
+            uris[count] = fil.toURI();
+            count = count + 1;
+        }
+        for (URI gen : generated) {
+            uris[count] = gen;
+            count = count + 1;
+        }
+        return uris;
     }
 
     private ClassPath getSourcepath(int type) {

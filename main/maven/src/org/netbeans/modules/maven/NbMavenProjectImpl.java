@@ -382,9 +382,9 @@ public final class NbMavenProjectImpl implements Project {
     }
 
     public URI[] getSourceRoots(boolean test) {
-        List srcs = test ? getOriginalMavenProject().getTestCompileSourceRoots() : getOriginalMavenProject().getCompileSourceRoots();
+        List<String> srcs = test ? getOriginalMavenProject().getTestCompileSourceRoots() : getOriginalMavenProject().getCompileSourceRoots();
         if (!test && getProjectDirectory().getFileObject("src/main/aspect") != null) { //NOI18N
-            srcs = new ArrayList(srcs);
+            srcs = new ArrayList<String>(srcs);
             srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject("src/main/aspect")).getAbsolutePath()); //NOI18N
         }
         //TODO groovy and scala stuff should probably end up in separate module's

@@ -189,6 +189,14 @@ public final class NbMavenProject {
     public URI getWebAppDirectory() {
         return project.getWebAppDirectory();
     }
+
+    /**
+     * Return uris of source roots generated during the build.
+     * @return
+     */
+    public URI[] getGeneratedSourceRoots() {
+        return project.getGeneratedSourceRoots();
+    }
     
     
     public static final String TYPE_JAR = "jar"; //NOI18N
@@ -201,7 +209,8 @@ public final class NbMavenProject {
     /**
      * get the user level packaging type for the project, allows to get the same UI support
      *  of user's custom lifecycles.
-     */ 
+     * @return 
+     */
     public String getPackagingType() {
         MavenProject orig = project.getOriginalMavenProject();
         String custom = orig.getProperties().getProperty(Constants.HINT_PACKAGING);
