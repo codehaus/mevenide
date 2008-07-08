@@ -63,7 +63,7 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
     @Override
     protected void projectClosed() {
         CPProvider cpProvider = project.getLookup().lookup(CPProvider.class);
-        //GlobalPathRegistry.getDefault().unregister(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
+        GlobalPathRegistry.getDefault().unregister(ClassPath.BOOT, cpProvider.getProjectSourcesClassPaths(ClassPath.BOOT));
         GlobalPathRegistry.getDefault().unregister(ClassPath.SOURCE, cpProvider.getProjectSourcesClassPaths(ClassPath.SOURCE));
         GlobalPathRegistry.getDefault().unregister(ClassPath.COMPILE, cpProvider.getProjectSourcesClassPaths(ClassPath.COMPILE));
     }

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.apache.maven.project.MavenProject;
 import org.netbeans.modules.maven.api.FileUtilities;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.api.project.Project;
@@ -149,7 +148,7 @@ public class GsfMavenSourcesImpl implements Sources {
             grp = toReturn.toArray(grp);
             return grp;
         }
-        return new SourceGroup[0];
+        return null;
     }
 
     /**
