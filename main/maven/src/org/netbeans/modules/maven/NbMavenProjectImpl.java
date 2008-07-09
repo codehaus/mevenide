@@ -549,6 +549,7 @@ public final class NbMavenProjectImpl implements Project {
                     new MavenBinaryForSourceQueryImpl(this),
                     new ActionProviderImpl(this),
                     auxiliary,
+                    new MavenProjectPropsImpl(this),
                     profileHandler,
                     new CustomizerProviderImpl(this),
                     new LogicalViewProviderImpl(this),
