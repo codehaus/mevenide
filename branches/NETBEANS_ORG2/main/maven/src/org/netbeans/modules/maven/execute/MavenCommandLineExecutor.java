@@ -86,7 +86,6 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             ioput.getOut().println("Executing:" + StringUtils.join(builder.command().iterator(), " "));//NOI18N - to be shown in log.
             process = builder.start();
             out.setStdOut(process.getInputStream());
-            out.setStdErr(process.getInputStream());
             out.setStdIn(process.getOutputStream());
             process.waitFor();
             out.waitFor();

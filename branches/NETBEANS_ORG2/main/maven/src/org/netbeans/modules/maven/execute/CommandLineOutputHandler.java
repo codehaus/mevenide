@@ -67,10 +67,6 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
         outTask = PROCESSOR.post(new Output(inStr));
     }
 
-    void setStdErr(InputStream inStr) {
-    //ignore for now..
-    }
-
     void setStdIn(OutputStream in) {
         inp  = new Input(in, inputOutput);
         PROCESSOR.post(inp);
