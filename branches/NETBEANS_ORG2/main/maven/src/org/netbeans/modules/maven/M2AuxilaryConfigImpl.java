@@ -121,11 +121,11 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                     } else {
                         String element = "project-shared-configuration"; // NOI18N
                         doc = XMLUtil.createDocument(element, null, null, null);
-                        doc.getDocumentElement().appendChild(doc.createTextNode(
+                        doc.getDocumentElement().appendChild(doc.createComment(
                                 "\nThis file contains additional configuration written by modules in the NetBeans IDE.\n" + //NOI18N will be part of a file on disk, don't translate
                                 "The configuration is intended to be shared among all the users of project and\n" +//NOI18N
                                 "therefore it is assumed to be part of version control checkout.\n" +//NOI18N
-                                "Without this configuration present, some functionality in the IDE may be limited or fail altogether.\n\n"));//NOI18N
+                                "Without this configuration present, some functionality in the IDE may be limited or fail altogether.\n"));//NOI18N
                     }
                 } else {
                     String str = (String) project.getProjectDirectory().getAttribute(AUX_CONFIG);
