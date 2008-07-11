@@ -294,114 +294,159 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
 
     }
     
-    private class StreamBridge extends PrintStream {
+    private static RequestProcessor PRCS = new RequestProcessor();
+
+    private class StreamBridge extends PrintStream implements Runnable {
         StringBuffer buff = new StringBuffer();
         private OutputWriter writer;
+        RequestProcessor.Task task;
         public StreamBridge(OutputWriter wr) {
             super(new NullOutputStream());
             writer = wr;
+            task = PRCS.create(this);
         }
-        
-        public void flush() {
+
+        public synchronized void run() {
+            if (buff.length() > 0) {
+                writer.print(buff.toString());
+                buff.setLength(0);
+            }
+        }
+
+
+        @Override
+        public synchronized void flush() {
             if (buff.length() > 0) {
                 doPrint();
             }
         }
-        
-        public void print(long l) {
+
+        @Override
+        public synchronized void print(long l) {
             buff.append(l);
+            task.schedule(500);
         }
-        
-        public void print(char[] s) {
+
+        @Override
+        public synchronized void print(char[] s) {
             buff.append(s);
+            task.schedule(500);
         }
-        
-        public void print(int i) {
+
+        @Override
+        public synchronized void print(int i) {
             buff.append(i);
+            task.schedule(500);
         }
-        
-        public void print(boolean b) {
+
+        @Override
+        public synchronized void print(boolean b) {
             buff.append(b);
+            task.schedule(500);
         }
-        
-        public void print(char c) {
+
+        @Override
+        public synchronized void print(char c) {
             buff.append(c);
+            task.schedule(500);
         }
-        
-        public void print(float f) {
+
+        @Override
+        public synchronized void print(float f) {
             buff.append(f);
+            task.schedule(500);
         }
-        
-        public void print(double d) {
+
+        @Override
+        public synchronized void print(double d) {
             buff.append(d);
+            task.schedule(500);
         }
-        
-        public void print(Object obj) {
+
+        @Override
+        public synchronized void print(Object obj) {
             buff.append(obj.toString());
+            task.schedule(500);
         }
-        
-        public void print(String s) {
+
+        @Override
+        public synchronized void print(String s) {
             buff.append(s);
+            task.schedule(500);
         }
-        
-        public void println(double x) {
-            buff.append(x);
-            doPrint();
-        }
-        
-        public void println(Object x) {
-            buff.append(x.toString());
-            doPrint();
-        }
-        
-        public void println(float x) {
-            buff.append(x);
-            doPrint();
-        }
-        
-        public void println(int x) {
+
+        @Override
+        public synchronized void println(double x) {
             buff.append(x);
             doPrint();
         }
 
-        public void println(char x) {
+        @Override
+        public synchronized void println(Object x) {
+            buff.append(x.toString());
+            doPrint();
+        }
+
+        @Override
+        public synchronized void println(float x) {
             buff.append(x);
             doPrint();
         }
-        
-        public void println(boolean x) {
+
+        @Override
+        public synchronized void println(int x) {
             buff.append(x);
             doPrint();
         }
-        
-        public void println(String x) {
+
+        @Override
+        public synchronized void println(char x) {
             buff.append(x);
             doPrint();
         }
-        
-        public void println(char[] x) {
+
+        @Override
+        public synchronized void println(boolean x) {
             buff.append(x);
             doPrint();
         }
-        
-        public void println() {
-            doPrint();
-        }
-        
-        public void println(long x) {
+
+        @Override
+        public synchronized void println(String x) {
             buff.append(x);
             doPrint();
         }
-        
-        public void write(int b) {
+
+        @Override
+        public synchronized void println(char[] x) {
+            buff.append(x);
+            doPrint();
+        }
+
+        @Override
+        public synchronized void println() {
+            doPrint();
+        }
+
+        @Override
+        public synchronized void println(long x) {
+            buff.append(x);
+            doPrint();
+        }
+
+        @Override
+        public synchronized void write(int b) {
             buff.append((char)b);
+            task.schedule(500);
         }
-        
+
+        @Override
         public void write(byte[] b) throws IOException {
             write(b, 0, b.length);
         }
-        
-        public void write(byte[] b, int off, int len) {
+
+        @Override
+        public synchronized void write(byte[] b, int off, int len) {
             ByteArrayInputStream bais = new ByteArrayInputStream(b, off, len);
             Reader read = new InputStreamReader(bais);
             try {
@@ -411,13 +456,15 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            task.schedule(500);
         }
-        
+
         private void doPrint() {
+            assert Thread.holdsLock(this);
             processMultiLine(buff.toString(), writer, "");//NOI18N
             buff.setLength(0);
         }
-        
+
     }
 
     @Override
