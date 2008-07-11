@@ -28,6 +28,7 @@ import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.netbeans.api.progress.ProgressHandle;
+import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.InputOutput;
@@ -89,15 +90,66 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
 
         private static final String SEC_MOJO_EXEC = "mojo-execute"; //NOI18N
         private BufferedReader str;
+        private boolean skipLF = false;
 
         public Output(InputStream instream) {
             str = new BufferedReader(new InputStreamReader(instream));
         }
 
+        private String readLine() throws IOException {
+             char[] char1 = new char[1];
+             boolean isReady = true;
+             StringBuffer buf = new StringBuffer();
+             while (isReady) {
+                 int ret = str.read(char1);
+                 if (ret != 1) {
+                     return buf.toString();
+                 }
+                 if (skipLF) {
+                     skipLF = false;
+                     if (char1[0] == '\n') {
+                         continue;
+                     }
+                 }
+                 if (char1[0] == '\n') {
+                     return buf.toString();
+                 }
+                 if (char1[0] == '\r') {
+                     skipLF = true;
+                     return buf.toString();
+                 }
+                 buf.append(char1[0]);
+                 isReady = str.ready();
+                 if (!isReady) {
+                     synchronized (this) {
+                         try {
+                             wait(500);
+                         } catch (InterruptedException ex) {
+                             Exceptions.printStackTrace(ex);
+                         } finally {
+                             if (!str.ready()) {
+                                 break;
+                             }
+                             isReady = true;
+                         }
+                     }
+
+                 }
+             }
+             return "&^#INCOMPLINE:" + buf.toString();
+
+         }
+
         public void run() {
             try {
-                String line = str.readLine();
+                String line = readLine();
                 while (line != null) {
+                     if (line.startsWith("&^#INCOMPLINE:")) {
+                         stdOut.print("$&^"+ line.substring("&^#INCOMPLINE:".length()));
+                         line = readLine();
+                         continue;
+                     }
+
                     if (line.startsWith("[INFO] Final Memory:")) { //NOI18N
                         // previous value [INFO] --------------- is too early, the compilation errors don't get processed in this case.
                         //heuristics..
@@ -124,7 +176,7 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
                             processLine(line, stdOut, ""); //NOI18N
                         }
                     }
-                    line = str.readLine();
+                    line = readLine();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
