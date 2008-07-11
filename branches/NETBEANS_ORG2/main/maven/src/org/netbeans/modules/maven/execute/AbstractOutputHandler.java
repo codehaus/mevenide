@@ -190,7 +190,6 @@ public abstract class AbstractOutputHandler {
             return;
         }
         //MEVENIDE-637
-         ;
         for (String s : splitMultiLine(input)) {
             processLine(s, writer, levelText);
         }

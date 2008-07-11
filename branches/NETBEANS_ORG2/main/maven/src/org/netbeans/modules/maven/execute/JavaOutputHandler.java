@@ -284,128 +284,150 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
     
             
     
-    private class StreamBridge extends PrintStream {
+    private static RequestProcessor PRCS = new RequestProcessor();
+    
+    private class StreamBridge extends PrintStream implements Runnable {
         StringBuffer buff = new StringBuffer();
         private OutputWriter writer;
+        RequestProcessor.Task task;
         public StreamBridge(OutputWriter wr) {
             super(new NullOutputStream());
             writer = wr;
+            task = PRCS.create(this);
         }
+
+        public synchronized void run() {
+            if (buff.length() > 0) {
+                writer.print(buff.toString());
+                buff.setLength(0);
+            }
+        }
+
         
         @Override
-        public void flush() {
+        public synchronized void flush() {
             if (buff.length() > 0) {
                 doPrint();
             }
         }
         
         @Override
-        public void print(long l) {
+        public synchronized void print(long l) {
             buff.append(l);
+            task.schedule(500);
         }
         
         @Override
-        public void print(char[] s) {
+        public synchronized void print(char[] s) {
             buff.append(s);
+            task.schedule(500);
         }
         
         @Override
-        public void print(int i) {
+        public synchronized void print(int i) {
             buff.append(i);
+            task.schedule(500);
         }
         
         @Override
-        public void print(boolean b) {
+        public synchronized void print(boolean b) {
             buff.append(b);
+            task.schedule(500);
         }
         
         @Override
-        public void print(char c) {
+        public synchronized void print(char c) {
             buff.append(c);
+            task.schedule(500);
         }
         
         @Override
-        public void print(float f) {
+        public synchronized void print(float f) {
             buff.append(f);
+            task.schedule(500);
         }
         
         @Override
-        public void print(double d) {
+        public synchronized void print(double d) {
             buff.append(d);
+            task.schedule(500);
         }
         
         @Override
-        public void print(Object obj) {
+        public synchronized void print(Object obj) {
             buff.append(obj.toString());
+            task.schedule(500);
         }
         
         @Override
-        public void print(String s) {
+        public synchronized void print(String s) {
             buff.append(s);
+            task.schedule(500);
         }
         
         @Override
-        public void println(double x) {
+        public synchronized void println(double x) {
             buff.append(x);
             doPrint();
         }
         
         @Override
-        public void println(Object x) {
+        public synchronized void println(Object x) {
             buff.append(x.toString());
             doPrint();
         }
         
         @Override
-        public void println(float x) {
+        public synchronized void println(float x) {
             buff.append(x);
             doPrint();
         }
         
         @Override
-        public void println(int x) {
+        public synchronized void println(int x) {
             buff.append(x);
             doPrint();
         }
 
         @Override
-        public void println(char x) {
+        public synchronized void println(char x) {
             buff.append(x);
             doPrint();
         }
         
         @Override
-        public void println(boolean x) {
+        public synchronized void println(boolean x) {
             buff.append(x);
             doPrint();
         }
         
         @Override
-        public void println(String x) {
+        public synchronized void println(String x) {
             buff.append(x);
             doPrint();
         }
         
         @Override
-        public void println(char[] x) {
+        public synchronized void println(char[] x) {
             buff.append(x);
             doPrint();
         }
         
         @Override
-        public void println() {
+        public synchronized void println() {
             doPrint();
         }
         
         @Override
-        public void println(long x) {
+        public synchronized void println(long x) {
             buff.append(x);
             doPrint();
         }
         
         @Override
-        public void write(int b) {
+        public synchronized void write(int b) {
             buff.append((char)b);
+            task.schedule(500);
         }
         
         @Override
@@ -414,7 +436,7 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
         }
         
         @Override
-        public void write(byte[] b, int off, int len) {
+        public synchronized void write(byte[] b, int off, int len) {
             ByteArrayInputStream bais = new ByteArrayInputStream(b, off, len);
             Reader read = new InputStreamReader(bais);
             try {
@@ -424,13 +446,15 @@ class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, M
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            task.schedule(500);
         }
         
         private void doPrint() {
+            assert Thread.holdsLock(this);
             processMultiLine(buff.toString(), writer, "");//NOI18N
             buff.setLength(0);
         }
-        
+
     }
 
     @Override
