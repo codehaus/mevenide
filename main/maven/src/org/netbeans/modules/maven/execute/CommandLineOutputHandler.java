@@ -99,6 +99,9 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
             while (isReady) {
                 int ret = str.read(char1);
                 if (ret != 1) {
+                     if (ret == -1 && buf.length() == 0) {
+                         return null;
+                     }
                     return buf.toString();
                 }
                 if (skipLF) {
