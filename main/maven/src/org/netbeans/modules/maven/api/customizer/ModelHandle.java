@@ -107,17 +107,19 @@ public final class ModelHandle {
         configurations = configs;
         this.active = active;
     }
-    
+
     /**
      * pom.xml model
-     */ 
+     * @return
+     */
     public Model getPOMModel() {
         return model;
     }
     
     /**
      * profiles.xml model
-     */ 
+     * @return 
+     */
     public ProfilesRoot getProfileModel() {
         return profiles;
     }
@@ -125,7 +127,8 @@ public final class ModelHandle {
     /**
      * warning: can update the model, for non-updating one for use in value getters
      * use getNetbeansPublicProfile(false)
-     */ 
+     * @return
+     */
     public org.apache.maven.model.Profile getNetbeansPublicProfile() {
         return getNetbeansPublicProfile(true);
     }
@@ -165,7 +168,8 @@ public final class ModelHandle {
     /**
      * warning: can update the model, for non-updating one for use in value getters
      * use getNetbeansPrivateProfile(false)
-     */ 
+     * @return 
+     */
     public org.apache.maven.profiles.Profile getNetbeansPrivateProfile() {
         return getNetbeansPrivateProfile(true);
     }
@@ -206,21 +210,25 @@ public final class ModelHandle {
     /**
      * the non changed (not-to-be-changed) instance of the complete project. 
      * NOT TO BE CHANGED.
-     */ 
+     * @return 
+     */
     public MavenProject getProject() {
         return project;
     }
     
     /**
      * action mapping model
-     */ 
+     * @return 
+     */
     public ActionToGoalMapping getActionMappings() {
         return mappings.get(M2Configuration.DEFAULT);
     }
     
     /**
      * action mapping model
-     */ 
+     * @param config
+     * @return 
+     */
     public ActionToGoalMapping getActionMappings(Configuration config) {
         ActionToGoalMapping mapp = mappings.get(config.getId());
         if (mapp == null) {
