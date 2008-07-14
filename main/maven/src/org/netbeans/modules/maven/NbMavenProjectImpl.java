@@ -70,6 +70,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.queries.VisibilityQuery;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.netbeans.spi.project.ProjectState;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
@@ -122,6 +123,7 @@ public final class NbMavenProjectImpl implements Project {
     private ProjectState state;
     private ConfigurationProviderEnabler configEnabler;
     private M2AuxilaryConfigImpl auxiliary;
+    private AuxiliaryProperties auxprops;
     private ProjectProfileHandler profileHandler;
     public static WatcherAccessor ACCESSOR = null;
     
@@ -161,6 +163,7 @@ public final class NbMavenProjectImpl implements Project {
         problemReporter = new ProblemReporterImpl(this);
         watcher = ACCESSOR.createWatcher(this);
         auxiliary = new M2AuxilaryConfigImpl(this);
+        auxprops = new MavenProjectPropsImpl(this);
         profileHandler = new ProjectProfileHandlerImpl(this,auxiliary);
         configEnabler = new ConfigurationProviderEnabler(this, auxiliary, profileHandler);
     }
@@ -381,6 +384,10 @@ public final class NbMavenProjectImpl implements Project {
         return EmbedderFactory.getProjectEmbedder();
     }
 
+    public AuxiliaryProperties getAuxProps() {
+        return auxprops;
+    }
+
     public URI[] getSourceRoots(boolean test) {
         List<String> srcs = test ? getOriginalMavenProject().getTestCompileSourceRoots() : getOriginalMavenProject().getCompileSourceRoots();
         if (!test && getProjectDirectory().getFileObject("src/main/aspect") != null) { //NOI18N
@@ -549,7 +556,7 @@ public final class NbMavenProjectImpl implements Project {
                     new MavenBinaryForSourceQueryImpl(this),
                     new ActionProviderImpl(this),
                     auxiliary,
-                    new MavenProjectPropsImpl(this),
+                    auxprops,
                     profileHandler,
                     new CustomizerProviderImpl(this),
                     new LogicalViewProviderImpl(this),

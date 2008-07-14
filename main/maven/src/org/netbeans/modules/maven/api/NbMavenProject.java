@@ -39,6 +39,8 @@ import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.MavenProjectPropsImpl;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -212,8 +214,9 @@ public final class NbMavenProject {
      * @return 
      */
     public String getPackagingType() {
+        AuxiliaryProperties props = project.getAuxProps();
+        String custom = props.get(Constants.HINT_PACKAGING, true);
         MavenProject orig = project.getOriginalMavenProject();
-        String custom = orig.getProperties().getProperty(Constants.HINT_PACKAGING);
 // ignore the old solution. getRawMappings() is expensive in this context..
 //        if (custom == null) {
 //            // fallback to previous old solution. 
