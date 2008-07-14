@@ -38,9 +38,20 @@
  */
 package org.netbeans.modules.maven.search;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import org.netbeans.modules.maven.indexer.api.NBArtifactInfo;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.QueryField;
+import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
 import org.netbeans.spi.quicksearch.SearchProvider;
 import org.netbeans.spi.quicksearch.SearchRequest;
 import org.netbeans.spi.quicksearch.SearchResponse;
+import org.openide.util.RequestProcessor;
 
 public class MavenRepoProvider implements SearchProvider {
 
@@ -52,16 +63,60 @@ public class MavenRepoProvider implements SearchProvider {
      * @param request Search request object that contains information what to search for
      * @param response Search response object that stores search results. Note that it's important to react to return value of SearchResponse.addResult(...) method and stop computation if false value is returned.
      */
-    public void evaluate(SearchRequest request, SearchResponse response) {
+    public void evaluate(final SearchRequest request, final SearchResponse response) {
+        RequestProcessor.getDefault().post(new Runnable() {
 
-        //sample code
-        //for (SearchedItem item : getAllItemsToSearchIn()) {
-        //    if (isConditionSatisfied(item, request)) {
-        //        if (!response.addResult(item.getRunnable(), item.getDisplayName(),
-        //	      item.getShortcut(), item.getDisplayHint())) {
-        //	      break;
-        //	  }
-        //    }
-        //}
+            public void run() {
+                List<NBVersionInfo> infos = RepositoryQueries.find(getQuery(request));
+                Map<String, List<NBVersionInfo>> map = new HashMap<String, List<NBVersionInfo>>();
+
+                for (NBVersionInfo nbvi : infos) {
+                    String key = nbvi.getGroupId() + " : " + nbvi.getArtifactId();
+                    List<NBVersionInfo> get = map.get(key);
+                    if (get == null) {
+                        get = new ArrayList<NBVersionInfo>();
+                        map.put(key, get);
+                    }
+                    get.add(nbvi);
+                }
+                Set<Entry<String, List<NBVersionInfo>>> entrySet = map.entrySet();
+                for (Entry<String, List<NBVersionInfo>> entry : entrySet) {
+                    NBArtifactInfo nbai = new NBArtifactInfo(entry.getKey());
+                    nbai.addAlVersionInfos(entry.getValue());
+                    response.addResult(new OpenArtifactInfo(nbai), nbai.getName());
+                }
+                List<NBArtifactInfo> artifactInfos = new ArrayList<NBArtifactInfo>();
+
+            }
+        });
+
+    }
+
+    List<QueryField> getQuery(SearchRequest request) {
+        List<QueryField> fq = new ArrayList<QueryField>();
+        String q = request.getText();
+        String[] splits = q.split(" ");
+        List<String> fields = new ArrayList<String>();
+        fields.add(QueryField.FIELD_GROUPID);
+        fields.add(QueryField.FIELD_ARTIFACTID);
+
+
+//            fields.add(QueryField.FIELD_NAME);
+
+
+//            fields.add(QueryField.FIELD_DESCRIPTION);
+
+
+//            fields.add(QueryField.FIELD_CLASSES);
+
+        for (String one : splits) {
+            for (String fld : fields) {
+                QueryField f = new QueryField();
+                f.setField(fld);
+                f.setValue(one);
+                fq.add(f);
+            }
+        }
+        return fq;
     }
 }
