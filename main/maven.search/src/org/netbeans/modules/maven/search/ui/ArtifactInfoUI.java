@@ -88,7 +88,7 @@ public class ArtifactInfoUI extends javax.swing.JPanel implements ExplorerManage
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel1.setText(org.openide.util.NbBundle.getMessage(ArtifactInfoUI.class, "ArtifactInfoUI.jLabel1.text")); // NOI18N
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/maven/search/ui/ArtifactBadge.png"))); // NOI18N

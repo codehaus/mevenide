@@ -85,8 +85,7 @@ public class MavenRepoProvider implements SearchProvider {
                     nbai.addAlVersionInfos(entry.getValue());
                     response.addResult(new OpenArtifactInfo(nbai), nbai.getName());
                 }
-                List<NBArtifactInfo> artifactInfos = new ArrayList<NBArtifactInfo>();
-
+                
             }
         });
 
