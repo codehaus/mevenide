@@ -25,6 +25,8 @@ import org.netbeans.modules.maven.execute.MavenExecutor;
 import org.netbeans.modules.maven.execute.MavenJavaExecutor;
 import org.netbeans.modules.maven.options.MavenExecutionSettings;
 import org.netbeans.api.options.OptionsDisplayer;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.NbBundle;
@@ -50,8 +52,8 @@ public final class RunUtils {
         MavenExecutor exec;
         boolean useCommandLine = false;
         if (config.getProject()!= null) {
-            NbMavenProject prj = config.getProject().getLookup().lookup(NbMavenProject.class);
-            String val = prj.getMavenProject().getProperties().getProperty(Constants.HINT_USE_EXTERNAL);
+            AuxiliaryProperties props = config.getProject().getLookup().lookup(AuxiliaryProperties.class);
+            String val = props.get(Constants.HINT_USE_EXTERNAL, true);
             if ("true".equalsIgnoreCase(val)) { //NOI18N
                 useCommandLine = true;
             }
