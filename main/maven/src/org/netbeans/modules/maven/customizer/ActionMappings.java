@@ -52,6 +52,7 @@ import org.netbeans.modules.maven.api.ProjectProfileHandler;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.modules.maven.execute.ActionToGoalUtils;
 import org.netbeans.api.options.OptionsDisplayer;
+import org.netbeans.modules.maven.MavenProjectPropsImpl;
 import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.netbeans.spi.project.ActionProvider;
@@ -179,11 +180,8 @@ public class ActionMappings extends javax.swing.JPanel {
                 if (val != null) {
                     return Boolean.valueOf(val);
                 }
-                return null;
-            }
-
-            public Boolean getProjectValue() {
-                String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_USE_EXTERNAL); //NOI18N
+                MavenProjectPropsImpl props = project.getLookup().lookup(MavenProjectPropsImpl.class);
+                val = props.get(Constants.HINT_USE_EXTERNAL, true, false);
                 if (val != null) {
                     return Boolean.valueOf(val);
                 }
@@ -191,24 +189,31 @@ public class ActionMappings extends javax.swing.JPanel {
             }
 
             public void setValue(Boolean value) {
+                MavenProjectPropsImpl props = project.getLookup().lookup(MavenProjectPropsImpl.class);
+                boolean hasConfig = props.get(Constants.HINT_USE_EXTERNAL, true, false) != null;
+                //TODO also try to take the value in pom vs inherited pom value into account.
+
                 Profile prof = handle.getNetbeansPrivateProfile(false);
                 if (prof != null && prof.getProperties().getProperty(Constants.HINT_USE_EXTERNAL) != null) {
                     prof.getProperties().setProperty(Constants.HINT_USE_EXTERNAL, value == null ? "false" : value.toString());
+                    if (hasConfig) {
+                        // in this case clean up the auxiliary config
+                        props.put(Constants.HINT_USE_EXTERNAL, null, true);
+                    }
                     handle.markAsModified(handle.getProfileModel());
                     return;
                 }
-                
-                if (value == null || value.booleanValue() == false) {
-                    Boolean proj = getProjectValue();
-                    if (proj != null && proj.equals(Boolean.TRUE)) {
-                        handle.getPOMModel().addProperty(Constants.HINT_USE_EXTERNAL, "false"); //NOI18N
-                    } else {
-                        handle.getPOMModel().getProperties().remove(Constants.HINT_USE_EXTERNAL);
+
+                if (handle.getProject().getProperties().containsKey(Constants.HINT_USE_EXTERNAL)) {
+                    handle.getPOMModel().addProperty(Constants.HINT_USE_EXTERNAL, value == null ? "false" : value.toString()); //NOI18N
+                    handle.markAsModified(handle.getPOMModel());
+                    if (hasConfig) {
+                        // in this case clean up the auxiliary config
+                        props.put(Constants.HINT_USE_EXTERNAL, null, true);
                     }
-                } else {
-                    handle.getPOMModel().addProperty(Constants.HINT_USE_EXTERNAL, "true"); //NOI18N
+                    return;
                 }
-                handle.markAsModified(handle.getPOMModel());
+                props.put(Constants.HINT_USE_EXTERNAL, value == null ? null : value.toString(), true);
             }
 
             public boolean getDefaultValue() {

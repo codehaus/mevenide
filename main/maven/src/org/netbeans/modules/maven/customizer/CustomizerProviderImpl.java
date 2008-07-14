@@ -45,6 +45,7 @@ import org.netbeans.modules.maven.embedder.MavenSettingsSingleton;
 import org.netbeans.modules.maven.embedder.writer.WriterUtils;
 import org.netbeans.modules.maven.execute.UserActionGoalProvider;
 import hidden.org.codehaus.plexus.util.IOUtil;
+import java.util.TreeMap;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jdom.DefaultJDOMFactory;
 import org.jdom.Document;
@@ -53,6 +54,7 @@ import org.jdom.JDOMFactory;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.modules.maven.MavenProjectPropsImpl;
 import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
 import org.netbeans.modules.maven.execute.model.io.jdom.NetbeansBuildActionJDOMWriter;
 import org.netbeans.modules.maven.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
@@ -91,6 +93,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
     }
     
     public void showCustomizer( String preselectedCategory, String preselectedSubCategory ) {
+        project.getLookup().lookup(MavenProjectPropsImpl.class).startTransaction();
         try {
             init();
             OptionListener listener = new OptionListener();
@@ -114,7 +117,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         } catch (XmlPullParserException ex) {
             //TODO
             ex.printStackTrace();
-        }
+        } 
     }
     
     private void init() throws XmlPullParserException, FileNotFoundException, IOException {
@@ -176,7 +179,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 configs.add(ModelHandle.createProfileConfiguration(profile));
             }
         }
-        
+
         handle = ACCESSOR.createHandle(model, prof, project.getOriginalMavenProject(), mapps, configs, active);
         handle.setConfigurationsEnabled(configEnabled);
     }
@@ -221,6 +224,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 try {
                     project.getProjectDirectory().getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
                         public void run() throws IOException {
+                            project.getLookup().lookup(MavenProjectPropsImpl.class).commitTransaction();
                             writeAll(handle, project);
                         }
                     });
@@ -235,6 +239,8 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         
         @Override
         public void windowClosed( WindowEvent e) {
+            //TODO where to put elsewhere?
+            project.getLookup().lookup(MavenProjectPropsImpl.class).cancelTransaction();
         }
         
         @Override
