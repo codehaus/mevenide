@@ -4,14 +4,6 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>org.netbeans.modules.maven.indexer</code-name-base>
-            <class-path-extension>
-                <runtime-relative-path>ext/nexus-indexer-1.0-beta-4-shaded.jar</runtime-relative-path>
-                <binary-origin>external/nexus-indexer-1.0-beta-4-shaded.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lucene-core-2.3.1.jar</runtime-relative-path>
-                <binary-origin>external/lucene-core-2.3.1.jar</binary-origin>
-            </class-path-extension>
             <module-dependencies>
                 <dependency>
                     <code-name-base>org.netbeans.api.progress</code-name-base>
@@ -60,6 +52,14 @@
                 <package>org.netbeans.modules.maven.indexer.api</package>
                 <package>org.netbeans.modules.maven.indexer.spi</package>
             </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/nexus-indexer-1.0-beta-4-shaded.jar</runtime-relative-path>
+                <binary-origin>external/nexus-indexer-1.0-beta-4-shaded.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lucene-core-2.3.1.jar</runtime-relative-path>
+                <binary-origin>external/lucene-core-2.3.1.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>
