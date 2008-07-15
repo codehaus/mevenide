@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.maven.model.License;
 import org.netbeans.modules.maven.api.Constants;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.Repository;
 import org.openide.loaders.CreateFromTemplateAttributesProvider;
@@ -40,7 +41,7 @@ public class TemplateAttrProvider implements CreateFromTemplateAttributesProvide
     }
     
     public Map<String, ?> attributesFor(DataObject template, DataFolder target, String name) {
-        String license = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_LICENSE); //NOI18N
+        String license = project.getLookup().lookup(AuxiliaryProperties.class).get(Constants.HINT_LICENSE, true); //NOI18N
         if (license == null) {
             // try to match the project's license URL and the mavenLicenseURL attribute of license template
             List lst = project.getOriginalMavenProject().getLicenses();
