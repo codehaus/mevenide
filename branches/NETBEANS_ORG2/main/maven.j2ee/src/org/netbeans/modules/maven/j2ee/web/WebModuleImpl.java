@@ -49,6 +49,7 @@ import org.netbeans.modules.j2ee.dd.spi.web.WebAppMetadataModelFactory;
 import org.netbeans.modules.j2ee.deployment.common.api.ConfigurationException;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
@@ -91,7 +92,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     
     public String getJ2eePlatformVersion() {
         //try to apply the hint if it exists.
-        String version = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
+        String version = project.getLookup().lookup(AuxiliaryProperties.class).get(Constants.HINT_J2EE_VERSION, true);
         if (version != null) {
             return version;
         }
