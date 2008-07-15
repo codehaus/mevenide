@@ -35,6 +35,7 @@ import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.platform.Specification;
 import org.netbeans.spi.java.classpath.PathResourceImplementation;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.util.WeakListeners;
 
 /**
@@ -94,7 +95,7 @@ public final class BootClassPathImpl implements ClassPathImplementation, Propert
         }                
         
         //TODO ideally we would handle this by toolchains in future.
-        String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_JDK_PLATFORM);
+        String val = project.getLookup().lookup(AuxiliaryProperties.class).get(Constants.HINT_JDK_PLATFORM, true);
         lastHintValue = val;
         JavaPlatform plat = getActivePlatform(val);
         if (plat == null) {
@@ -132,7 +133,7 @@ public final class BootClassPathImpl implements ClassPathImplementation, Propert
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        String newVal = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_JDK_PLATFORM);
+        String newVal = project.getLookup().lookup(AuxiliaryProperties.class).get(Constants.HINT_JDK_PLATFORM, true);
         if (evt.getSource() == project && evt.getPropertyName().equals(NbMavenProjectImpl.PROP_PROJECT)) {
             //Active platform was changed
             if ( (newVal == null && lastHintValue != null) || (newVal != null && !newVal.equals(lastHintValue))) {

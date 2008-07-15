@@ -37,6 +37,7 @@ import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
@@ -134,7 +135,9 @@ public class MavenRunJarImpl implements MavenRunJar {
             StringBuffer cmd = new StringBuffer();
             cmd.append("'"); //NOI18N
             if ("java".equals(executable)) { //NOI18N
-                JavaPlatform plat = BootClassPathImpl.getActivePlatform(project.getProperties().getProperty(Constants.HINT_JDK_PLATFORM));
+                Project prj = FileOwnerQuery.getOwner(FileUtil.toFileObject(FileUtil.normalizeFile(project.getBasedir())));
+                String val = prj.getLookup().lookup(AuxiliaryProperties.class).get(Constants.HINT_JDK_PLATFORM, true);
+                JavaPlatform plat = BootClassPathImpl.getActivePlatform(val);
                 if (plat == null) {
                     plat = JavaPlatformManager.getDefault().getDefaultPlatform();
                 }

@@ -42,6 +42,7 @@ import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.classpath.PathResourceImplementation;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.netbeans.spi.project.SubprojectProvider;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
@@ -151,8 +152,7 @@ public class Utils {
     }
     
     static ClassPath createJDKSourcePath(Project nbproject) {
-        NbMavenProject w = nbproject.getLookup().lookup(NbMavenProject.class);
-        String val = w.getMavenProject().getProperties().getProperty(Constants.HINT_JDK_PLATFORM);
+        String val = nbproject.getLookup().lookup(AuxiliaryProperties.class).get(Constants.HINT_JDK_PLATFORM, true);
         JavaPlatform jp = BootClassPathImpl.getActivePlatform(val);
         if (jp == null) {
             jp = JavaPlatformManager.getDefault().getDefaultPlatform();
