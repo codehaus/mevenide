@@ -48,6 +48,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -88,7 +89,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     
     public String getJ2eePlatformVersion() {
         //try to apply the hint if it exists.
-        String version = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
+        String version = project.getLookup().lookup(AuxiliaryProperties.class).get(Constants.HINT_J2EE_VERSION, true);
         if (version != null) {
             return version;
         }
