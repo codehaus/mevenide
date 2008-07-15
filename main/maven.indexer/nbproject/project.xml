@@ -48,10 +48,19 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages>
+            <friend-packages>
+                <friend>org.netbeans.modules.maven.apisupport</friend>
+                <friend>org.netbeans.modules.maven.buildplan</friend>
+                <friend>org.netbeans.modules.maven.grammar</friend>
+                <friend>org.netbeans.modules.maven.hints</friend>
+                <friend>org.netbeans.modules.maven.j2ee</friend>
+                <friend>org.netbeans.modules.maven.persistence</friend>
+                <friend>org.netbeans.modules.maven.repository</friend>
+                <friend>org.netbeans.modules.maven</friend>
+                <friend>org.netbeans.modules.maven.search</friend>
                 <package>org.netbeans.modules.maven.indexer.api</package>
                 <package>org.netbeans.modules.maven.indexer.spi</package>
-            </public-packages>
+            </friend-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/nexus-indexer-1.0-beta-4-shaded.jar</runtime-relative-path>
                 <binary-origin>external/nexus-indexer-1.0-beta-4-shaded.jar</binary-origin>
