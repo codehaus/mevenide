@@ -38,23 +38,23 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.WeakListeners;
 
-
-
 /**
  * finds subprojects (projects this one depends on) that are locally available
  * and can be build as one unit. Uses maven multiproject infrastructure. (maven.multiproject.includes)
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class SubprojectProviderImpl implements SubprojectProvider {
-    
+
     private NbMavenProjectImpl project;
     private List<ChangeListener> listeners;
     private ChangeListener listener2;
+
     /** Creates a new instance of SubprojectProviderImpl */
     public SubprojectProviderImpl(NbMavenProjectImpl proj) {
         project = proj;
         listeners = new ArrayList<ChangeListener>();
         NbMavenProject.addPropertyChangeListener(proj, new PropertyChangeListener() {
+
             public void propertyChange(PropertyChangeEvent evt) {
                 if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                     fireChange();
@@ -62,16 +62,16 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             }
         });
         listener2 = new ChangeListener() {
+
             public void stateChanged(ChangeEvent event) {
                 fireChange();
             }
         };
         MavenFileOwnerQueryImpl.getInstance().addChangeListener(
                 WeakListeners.change(listener2,
-                                     MavenFileOwnerQueryImpl.getInstance()));
+                MavenFileOwnerQueryImpl.getInstance()));
     }
-    
-    
+
     public Set getSubprojects() {
         Set<Project> projects = new HashSet<Project>();
         File basedir = FileUtil.toFile(project.getProjectDirectory());
@@ -80,7 +80,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
         projects.remove(project);
         return projects;
     }
-    
+
     private void addOpenedCandidates(Set<Project> resultset) {
         Set<NbMavenProjectImpl> opened = MavenFileOwnerQueryImpl.getInstance().getOpenedProjects();
         List<Artifact> compileArtifacts = project.getOriginalMavenProject().getCompileArtifacts();
@@ -95,59 +95,75 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             }
         }
     }
-    
+
+    private boolean isProcessed(Set<Project> resultset, FileObject projectDir) {
+
+        for (Project p : resultset) {
+            if (p.getProjectDirectory().equals(projectDir)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void addProjectModules(File basedir, Set<Project> resultset, List modules) {
         if (modules == null || modules.size() == 0) {
             return;
         }
         Iterator it = modules.iterator();
         while (it.hasNext()) {
-            String path = (String)it.next();
+            String path = (String) it.next();
             File sub = new File(basedir, path);
-            Project proj = processOneSubproject(sub);
-            NbMavenProjectImpl mv = proj != null ? proj.getLookup().lookup(NbMavenProjectImpl.class) : null;
-            if (mv != null) {
-                // ignore the pom type projects when resolving subprojects..
-                // maybe make an user settable option??
-                if (! NbMavenProject.TYPE_POM.equalsIgnoreCase(mv.getProjectWatcher().getPackagingType())) {
-                    resultset.add(proj);
+            File projectFile = FileUtil.normalizeFile(sub);
+            if (projectFile.exists()) {
+                FileObject projectDir = FileUtil.toFileObject(projectFile);
+                if (projectDir != null && !isProcessed(resultset, projectDir)) {
+                    Project proj = processOneSubproject(projectDir);
+                    NbMavenProjectImpl mv = proj != null ? proj.getLookup().lookup(NbMavenProjectImpl.class) : null;
+                    if (mv != null) {
+                        // ignore the pom type projects when resolving subprojects..
+                        // maybe make an user settable option??
+                        if (!NbMavenProject.TYPE_POM.equalsIgnoreCase(mv.getProjectWatcher().getPackagingType())) {
+                            resultset.add(proj);
+                        }
+                        addProjectModules(FileUtil.toFile(mv.getProjectDirectory()),
+                                resultset, mv.getOriginalMavenProject().getModules());
+                    }
+                } else {
+                    // HUH?
+                    ErrorManager.getDefault().log("fileobject not found=" + sub); //NOI18N
                 }
-                addProjectModules(FileUtil.toFile(mv.getProjectDirectory()), 
-                                     resultset, mv.getOriginalMavenProject().getModules());
+
+            } else {
+                ErrorManager.getDefault().log("project file not found=" + sub); //NOI18N
             }
+
+
+
         }
     }
-    
-    
-    private Project processOneSubproject(File dir) {
-        File projectFile = FileUtil.normalizeFile(dir);
-        if (projectFile.exists()) {
-            FileObject projectDir = FileUtil.toFileObject(projectFile);
-            if (projectDir != null) {
-                try {
-                    return ProjectManager.getDefault().findProject(projectDir);
-                } catch (IOException exc) {
-                    ErrorManager.getDefault().notify(exc);
-                }
-            } else {
-                // HUH?
-                ErrorManager.getDefault().log("fileobject not found=" + dir ); //NOI18N
-            }
-            
-        } else {
-            ErrorManager.getDefault().log("project file not found=" + dir); //NOI18N
+
+    private Project processOneSubproject(FileObject projectDir) {
+
+
+        try {
+            return ProjectManager.getDefault().findProject(projectDir);
+        } catch (IOException exc) {
+            ErrorManager.getDefault().notify(exc);
         }
+
         return null;
     }
-    
+
     public synchronized void addChangeListener(ChangeListener changeListener) {
         listeners.add(changeListener);
     }
-    
+
     public synchronized void removeChangeListener(ChangeListener changeListener) {
         listeners.remove(changeListener);
     }
-    
+
     private void fireChange() {
         List<ChangeListener> lists = new ArrayList<ChangeListener>();
         synchronized (this) {
@@ -157,6 +173,4 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             listener.stateChanged(new ChangeEvent(this));
         }
     }
-
-    
 }
