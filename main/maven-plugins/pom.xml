@@ -39,14 +39,20 @@
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
-        <repository>
-            <id>upload</id>
-            <name>netbeans.org Repository</name>
-            <url>scpexe://deadlock.netbeans.org:222/home/mkleint/rsync-central</url>
-        </repository>
-    </distributionManagement>
-    
+        <distributionManagement>
+            <repository>
+                <id>sourceforge</id>
+                <name>sync to central</name>
+                <url>scp://shell.sourceforge.net/home/groups/n/nb/nb-mavenplugins/htdocs/releases</url>
+            </repository>
+            <snapshotRepository>
+                <id>sourceforge</id>
+                <name>snapshot repository</name>
+       <!--<uniqueVersion>false</uniqueVersion>-->
+                <url>scp://shell.sourceforge.net/home/groups/n/nb/nb-mavenplugins/htdocs/snapshots</url>
+            </snapshotRepository>
+        </distributionManagement>
+
     <repositories>
         <repository>
             <id>netbeans</id>
@@ -67,10 +73,10 @@
         <module>netbeans-run-plugin</module>
         <module>netbeans-nbmreload-plugin</module>
   </modules>
-  
+
     <properties>
         <!--a fallback to make it work everywhere -->
         <java142.home>${java.home}/..</java142.home>
     </properties>
-  
+
 </project>

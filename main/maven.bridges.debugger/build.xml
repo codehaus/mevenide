@@ -6,9 +6,9 @@
     <target name="deploy-artifact" depends="netbeans">
         <exec executable="mvn">
             <arg value="-Dfile=${basedir}/../nbbuild/netbeans/java2/modules/org-netbeans-modules-maven-bridges-debugger.jar"/>
-            <arg value="-DrepositoryId=netbeans-sync"/>
+            <arg value="-DrepositoryId=sourceforge"/>
             <arg value="-DrepositoryLayout=default"/>
-            <arg value="-Durl=scpexe://mkleint@deadlock.netbeans.org:222/home/mkleint/rsync-central"/>
+            <arg value="-Durl=scp://shell.sourceforge.net/home/groups/n/nb/nb-mavenplugins/htdocs/releases"/>
             <arg value="-DpomFile=${basedir}/pom.xml"/>
             <arg value="deploy:deploy-file"/>
         </exec>
