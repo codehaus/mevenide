@@ -148,7 +148,7 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
                 String line = readLine();
                 while (line != null) {
                      if (line.startsWith("&^#INCOMPLINE:")) {
-                         stdOut.print("$&^"+ line.substring("&^#INCOMPLINE:".length()));
+                         stdOut.print(line.substring("&^#INCOMPLINE:".length()));
                          line = readLine();
                          continue;
                      }
