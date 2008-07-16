@@ -37,6 +37,7 @@ import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ServerManager;
 import org.netbeans.modules.maven.j2ee.web.WebModuleProviderImpl;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
@@ -62,12 +63,13 @@ public class POHImpl extends ProjectOpenedHook {
     
     protected void projectOpened() {
         provider.hackModuleServerChange();
-        NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
-        String val = watch.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
-        String server = watch.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+        AuxiliaryProperties props = project.getLookup().lookup(AuxiliaryProperties.class);
+
+        String val = props.get(Constants.HINT_DEPLOY_J2EE_SERVER_ID, true);
+        String server = props.get(Constants.HINT_DEPLOY_J2EE_SERVER, true);
         if (server == null) {
             //try checking for old values..
-            server = watch.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+            server = props.get(Constants.HINT_DEPLOY_J2EE_SERVER_OLD, true);
         }
         String instanceFound = null;
         if (server != null) {
