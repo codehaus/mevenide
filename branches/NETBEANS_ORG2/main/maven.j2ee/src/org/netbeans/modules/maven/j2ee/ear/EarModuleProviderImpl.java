@@ -37,6 +37,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarImplementation;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarFactory;
+import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -73,11 +74,12 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
         
-        String val = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
-        String server = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+        AuxiliaryProperties props = project.getLookup().lookup(AuxiliaryProperties.class);
+        String val = props.get(Constants.HINT_DEPLOY_J2EE_SERVER_ID, true);
+        String server = props.get(Constants.HINT_DEPLOY_J2EE_SERVER, true);
         if (server == null) {
             //try checking for old values..
-            server = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+            server = props.get(Constants.HINT_DEPLOY_J2EE_SERVER_OLD, true);
         }
         String instanceFound = null;
         if (server != null) {
