@@ -67,20 +67,20 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     };
 
     private int CACHED_PLATFORM = VAL_NOT_CACHED;
-    
+
     private static int VAL_NOT_CACHED = 0;
     private static int VAL_IDE = 1;
     private static int VAL_PLATFORM = 2;
     private static int VAL_NOT_NB = 3;
-    
+
     private RequestProcessor.Task clearingTask = PROCESSOR.create(
     new Runnable() {
         public void run() {
             CACHED_PLATFORM = VAL_NOT_CACHED;
         }
     });
-    
-    
+
+
     /** Creates a new instance of NbmActionGoalProvider */
     public NbmActionGoalProvider() {
         clearingTask.setPriority(Thread.MIN_PRIORITY);
@@ -102,11 +102,11 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
                 CACHED_PLATFORM = VAL_NOT_NB;
             }
             clearingTask.schedule(500);
-        } 
+        }
         if (CACHED_PLATFORM != VAL_NOT_NB) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -168,21 +168,25 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     private boolean hasNbm(Project project) {
         NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
         String pack = watch.getPackagingType();
-        boolean isPom = NbMavenProject.TYPE_POM.equals(pack);
+//        boolean isPom = NbMavenProject.TYPE_POM.equals(pack);
         boolean hasNbm = NbMavenProject.TYPE_NBM.equals(pack);
-        if (isPom) {
-            SubprojectProvider prov = project.getLookup().lookup(SubprojectProvider.class);
-            for (Project prj : prov.getSubprojects()) {
-                NbMavenProject w2 = prj.getLookup().lookup(NbMavenProject.class);
-                if (NbMavenProject.TYPE_NBM.equals(w2.getPackagingType())) {
-                    hasNbm = true;
-                    break;
-                }
-            }
-        }
+        //#139279 opening a pom project with a log ot submodules cases this to be
+        // a heavy perfomance burden.
+        // we handle platform app and single nbm files automatically, the multimodule ide projects have to be setup
+        // manually unfortunately.
+//        if (isPom) {
+//            SubprojectProvider prov = project.getLookup().lookup(SubprojectProvider.class);
+//            for (Project prj : prov.getSubprojects()) {
+//                NbMavenProject w2 = prj.getLookup().lookup(NbMavenProject.class);
+//                if (NbMavenProject.TYPE_NBM.equals(w2.getPackagingType())) {
+//                    hasNbm = true;
+//                    break;
+//                }
+//            }
+//        }
         return hasNbm;
     }
-    
+
     private String guessNetbeansInstallation() {
         //TODO netbeans.home is obsolete.. what to replace it with though?
         File fil = new File(System.getProperty("netbeans.home")); //NOI18N
