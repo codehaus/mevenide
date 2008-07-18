@@ -59,6 +59,7 @@ import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.loaders.FolderLookup;
 import org.openide.nodes.AbstractNode;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
@@ -70,6 +71,9 @@ import org.openide.util.actions.SystemAction;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenProjectNode extends AbstractNode {
+    private static final String BADGE_ICON = "org/netbeans/modules/maven/brokenProjectBadge.png";//NOI18N
+     private static String toolTipBroken = "<img src=\"" + MavenProjectNode.class.getClassLoader().getResource(BADGE_ICON) + "\">&nbsp;" //NOI18N
+            + NbBundle.getMessage(MavenProjectNode.class, "ICON_BrokenProjectBadge");//NOI18N
      
      private NbMavenProjectImpl project;
      private ProjectInformation info;
@@ -110,22 +114,22 @@ public class MavenProjectNode extends AbstractNode {
     
     @Override
     public Image getIcon(int param) {
-        //HACK - 1. getImage call
-        // 2. assume project root folder, should be Generic Sources root (but is the same)
-        Image img = ((ImageIcon)info.getIcon()).getImage();
+        Image img = Utilities.icon2Image(info.getIcon());
         if (reporter.getReports().size() > 0) {
-            img = Utilities.mergeImages(img, Utilities.loadImage("org/netbeans/modules/maven/brokenProjectBadge.png"), 8, 0);//NOI18N
+            Image ann = ImageUtilities.loadImage(BADGE_ICON); //NOI18N
+            ann = ImageUtilities.addToolTipToImage(ann, toolTipBroken);
+            img = ImageUtilities.mergeImages(img, ann, 8, 0);//NOI18N
         }
         return img;
     }
     
     @Override
     public Image getOpenedIcon(int param) {
-        //HACK - 1. getImage call
-        // 2. assume project root folder, should be Generic Sources root (but is the same)
-        Image img = ((ImageIcon)info.getIcon()).getImage();
+        Image img = Utilities.icon2Image(info.getIcon());
         if (reporter.getReports().size() > 0) {
-            img = Utilities.mergeImages(img, Utilities.loadImage("org/netbeans/modules/maven/brokenProjectBadge.png"), 8, 0);//NOI18N
+            Image ann = ImageUtilities.loadImage(BADGE_ICON); //NOI18N
+            ann = ImageUtilities.addToolTipToImage(ann, toolTipBroken);
+            img = ImageUtilities.mergeImages(img, ann, 8, 0);//NOI18N
         }
         return img;
     }
@@ -232,7 +236,8 @@ public class MavenProjectNode extends AbstractNode {
             }
             buf.append("</ul>");//NOI18N
         }
-        buf.append("</html>");//NOI18N
+        // it seems that with ending </html> tag the icon descriptions are not added.
+//        buf.append("</html>");//NOI18N
         return buf.toString();
     }
 
