@@ -46,6 +46,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -106,12 +107,18 @@ public class POMInheritancePanel extends javax.swing.JPanel implements ExplorerM
                     });
                 } catch (ProjectBuildingException ex) {
                     Logger.getLogger(getClass().getName()).log(Level.FINE, "Error reading model lineage", ex);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                           treeView.setRootVisible(true);
+                           explorerManager.setRootContext(createErrorNode());
+                        }
+                    });
                 }
             } else {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                        treeView.setRootVisible(false);
-                       explorerManager.setRootContext(new WaitNode());
+                       explorerManager.setRootContext(createEmptyNode());
                     } 
                 });
             }
@@ -129,7 +136,7 @@ public class POMInheritancePanel extends javax.swing.JPanel implements ExplorerM
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                treeView.setRootVisible(false);
-               explorerManager.setRootContext(new WaitNode());
+               explorerManager.setRootContext(createEmptyNode());
             } 
         });
     }
@@ -141,7 +148,7 @@ public class POMInheritancePanel extends javax.swing.JPanel implements ExplorerM
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                treeView.setRootVisible(true);
-               explorerManager.setRootContext(new WaitNode());
+               explorerManager.setRootContext(createWaitNode());
             } 
         });
     }
@@ -175,31 +182,22 @@ public class POMInheritancePanel extends javax.swing.JPanel implements ExplorerM
     // End of variables declaration//GEN-END:variables
 
     
-    
-    
-    private static class WaitNode extends AbstractNode {
-        
-        private Image waitIcon = Utilities.loadImage("org/netbeans/modules/maven/navigator/wait.gif"); // NOI18N
-        
-        WaitNode( ) {
-            super( Children.LEAF );
-        }
-        
-        @Override
-        public Image getIcon(int type) {
-             return waitIcon;
-        }
+    private static Node createWaitNode() {
+        AbstractNode an = new AbstractNode(Children.LEAF);
+        an.setIconBaseWithExtension("org/netbeans/modules/maven/navigator/wait.gif");
+        an.setDisplayName(NbBundle.getMessage(POMInheritancePanel.class, "LBL_Wait"));
+        return an;
+    }
 
-        @Override
-        public Image getOpenedIcon(int type) {
-            return getIcon(type);
-        }
+    private static Node createEmptyNode() {
+        AbstractNode an = new AbstractNode(Children.LEAF);
+        return an;
+    }
 
-        @java.lang.Override
-        public java.lang.String getDisplayName() {
-            return org.openide.util.NbBundle.getMessage(POMInheritancePanel.class, "LBL_Wait");
-        }
-        
+    private static Node createErrorNode() {
+        AbstractNode an = new AbstractNode(Children.LEAF);
+        an.setDisplayName(NbBundle.getMessage(POMInheritancePanel.class, "LBL_Error"));
+        return an;
     }
     
     private static class PomChildren extends Children.Keys<ModelLineage> {
