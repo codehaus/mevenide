@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -52,13 +51,14 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.actions.FindAction;
-import org.openide.actions.ToolsAction;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
 import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.loaders.FolderLookup;
+import org.openide.nodes.AbstractNode;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
@@ -69,7 +69,7 @@ import org.openide.util.actions.SystemAction;
  *
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class MavenProjectNode extends AnnotatedAbstractNode {
+public class MavenProjectNode extends AbstractNode {
      
      private NbMavenProjectImpl project;
      private ProjectInformation info;
@@ -100,7 +100,6 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
                 });
             }
         });
-        setFiles(Collections.<FileObject>singleton(proj.getProjectDirectory()));
     }
 
     
@@ -110,7 +109,7 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
     }
     
     @Override
-    public Image getIconImpl(int param) {
+    public Image getIcon(int param) {
         //HACK - 1. getImage call
         // 2. assume project root folder, should be Generic Sources root (but is the same)
         Image img = ((ImageIcon)info.getIcon()).getImage();
@@ -121,7 +120,7 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
     }
     
     @Override
-    public Image getOpenedIconImpl(int param) {
+    public Image getOpenedIcon(int param) {
         //HACK - 1. getImage call
         // 2. assume project root folder, should be Generic Sources root (but is the same)
         Image img = ((ImageIcon)info.getIcon()).getImage();
@@ -218,7 +217,7 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
     @Override
     public String getShortDescription() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<html><i>").append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project1")).append("</i><b> ").append(project.getPOMFile().getParentFile().getPath()).append("</b><br><i>"); //NOI18N
+        buf.append("<html><i>").append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project1")).append("</i><b> ").append(FileUtil.getFileDisplayName(project.getProjectDirectory())).append("</b><br><i>"); //NOI18N
         buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project2")).append("</i><b> ").append(project.getOriginalMavenProject().getGroupId()).append("</b><br><i>");//NOI18N
         buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project3")).append("</i><b> ").append(project.getOriginalMavenProject().getArtifactId()).append("</b><br><i>");//NOI18N
         buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project4")).append("</i><b> ").append(project.getOriginalMavenProject().getVersion()).append("</b><br><i>");//NOI18N
