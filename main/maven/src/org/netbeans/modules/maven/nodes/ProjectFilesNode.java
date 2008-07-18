@@ -46,8 +46,8 @@ import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -79,8 +79,8 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
     }
     
     private Image getIcon(boolean opened) {
-        Image badge = Utilities.loadImage("org/netbeans/modules/maven/projectfiles-badge.png", true); //NOI18N
-        Image img = Utilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
+        Image badge = ImageUtilities.loadImage("org/netbeans/modules/maven/projectfiles-badge.png", true); //NOI18N
+        Image img = ImageUtilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
         return img;
     }
     
