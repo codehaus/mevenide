@@ -26,6 +26,8 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +41,6 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
@@ -80,7 +81,6 @@ import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.Lookup.Template;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.modules.maven.operations.OperationsImpl;
@@ -91,6 +91,7 @@ import org.netbeans.modules.maven.queries.MavenFileEncodingQueryImpl;
 import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
 import org.openide.util.ContextAwareAction;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ProxyLookup;
 
@@ -228,6 +229,13 @@ public final class NbMavenProjectImpl implements Project {
                                     NbBundle.getMessage(NbMavenProjectImpl.class, "TXT_MissingSubmodule", exc.getModuleName()),
                                     ((Exception) e).getMessage(), null);
                             problemReporter.addReport(report);
+                        } else {
+                            Logger.getLogger(NbMavenProjectImpl.class.getName()).log(Level.INFO, "Exception thrown while loading maven project at " + getProjectDirectory(), (Exception)e); //NOI18N
+                            ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                                    "Error reading project model",
+                                    ((Exception) e).getMessage(), null);
+                            problemReporter.addReport(report);
+                            
                         }
                     }
                 }
@@ -235,6 +243,16 @@ public final class NbMavenProjectImpl implements Project {
                 //guard against exceptions that are not processed by the embedder
                 //#136184 NumberFormatException
                 Logger.getLogger(NbMavenProjectImpl.class.getName()).log(Level.INFO, "Runtime exception thrown while loading maven project at " + getProjectDirectory(), exc); //NOI18N
+                StringWriter wr = new StringWriter();
+                PrintWriter pw = new PrintWriter(wr);
+                exc.printStackTrace(pw);
+                pw.flush();
+
+                ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                        NbBundle.getMessage(NbMavenProjectImpl.class, "TXT_RuntimeException"),
+                        NbBundle.getMessage(NbMavenProjectImpl.class, "TXT_RuntimeExceptionLong") + wr.toString(), null);
+                problemReporter.addReport(report);
+                
             } finally {
                 if (project == null) {
                     try {
@@ -315,8 +333,7 @@ public final class NbMavenProjectImpl implements Project {
 
     private Image getIcon() {
         if (icon == null) {
-            icon = Utilities.loadImage("org/netbeans/modules/maven/Maven2Icon.gif");//NOI18N
-
+            icon = ImageUtilities.loadImage("org/netbeans/modules/maven/Maven2Icon.gif");//NOI18N
         }
         return icon;
     }
@@ -628,7 +645,7 @@ public final class NbMavenProjectImpl implements Project {
         }
 
         public Icon getIcon() {
-            return new ImageIcon(NbMavenProjectImpl.this.getIcon());
+            return ImageUtilities.image2Icon(NbMavenProjectImpl.this.getIcon());
         }
 
         public Project getProject() {
