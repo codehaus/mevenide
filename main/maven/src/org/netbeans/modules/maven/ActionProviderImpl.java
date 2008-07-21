@@ -86,16 +86,17 @@ public class ActionProviderImpl implements ActionProvider {
         COMMAND_DEBUG_SINGLE,
         COMMAND_DEBUG_TEST_SINGLE,
         "debug.fix", //NOI18N
+        "profile",
+        //"profile-single", // profile-single not supported yet
+        //"profile-tests", // profile-tests not supported yet
 
         //operations
         COMMAND_DELETE,
         COMMAND_RENAME,
         COMMAND_MOVE,
         COMMAND_COPY,
-        "nbmreload", //TODO make actionproviders mergeble //NOI18N
-        "profile",
-        "profile.file",
-        "profile.test"
+        "nbmreload" //TODO make actionproviders mergeble //NOI18N
+        
 
     };
 
