@@ -52,14 +52,9 @@ public class ModInstall extends ModuleInstall {
             //TODO place somewhere else to make sure it's writable by user?
             expandedPath = new File(zipFile.getParentFile(), "maven-plugins-xml"); //NOI18N
             
-            FileObject fo=null;
             InputStream in = null;
             try {
-                fo = FileUtil.createFolder(expandedPath);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            try {
+                FileObject fo = FileUtil.createFolder(expandedPath);
                 in = new FileInputStream(zipFile);
                 FileUtil.extractJar(fo, in);
             } catch (IOException exc) {
