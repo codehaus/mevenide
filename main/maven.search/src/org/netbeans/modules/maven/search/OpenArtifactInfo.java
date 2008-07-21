@@ -39,10 +39,6 @@
 package org.netbeans.modules.maven.search;
 
 import org.netbeans.modules.maven.indexer.api.NBArtifactInfo;
-import org.netbeans.modules.maven.search.ui.ArtifactInfoUI;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -57,16 +53,6 @@ public class OpenArtifactInfo implements Runnable {
     }
 
     public void run() {
-         DialogDescriptor dd = new DialogDescriptor(new ArtifactInfoUI(artifactInfo),
-                 NbBundle.getMessage(getClass(),"LBL_Maven_Artifact") );
-        dd.setClosingOptions(new Object[]{
-
-                    DialogDescriptor.CLOSED_OPTION
-                });
-        dd.setOptions(new Object[]{
-
-                    DialogDescriptor.CLOSED_OPTION
-                });
-        Object ret = DialogDisplayer.getDefault().notify(dd);
+        
     }
 }
