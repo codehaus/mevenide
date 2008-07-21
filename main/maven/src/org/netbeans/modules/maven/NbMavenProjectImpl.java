@@ -88,8 +88,10 @@ import org.netbeans.modules.maven.api.problem.ProblemReport;
 import org.netbeans.modules.maven.execute.BackwardCompatibilityWithMevenideChecker;
 import org.netbeans.modules.maven.queries.MavenBinaryForSourceQueryImpl;
 import org.netbeans.modules.maven.queries.MavenFileEncodingQueryImpl;
+import org.netbeans.spi.project.LookupMerger;
 import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
+import org.netbeans.spi.queries.SharabilityQueryImplementation;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
@@ -119,6 +121,7 @@ public final class NbMavenProjectImpl implements Project {
     private MavenProject project;
     private ProblemReporterImpl problemReporter;
     private Info projectInfo;
+    private MavenSharabilityQueryImpl sharability;
     private MavenProject oldProject;
     private NbMavenProject watcher;
     private ProjectState state;
@@ -156,7 +159,8 @@ public final class NbMavenProjectImpl implements Project {
         fileObject = projectFO;
         folderFileObject = folder;
         projectInfo = new Info();
-        lookup = new LazyLookup(projectInfo);
+        sharability = new MavenSharabilityQueryImpl(this);
+        lookup = new LazyLookup(projectInfo, sharability);
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
@@ -546,21 +550,41 @@ public final class NbMavenProjectImpl implements Project {
     private class LazyLookup extends ProxyLookup {
         private Lookup lookup;
         boolean initialized = false;
-        LazyLookup(ProjectInformation info) {
-            setLookups(Lookups.fixed(info));
+        LazyLookup(ProjectInformation info, SharabilityQueryImplementation shara) {
+            setLookups(Lookups.fixed(info, shara));
         }
 
         @Override
         protected synchronized void beforeLookup(Template<?> template) {
-            if (!initialized && !ProjectInformation.class.equals(template.getType())) {
+            if (!initialized && 
+                (! (ProjectInformation.class.equals(template.getType()) ||
+                    SharabilityQueryImplementation.class.equals(template.getType())))) {
                 initialized = true;
                 lookup = createBasicLookup();
                 setLookups(lookup);
-                setLookups(LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-netbeans-modules-maven/Lookup")); //NOI18N
+                Lookup lkp = LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-netbeans-modules-maven/Lookup");
+                assert checkForForbiddenMergers(lkp) : "Cannot have a LookupMerger for ProjectInformation or SharabilityQueryImplementation";
+                setLookups(lkp); //NOI18N
+                
             }
             super.beforeLookup(template);
         }
 
+    }
+
+    //to be called from assert,
+    // chekc for items we optimize for at startup.
+    private boolean checkForForbiddenMergers(Lookup lkp) {
+        Collection<? extends LookupMerger> res = lkp.lookupAll(LookupMerger.class);
+        for (LookupMerger lm : res) {
+            if (ProjectInformation.class.equals(lm.getMergeableClass())) {
+                return false;
+            }
+            if (SharabilityQueryImplementation.class.equals(lm.getMergeableClass())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Lookup createBasicLookup() {
@@ -579,7 +603,7 @@ public final class NbMavenProjectImpl implements Project {
                     new LogicalViewProviderImpl(this),
                     new ProjectOpenedHookImpl(this),
                     new ClassPathProviderImpl(this),
-                    new MavenSharabilityQueryImpl(this),
+                    sharability,
                     new MavenTestForSourceImpl(this),
                     ////            new MavenFileBuiltQueryImpl(this),
                     new SubprojectProviderImpl(this),
