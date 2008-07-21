@@ -65,7 +65,8 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
     
     public boolean checkRunConfig(String actionName, RunConfig config) {
         if ((ActionProvider.COMMAND_RUN.equals(actionName) ||
-                ActionProvider.COMMAND_DEBUG.equals(actionName)) &&  
+                ActionProvider.COMMAND_DEBUG.equals(actionName) ||
+                "profile".equals(actionName)) &&  
                 NbMavenProject.TYPE_JAR.equals(
                       config.getProject().getLookup().lookup(NbMavenProject.class).getPackagingType())) 
         {
