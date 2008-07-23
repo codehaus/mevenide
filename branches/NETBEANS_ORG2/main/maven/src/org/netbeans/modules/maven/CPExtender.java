@@ -324,9 +324,14 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         boolean added = urls.length > 0;
         String scope = ClassPath.EXECUTE.equals(type) ? "runtime" : null;//NOI18N
         for (URL url : urls) {
-            FileObject fo  = URLMapper.findFileObject(FileUtil.getArchiveFile(url));
-            assert fo != null;
-            added = added && addArchiveFile(fo, model, scope);
+            URL fileUrl = FileUtil.getArchiveFile(url);
+            if (fileUrl != null) {
+                FileObject fo  = URLMapper.findFileObject(fileUrl);
+                assert fo != null;
+                added = added && addArchiveFile(fo, model, scope);
+            } else {
+                Logger.getLogger(CPExtender.class.getName()).info("Adding non-jar root to Maven projects makes no sense. (" + url + ")"); //NOI18N
+            }
         }
         if (added) {
             try {
