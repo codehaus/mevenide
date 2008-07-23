@@ -114,7 +114,11 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
                     replaceMap.put(CLASSNAME_EXT, fos[0].getNameExt());
                     replaceMap.put(CLASSNAME, fos[0].getName());
                     String pack = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0].getParent());
-                    replaceMap.put(PACK_CLASSNAME, (pack + (pack.length() > 0 ? "." : "") + fos[0].getName()).replace('/', '.')); //NOI18N
+                    if (pack != null) { //#141175
+                        replaceMap.put(PACK_CLASSNAME, (pack + (pack.length() > 0 ? "." : "") + fos[0].getName()).replace('/', '.')); //NOI18N
+                    } else {
+                        replaceMap.put(PACK_CLASSNAME, fos[0].getName());//NOI18N
+                    }
                     break;
                 }
             }
