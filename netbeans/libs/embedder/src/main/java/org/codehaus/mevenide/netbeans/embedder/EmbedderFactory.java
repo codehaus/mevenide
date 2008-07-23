@@ -309,16 +309,16 @@ public final class EmbedderFactory {
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.plexus");
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.classworlds");
             plexusRealm.importFrom(nbRealm.getId(), "org.apache.maven");
-            plexusRealm.importFrom(nbRealm.getId(), "org.apache.commons.cli");
-            plexusRealm.importFrom(nbRealm.getId(), "META-INF/maven");
+            plexusRealm.importFrom(nbRealm.getId(), "org.apache.commons"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.apache.log4j"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.apache.xbean"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.apache.xerces"); //NOI18N            plexusRealm.importFrom(nbRealm.getId(), "META-INF/maven");
             plexusRealm.importFrom(nbRealm.getId(), "META-INF/plexus");
             plexusRealm.importFrom(nbRealm.getId(), "com.jcraft.jsch");
             plexusRealm.importFrom(nbRealm.getId(), "org.aspectj");
             plexusRealm.importFrom(nbRealm.getId(), "org.jdom");
-            plexusRealm.importFrom(nbRealm.getId(), "org.w3c.dom");
-            plexusRealm.importFrom(nbRealm.getId(), "org.w3c.tidy");
-            plexusRealm.importFrom(nbRealm.getId(), "org.xml.sax");
-            plexusRealm.importFrom(nbRealm.getId(), "hidden.org.codehaus.plexus");
+            plexusRealm.importFrom(nbRealm.getId(), "org.cyberneko"); //NOI18N
+            plexusRealm.importFrom(nbRealm.getId(), "org.easymock"); //NOI18N            plexusRealm.importFrom(nbRealm.getId(), "hidden.org.codehaus.plexus");
 
             // from netbeans allow just Lookup and the mevenide bridges
             plexusRealm.importFrom(nbRealm.getId(), "org.openide.util");
