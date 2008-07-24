@@ -13,6 +13,7 @@
         <properties>
             <exec.args>${profiler.args} -classpath %classpath ${packageClassName}</exec.args>
             <exec.executable>${profiler.java}</exec.executable>
+            <profiler.action>profile</profiler.action>
         </properties>
     </action>
 </actions>
