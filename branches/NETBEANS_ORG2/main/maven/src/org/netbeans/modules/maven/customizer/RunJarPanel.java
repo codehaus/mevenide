@@ -471,8 +471,6 @@ public class RunJarPanel extends javax.swing.JPanel {
     }
     
     void applyChanges() {
-        Thread.dumpStack();
-        
         String newMainClass = txtMainClass.getText().trim();
         String newParams = txtArguments.getText().trim();
         String newVMParams = txtVMOptions.getText().trim();
