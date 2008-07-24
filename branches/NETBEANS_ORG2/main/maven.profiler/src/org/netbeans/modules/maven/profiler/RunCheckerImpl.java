@@ -19,10 +19,10 @@ package org.netbeans.modules.maven.profiler;
 
 import java.io.File;
 import java.util.Properties;
-import org.netbeans.modules.maven.api.execute.PrerequisitesChecker;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.api.project.Project;
 import org.netbeans.lib.profiler.common.Profiler;
+import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
 import org.netbeans.modules.profiler.utils.ProjectUtilities;
 import org.openide.util.RequestProcessor;
 
@@ -31,15 +31,15 @@ import org.openide.util.RequestProcessor;
  * @author mkleint
  * @author Jiri Sedlacek
  */
-public class RunCheckerImpl implements PrerequisitesChecker {
+public class RunCheckerImpl implements LateBoundPrerequisitesChecker {
     
     private static final String ACTION_PROFILE = "profile"; // NOI18N
-    private static final String ACTION_PROFILE_SINGLE = "profile-single"; // NOI18N
-    private static final String ACTION_PROFILE_TESTS = "profile-tests"; // NOI18N
+//    private static final String ACTION_PROFILE_SINGLE = "profile-single"; // NOI18N
+//    private static final String ACTION_PROFILE_TESTS = "profile-tests"; // NOI18N
     
-    private static final String EXEC_ARGS = "exec.args"; // NOI18N
+//    private static final String EXEC_ARGS = "exec.args"; // NOI18N
     private static final String PROFILER_ARGS = "${profiler.args}"; // NOI18N
-    private static final String EXEC_EXECUTABLE = "exec.executable"; // NOI18N
+//    private static final String EXEC_EXECUTABLE = "exec.executable"; // NOI18N
     private static final String PROFILER_JAVA = "${profiler.java}"; // NOI18N
     
     private Project project;
@@ -49,29 +49,31 @@ public class RunCheckerImpl implements PrerequisitesChecker {
         project = prj;
     }
     
-    public boolean checkRunConfig(String actionName, RunConfig config) {
-        if (ACTION_PROFILE.equals(actionName)) { // action "profile"
+    public boolean checkRunConfig(RunConfig config) {
+        Properties configProperties = config.getProperties();
+
+        //mkleint sort of a hack, action name gets lost at the time lateboundcheckers get invoked.
+        if (ACTION_PROFILE.equals(configProperties.getProperty("profiler.action"))) { // action "profile"
             // Get the ProjectTypeProfiler for Maven project
             final MavenProjectTypeProfiler ptp = (MavenProjectTypeProfiler)ProjectUtilities.getProjectTypeProfiler(project);
             
             // Resolve profiling session properties
             Properties sessionProperties = ptp.getLastSessionProperties();
-            // Resolve config properties
-            Properties configProperties = config.getProperties();
-            
-            // Set "${profiler.args}" value
-            String execArgs = configProperties.getProperty(EXEC_ARGS);
-            execArgs = execArgs.replace(PROFILER_ARGS, sessionProperties.getProperty("profiler.info.jvmargs") // NOI18N
-                    + " " + sessionProperties.getProperty("profiler.info.jvmargs.agent").replace("\\", "/")); // NOI18N
-            configProperties.setProperty(EXEC_ARGS, execArgs);
-            
-            // Set "${profiler.java}" value
-            String execExecutable = configProperties.getProperty(EXEC_EXECUTABLE);
-            String profilerJava = sessionProperties.getProperty("profiler.info.jvm"); // NOI18N
-            execExecutable = execExecutable.replace(PROFILER_JAVA,
-                    (profilerJava != null && new File(profilerJava).isFile()) ? profilerJava : "java"); // NOI18N
-            configProperties.setProperty(EXEC_EXECUTABLE, execExecutable);
-            
+            for (Object k : configProperties.keySet()) {
+                String key = (String)k;
+                String value = configProperties.getProperty(key);
+                if (value.contains(PROFILER_ARGS)) {
+                    value = value.replace(PROFILER_ARGS, sessionProperties.getProperty("profiler.info.jvmargs") // NOI18N
+                            + " " + sessionProperties.getProperty("profiler.info.jvmargs.agent").replace("\\", "/")); // NOI18N
+                    configProperties.setProperty(key, value);
+                }
+                if (value.contains(PROFILER_JAVA)) {
+                    String profilerJava = sessionProperties.getProperty("profiler.info.jvm"); // NOI18N
+                    value = value.replace(PROFILER_JAVA,
+                            (profilerJava != null && new File(profilerJava).isFile()) ? profilerJava : "java"); // NOI18N
+                    configProperties.setProperty(key, value);
+                }
+            }
             // Set the properties back to config
             config.setProperties(configProperties);
             
@@ -82,10 +84,10 @@ public class RunCheckerImpl implements PrerequisitesChecker {
                 }
             });
             
-        } else if (ACTION_PROFILE_SINGLE.equals(actionName)) { // action "profile-single"
-            // profile-single not supported yet, shouldn't get here
-        } else if (ACTION_PROFILE_TESTS.equals(actionName)) {
-            // profile-tests not supported yet, shouldn't get here // action "profile-tests"
+//        } else if (ACTION_PROFILE_SINGLE.equals(actionName)) { // action "profile-single"
+//            // profile-single not supported yet, shouldn't get here
+//        } else if (ACTION_PROFILE_TESTS.equals(actionName)) {
+//            // profile-tests not supported yet, shouldn't get here // action "profile-tests"
         }
         
         return true;
