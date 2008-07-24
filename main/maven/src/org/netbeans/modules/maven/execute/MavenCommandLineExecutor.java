@@ -64,7 +64,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         // check the prerequisites
         Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
         for (LateBoundPrerequisitesChecker elem : result.allInstances()) {
-            if (!elem.checkRunConfig("XXX-TODO", clonedConfig)) {
+            if (!elem.checkRunConfig(clonedConfig)) {
                 return;
             }
         }
