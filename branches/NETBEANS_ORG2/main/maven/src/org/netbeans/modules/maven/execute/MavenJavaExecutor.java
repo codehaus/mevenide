@@ -47,10 +47,12 @@ import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.windows.InputOutput;
@@ -85,7 +87,16 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
      */
     public void run() {
         finishing = false;
-        final Properties origanalProperties = config.getProperties();
+        RunConfig clonedConfig = new BeanRunConfig(this.config);
+        // check the prerequisites
+        Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
+        for (LateBoundPrerequisitesChecker elem : result.allInstances()) {
+            if (!elem.checkRunConfig("XXX-TODO", clonedConfig)) {
+                return;
+            }
+        }
+        
+        final Properties origanalProperties = clonedConfig.getProperties();
         InputOutput ioput = getInputOutput();
         actionStatesAtStart();
         String basedir = System.getProperty(BASEDIR);//NOI18N
@@ -95,10 +106,10 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         try {
             MavenEmbedder embedder;
             ProgressTransferListener.setAggregateHandle(handle);
-            out = new JavaOutputHandler(ioput, config.getProject(), handle, config);
+            out = new JavaOutputHandler(ioput, clonedConfig.getProject(), handle, clonedConfig);
             IOBridge.pushSystemInOutErr(out);
-            boolean debug = config.isShowDebug();
-            req.setShowErrors(debug || config.isShowError());
+            boolean debug = clonedConfig.isShowDebug();
+            req.setShowErrors(debug || clonedConfig.isShowError());
             if (debug) {
                 req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_DEBUG);
                 out.setThreshold(MavenEmbedderLogger.LEVEL_DEBUG);
@@ -127,15 +138,6 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             
             embedder = EmbedderFactory.createExecuteEmbedder(out);
             super.buildPlan.setEmbedder(embedder);
-            if (config.getProject() != null) {
-                try {
-                    checkDebuggerListening(config, out);
-                } catch (MojoExecutionException ex) {
-                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
-                } catch (MojoFailureException ex) {
-                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
-                }
-            }
 //mkleint: not relevant anymore, we don't ship the repository, rely on central repo instead.
 //            File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);//NOI18N
 //            //TODO we should get completely rid of this..
@@ -174,27 +176,27 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
 //            if (MavenExecutionSettings.getDefault().isSynchronizeProxy()) {
 //            }
             
-            req.addActiveProfiles(config.getActivatedProfiles());
+            req.addActiveProfiles(clonedConfig.getActivatedProfiles());
             
             // TODO remove explicit activation
             req.addActiveProfile(PROFILE_PUBLIC).addActiveProfile(PROFILE_PRIVATE);
             //            req.activateDefaultEventMonitor();
-            if (config.isOffline() != null) {
-                req.setOffline(config.isOffline().booleanValue());
+            if (clonedConfig.isOffline() != null) {
+                req.setOffline(clonedConfig.isOffline().booleanValue());
             }
-            req.setInteractiveMode(config.isInteractive());
+            req.setInteractiveMode(clonedConfig.isInteractive());
 //TODO            req.setSettings(settings);
-            req.setGoals(config.getGoals());
+            req.setGoals(clonedConfig.getGoals());
             //mavenCLI adds all System.getProperties() in there as well..
             Properties props = new Properties();
             EmbedderFactory.fillEnvVars(props);
             props.putAll(excludeNetBeansProperties(System.getProperties()));
-            props.putAll(config.getProperties());
+            props.putAll(clonedConfig.getProperties());
             props.setProperty("netbeans.execution", "true");//NOI18N
             
             req.setProperties(props);
-            req.setBaseDirectory(config.getExecutionDirectory());
-            File pom = new File(config.getExecutionDirectory(), "pom.xml");//NOI18N
+            req.setBaseDirectory(clonedConfig.getExecutionDirectory());
+            File pom = new File(clonedConfig.getExecutionDirectory(), "pom.xml");//NOI18N
             if (pom.exists()) {
                 req.setPomFile(pom.getAbsolutePath());
             }
@@ -207,8 +209,8 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             req.setStartTime(new Date());
             req.setGlobalChecksumPolicy(MavenExecutionSettings.getDefault().getChecksumPolicy());
             
-            req.setUpdateSnapshots(config.isUpdateSnapshots());
-            req.setRecursive(config.isRecursive());
+            req.setUpdateSnapshots(clonedConfig.isUpdateSnapshots());
+            req.setRecursive(clonedConfig.isRecursive());
             MavenExecutionResult res = embedder.execute(req);
             CLIReportingUtils.logResult(req, res, out);
             if (res.hasExceptions()) {
@@ -242,7 +244,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                 System.setProperty( BASEDIR,basedir);
             }
             //MEVENIDE-623 re add original Properties
-            config.setProperties(origanalProperties);
+            clonedConfig.setProperties(origanalProperties);
             
             actionStatesAtFinish();
             EmbedderFactory.resetProjectEmbedder();

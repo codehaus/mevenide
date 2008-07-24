@@ -32,6 +32,8 @@ import org.netbeans.modules.maven.options.MavenExecutionSettings;
 import hidden.org.codehaus.plexus.util.StringUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
+import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.windows.InputOutput;
@@ -58,25 +60,25 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
      * not to be called directrly.. use execute();
      */
     public void run() {
+        final RunConfig clonedConfig = new BeanRunConfig(this.config);
+        // check the prerequisites
+        Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
+        for (LateBoundPrerequisitesChecker elem : result.allInstances()) {
+            if (!elem.checkRunConfig("XXX-TODO", clonedConfig)) {
+                return;
+            }
+        }
+        
         InputOutput ioput = getInputOutput();
-        final Properties origanalProperties = config.getProperties();
+        final Properties origanalProperties = clonedConfig.getProperties();
         actionStatesAtStart();
         handle.start();
         processInitialMessage();
         try {
-            out = new CommandLineOutputHandler(ioput, config.getProject(), handle, config);
-            if (config.getProject() != null) {
-                try {
-                    checkDebuggerListening(config, out);
-                } catch (MojoExecutionException ex) {
-                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
-                } catch (MojoFailureException ex) {
-                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
-                }
-            }
+            out = new CommandLineOutputHandler(ioput, clonedConfig.getProject(), handle, clonedConfig);
             
-            File workingDir = config.getExecutionDirectory();
-            List<String> cmdLine = createMavenExecutionCommand(config);
+            File workingDir = clonedConfig.getExecutionDirectory();
+            List<String> cmdLine = createMavenExecutionCommand(clonedConfig);
             ProcessBuilder builder = new ProcessBuilder(cmdLine);
             builder.redirectErrorStream(true);
             builder.directory(workingDir);
@@ -104,7 +106,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             out.buildFinished();
             
             //MEVENIDE-623 re add original Properties
-            config.setProperties(origanalProperties);
+            clonedConfig.setProperties(origanalProperties);
             
             handle.finish();
             ioput.getOut().close();
@@ -113,8 +115,8 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             markFreeTab();
             RequestProcessor.getDefault().post(new Runnable() { //#103460
                 public void run() {
-                    if (config.getProject() != null) {
-                        NbMavenProject.fireMavenProjectReload(config.getProject());
+                    if (clonedConfig.getProject() != null) {
+                        NbMavenProject.fireMavenProjectReload(clonedConfig.getProject());
                     }
                 }
             });

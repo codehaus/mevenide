@@ -101,39 +101,6 @@ abstract class AbstractMavenExecutor extends OutputTabMaintainer implements Mave
 
     }
 
-    protected final void checkDebuggerListening(RunConfig config, AbstractOutputHandler handler) throws MojoExecutionException, MojoFailureException {
-        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {//NOI18N
-
-            JPDAStart start = new JPDAStart();
-            NbMavenProject prj = config.getProject().getLookup().lookup(NbMavenProject.class);
-            start.setName(prj.getMavenProject().getArtifactId());
-            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));//NOI18N
-
-            start.setLog(handler.getLogger());
-            String val = start.execute(config.getProject());
-            Enumeration en = config.getProperties().propertyNames();
-            
-            while (en.hasMoreElements()) {
-                String key = (String) en.nextElement();
-                String value = config.getProperties().getProperty(key);
-                StringBuffer buf = new StringBuffer(value);
-                String replaceItem = "${jpda.address}";//NOI18N
-
-                int index = buf.indexOf(replaceItem);
-                while (index > -1) {
-                    String newItem = val;
-                    newItem = newItem == null ? "" : newItem;//NOI18N
-
-                    buf.replace(index, index + replaceItem.length(), newItem);
-                    index = buf.indexOf(replaceItem);
-                }
-                //                System.out.println("setting property=" + key + "=" + buf.toString());
-                config.setProperty(key, buf.toString());
-            }
-            config.setProperty("jpda.address", val);//NOI18N
-            
-        }
-    }
 
     public final void setTask(ExecutorTask task) {
         this.task = task;
@@ -257,16 +224,12 @@ abstract class AbstractMavenExecutor extends OutputTabMaintainer implements Mave
                 pnl.readConfig(config);
                 Object retValue = DialogDisplayer.getDefault().notify(dd);
                 if (retValue == DialogDescriptor.OK_OPTION) {
-                    BeanRunConfig newConfig = new BeanRunConfig();
-                    newConfig.setExecutionDirectory(config.getExecutionDirectory());
-                    newConfig.setExecutionName(config.getExecutionName());
-                    newConfig.setTaskDisplayName(config.getTaskDisplayName());
-                    newConfig.setProject(config.getProject());
+                    BeanRunConfig newConfig = new BeanRunConfig(config);
                     pnl.applyValues(newConfig);
                     RunUtils.executeMaven(newConfig);
                 }
             } else {
-                RunConfig newConfig = config;
+                RunConfig newConfig = new BeanRunConfig(config);
                 RunUtils.executeMaven(newConfig);
             }
         //TODO the waiting on tasks won't work..

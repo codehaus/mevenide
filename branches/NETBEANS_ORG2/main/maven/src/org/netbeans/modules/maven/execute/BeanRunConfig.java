@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import org.netbeans.modules.maven.NbMavenProjectImpl;
 import org.netbeans.modules.maven.options.MavenExecutionSettings;
 import org.netbeans.api.project.Project;
 
@@ -36,21 +35,41 @@ public class BeanRunConfig implements RunConfig {
     private Project project;
     private List<String> goals;
     private String executionName;
-    private Properties properties = new Properties();
+    private Properties properties;
     private boolean showDebug = MavenExecutionSettings.getDefault().isShowDebug();
     private boolean showError = MavenExecutionSettings.getDefault().isShowErrors();
     private Boolean offline;
-    private List<String> activate = new ArrayList<String>();
+    private List<String> activate;
     private boolean updateSnapshots = false;
     private boolean recursive = true;
     private String taskName;
     private boolean interactive = true;
+    private RunConfig parent;
     
     /** Creates a new instance of BeanRunConfig */
     public BeanRunConfig() {
     }
 
+    /**
+     * create a new instance that wraps around the parent instance, allowing
+     * to change values while delegating to originals if not changed.
+     * @param parent
+     */
+    public BeanRunConfig(RunConfig parent) {
+        this.parent = parent;
+        //boolean props need to be caried over
+        setRecursive(parent.isRecursive());
+        setInteractive(parent.isInteractive());
+        setOffline(parent.isOffline());
+        setShowDebug(parent.isShowDebug());
+        setShowError(parent.isShowError());
+        setUpdateSnapshots(parent.isUpdateSnapshots());
+    }
+
     public File getExecutionDirectory() {
+        if (parent != null && executionDirectory == null) {
+            return parent.getExecutionDirectory();
+        }
         return executionDirectory;
     }
 
@@ -59,6 +78,9 @@ public class BeanRunConfig implements RunConfig {
     }
 
     public Project getProject() {
+        if (parent != null && project == null) {
+            return parent.getProject();
+        }
         return project;
     }
 
@@ -67,6 +89,9 @@ public class BeanRunConfig implements RunConfig {
     }
 
     public List<String> getGoals() {
+        if (parent != null && goals == null) {
+            return parent.getGoals();
+        }
         return goals;
     }
 
@@ -75,6 +100,9 @@ public class BeanRunConfig implements RunConfig {
     }
 
     public String getExecutionName() {
+        if (parent != null && executionName == null) {
+            return parent.getExecutionName();
+        }
         return executionName;
     }
 
@@ -83,22 +111,42 @@ public class BeanRunConfig implements RunConfig {
     }
 
     public Properties getProperties() {
-        Properties newProperties=new Properties();
-        newProperties.putAll(properties);
+        if (parent != null && properties == null) {
+            return parent.getProperties();
+        }
+        Properties newProperties = new Properties();
+        if (properties != null) {
+            newProperties.putAll(properties);
+        }
         return newProperties;
     }
 
     public  String removeProperty(String key) {
+        if (properties == null) {
+            properties = new Properties();
+            if (parent != null) {
+                properties.putAll(parent.getProperties());
+            }
+        }
         return (String) properties.remove(key);
     }
 
     public  String setProperty(String key, String value) {
+        if (properties == null) {
+            properties = new Properties();
+            if (parent != null) {
+                properties.putAll(parent.getProperties());
+            }
+        }
         return (String) properties.setProperty(key, value);
     }
 
-    public void setProperties(Properties properties) {
-        this.properties.clear();
-        this.properties.putAll(properties);
+    public void setProperties(Properties props) {
+        if (properties == null) {
+            properties = new Properties();
+        }
+        properties.clear();
+        properties.putAll(props);
     }
 
     public boolean isShowDebug() {
@@ -126,7 +174,13 @@ public class BeanRunConfig implements RunConfig {
     }
 
     public List<String> getActivatedProfiles() {
-        return Collections.unmodifiableList(activate);
+        if (parent != null && activate == null) {
+            return parent.getActivatedProfiles();
+        }
+        if (activate != null) {
+            return Collections.unmodifiableList(activate);
+        }
+        return Collections.<String>emptyList();
     }
 
     public void setActivatedProfiles(List<String> activeteProfiles) {
@@ -151,6 +205,9 @@ public class BeanRunConfig implements RunConfig {
     }
 
     public String getTaskDisplayName() {
+        if (parent != null && taskName == null) {
+            return parent.getTaskDisplayName();
+        }
         return taskName;
     }
     
