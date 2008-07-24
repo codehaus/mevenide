@@ -135,18 +135,19 @@ public class ActionMappings extends javax.swing.JPanel {
         this();
         project = proj;
         handle = hand;
-        titles.put(ActionProvider.COMMAND_BUILD, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Build_project"));
-        titles.put(ActionProvider.COMMAND_CLEAN, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Clean_project"));
-        titles.put(ActionProvider.COMMAND_COMPILE_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Compile_file"));
-        titles.put(ActionProvider.COMMAND_DEBUG, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Debug_project"));
-        titles.put(ActionProvider.COMMAND_DEBUG_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Debug_file"));
+        titles.put(ActionProvider.COMMAND_BUILD, NbBundle.getMessage(ActionMappings.class, "COM_Build_project"));
+        titles.put(ActionProvider.COMMAND_CLEAN, NbBundle.getMessage(ActionMappings.class, "COM_Clean_project"));
+        titles.put(ActionProvider.COMMAND_COMPILE_SINGLE, NbBundle.getMessage(ActionMappings.class, "COM_Compile_file"));
+        titles.put(ActionProvider.COMMAND_DEBUG, NbBundle.getMessage(ActionMappings.class, "COM_Debug_project"));
+        titles.put(ActionProvider.COMMAND_DEBUG_SINGLE, NbBundle.getMessage(ActionMappings.class, "COM_Debug_file"));
         titles.put(ActionProvider.COMMAND_DEBUG_STEP_INTO, null);
-        titles.put(ActionProvider.COMMAND_DEBUG_TEST_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Debug_test"));
-        titles.put(ActionProvider.COMMAND_REBUILD, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_ReBuild_project"));
-        titles.put(ActionProvider.COMMAND_RUN, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Run_project"));
-        titles.put(ActionProvider.COMMAND_RUN_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Run_file"));
-        titles.put(ActionProvider.COMMAND_TEST, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Test_project"));
-        titles.put(ActionProvider.COMMAND_TEST_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Test_file"));
+        titles.put(ActionProvider.COMMAND_DEBUG_TEST_SINGLE, NbBundle.getMessage(ActionMappings.class, "COM_Debug_test"));
+        titles.put(ActionProvider.COMMAND_REBUILD, NbBundle.getMessage(ActionMappings.class, "COM_ReBuild_project"));
+        titles.put(ActionProvider.COMMAND_RUN, NbBundle.getMessage(ActionMappings.class, "COM_Run_project"));
+        titles.put(ActionProvider.COMMAND_RUN_SINGLE, NbBundle.getMessage(ActionMappings.class, "COM_Run_file"));
+        titles.put(ActionProvider.COMMAND_TEST, NbBundle.getMessage(ActionMappings.class, "COM_Test_project"));
+        titles.put(ActionProvider.COMMAND_TEST_SINGLE, NbBundle.getMessage(ActionMappings.class, "COM_Test_file"));
+        titles.put("profile", NbBundle.getMessage(ActionMappings.class, "COM_Run_project"));
         comConfiguration.setEditable(false);
         comConfiguration.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -540,6 +541,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             addSingleAction(ActionProvider.COMMAND_DEBUG, model);
             addSingleAction(ActionProvider.COMMAND_DEBUG_SINGLE, model);
             addSingleAction(ActionProvider.COMMAND_DEBUG_TEST_SINGLE, model);
+            addSingleAction("profile", model);
         }
         List customs = getActionMappings().getActions();
         if (customs != null) {
