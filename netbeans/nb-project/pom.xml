@@ -47,7 +47,7 @@
         <dependency>
             <groupId>javax.lang</groupId>
             <artifactId>javac-api</artifactId>
-            <version>1.6-NETBEANS-${netbeans.release}</version>
+            <version>7.0-NETBEANS-${netbeans.release}</version>
             <scope>provided</scope>
         </dependency>
 
