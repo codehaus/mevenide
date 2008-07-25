@@ -156,21 +156,20 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     }
 
     //always call from mutex.writeAccess
-    private void loadIndexingContext(final RepositoryInfo... repoids) throws IOException, UnsupportedExistingLuceneIndexException {
+    private void loadIndexingContext(final RepositoryInfo... repoids) throws IOException {
         assert MUTEX.isWriteAccess();
          
         for (RepositoryInfo info : repoids) {
             LOGGER.finer("Loading Context :" + info.getId());//NOI18N
             if (info.isLocal() || info.isRemoteDownloadable()) {
-                indexer.addIndexingContext( //
+                indexer.addIndexingContextForced( 
                         info.getId(), // context id
                         info.getId(), // repository id
                         info.isLocal() ? new File(info.getRepositoryPath()) : null, // repository folder
                         new File(getDefaultIndexLocation(), info.getId()), // index folder
                         info.isRemoteDownloadable() ? info.getRepositoryUrl() : null, // repositoryUrl
                         info.isRemoteDownloadable() ? info.getIndexUpdateUrl() : null, // index update url
-                        NB_INDEX, 
-                        false);
+                        NB_INDEX);
             }
         }
     }
