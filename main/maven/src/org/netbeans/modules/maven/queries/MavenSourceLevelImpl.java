@@ -70,7 +70,7 @@ public class MavenSourceLevelImpl implements SourceLevelQueryImplementation {
                                                               goal);
         //null is allowed to be returned but junit tests module asserts not null
 //        LOG.info("  returning " + toRet);
-        return toRet == null ? "1.4" : toRet; //NOI18N
+        return toRet == null ? "1.3" : toRet; //NOI18N
     }
     
 }
