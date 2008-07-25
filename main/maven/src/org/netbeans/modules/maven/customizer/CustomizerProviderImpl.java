@@ -104,7 +104,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
             dialog.addWindowListener( listener );
             listener.setDialog(dialog);
             dialog.setTitle( MessageFormat.format(
-                    "{0}", // NOI18N
+                    org.openide.util.NbBundle.getMessage(CustomizerProviderImpl.class, "TIT_Project_Properties"),
                     new Object[] { ProjectUtils.getInformation(project).getDisplayName() } ) );
             
             dialog.setVisible(true);
