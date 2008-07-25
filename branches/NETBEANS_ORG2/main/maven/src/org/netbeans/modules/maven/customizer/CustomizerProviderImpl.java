@@ -45,7 +45,6 @@ import org.netbeans.modules.maven.embedder.MavenSettingsSingleton;
 import org.netbeans.modules.maven.embedder.writer.WriterUtils;
 import org.netbeans.modules.maven.execute.UserActionGoalProvider;
 import hidden.org.codehaus.plexus.util.IOUtil;
-import java.util.TreeMap;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jdom.DefaultJDOMFactory;
 import org.jdom.Document;
