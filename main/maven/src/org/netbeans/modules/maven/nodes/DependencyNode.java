@@ -126,6 +126,10 @@ public class DependencyNode extends AbstractNode {
 //        super(isLongLiving ? new DependencyChildren(lookup) : Children.LEAF, lookup);
         project = lookup.lookup(NbMavenProjectImpl.class);
         art = lookup.lookup(Artifact.class);
+        assert art != null;
+        if (art.getFile() == null) {
+            throw new IllegalStateException("Artifact " + art.getId() + " is not resolved and is missing the file association in local repository. Please report at issue #140253."); //NOI18N
+        }
         longLiving = isLongLiving;
         if (longLiving) {
             listener = new PropertyChangeListener() {
