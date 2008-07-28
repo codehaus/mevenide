@@ -86,6 +86,7 @@ import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -97,12 +98,23 @@ import org.openide.util.WeakListeners;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class DependencyNode extends AbstractNode {
+    private static final String JAVADOC_BADGE_ICON = "org/netbeans/modules/maven/DependencyJavadocIncluded.png"; //NOI18N
+    private static final String MISSING_BADGE_ICON = "org/netbeans/modules/maven/ResourceNotIncluded.gif"; //NOI18N
+    private static final String SOURCE_BADGE_ICON = "org/netbeans/modules/maven/DependencySrcIncluded.png"; //NOI18N
 
     private Artifact art;
     private NbMavenProjectImpl project;
     private boolean longLiving;
     private PropertyChangeListener listener;
     private ChangeListener listener2;
+    
+    private static String toolTipJavadoc = "<img src=\"" + DependencyNode.class.getClassLoader().getResource(JAVADOC_BADGE_ICON) + "\">&nbsp;" //NOI18N
+            + NbBundle.getMessage(DependencyNode.class, "ICON_JavadocBadge");//NOI18N
+    private static String toolTipSource = "<img src=\"" + DependencyNode.class.getClassLoader().getResource(SOURCE_BADGE_ICON) + "\">&nbsp;" //NOI18N
+            + NbBundle.getMessage(DependencyNode.class, "ICON_SourceBadge");//NOI18N
+    private static String toolTipMissing = "<img src=\"" + DependencyNode.class.getClassLoader().getResource(MISSING_BADGE_ICON) + "\">&nbsp;" //NOI18N
+            + NbBundle.getMessage(DependencyNode.class, "ICON_MissingBadge");//NOI18N
+    
 
     public static Children createChildren(Lookup look, boolean longLiving) {
         if (!longLiving) {
@@ -386,20 +398,20 @@ public class DependencyNode extends AbstractNode {
         retValue = super.getIcon(param);
         if (isLocal()) {
             if (hasJavadocInRepository()) {
-                retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/netbeans/modules/maven/DependencyJavadocIncluded.png"), //NOI18N
-                        12, 0);
+                Image ann = ImageUtilities.loadImage(JAVADOC_BADGE_ICON); //NOI18N
+                ann = ImageUtilities.addToolTipToImage(ann, toolTipJavadoc);
+                retValue = ImageUtilities.mergeImages(retValue, ann, 12, 0);//NOI18N
             }
             if (hasSourceInRepository()) {
-                retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/netbeans/modules/maven/DependencySrcIncluded.png"), //NOI18N
-                        12, 8);
+                Image ann = ImageUtilities.loadImage(SOURCE_BADGE_ICON); //NOI18N
+                ann = ImageUtilities.addToolTipToImage(ann, toolTipSource);
+                retValue = ImageUtilities.mergeImages(retValue, ann, 12, 8);//NOI18N
             }
             return retValue;
         } else {
-            return Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/netbeans/modules/maven/ResourceNotIncluded.gif"), //NOI18N
-                    0, 0);
+            Image ann = ImageUtilities.loadImage(MISSING_BADGE_ICON); //NOI18N
+            ann = ImageUtilities.addToolTipToImage(ann, toolTipMissing);
+            return ImageUtilities.mergeImages(retValue, ann, 0, 0);//NOI18N
         }
     }
 
@@ -409,20 +421,20 @@ public class DependencyNode extends AbstractNode {
         retValue = super.getOpenedIcon(type);
         if (isLocal()) {
             if (hasJavadocInRepository()) {
-                retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/netbeans/modules/maven/DependencyJavadocIncluded.png"), //NOI18N
-                        12, 0);
+                Image ann = ImageUtilities.loadImage(JAVADOC_BADGE_ICON); //NOI18N
+                ann = ImageUtilities.addToolTipToImage(ann, toolTipJavadoc);
+                retValue = ImageUtilities.mergeImages(retValue, ann, 12, 0);//NOI18N
             }
             if (hasSourceInRepository()) {
-                retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/netbeans/modules/maven/DependencySrcIncluded.png"), //NOI18N
-                        12, 8);
+                Image ann = ImageUtilities.loadImage(SOURCE_BADGE_ICON); //NOI18N
+                ann = ImageUtilities.addToolTipToImage(ann, toolTipSource);
+                retValue = ImageUtilities.mergeImages(retValue, ann, 12, 8);//NOI18N
             }
             return retValue;
         } else {
-            return Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/netbeans/modules/maven/ResourceNotIncluded.gif"), //NOI18N
-                    0,0);
+            Image ann = ImageUtilities.loadImage(MISSING_BADGE_ICON); //NOI18N
+            ann = ImageUtilities.addToolTipToImage(ann, toolTipMissing);
+            return ImageUtilities.mergeImages(retValue, ann, 0, 0);//NOI18N
         }
     }
 
