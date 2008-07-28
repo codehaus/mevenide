@@ -89,10 +89,12 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         finishing = false;
         RunConfig clonedConfig = new BeanRunConfig(this.config);
         // check the prerequisites
-        Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
-        for (LateBoundPrerequisitesChecker elem : result.allInstances()) {
-            if (!elem.checkRunConfig(clonedConfig)) {
-                return;
+        if (clonedConfig.getProject() != null) {
+            Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
+            for (LateBoundPrerequisitesChecker elem : result.allInstances()) {
+                if (!elem.checkRunConfig(clonedConfig)) {
+                    return;
+                }
             }
         }
         
