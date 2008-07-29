@@ -23,6 +23,12 @@
                     <attr name="position" intvalue="650"/>
                 </file>
             </folder>
+            <folder name="ProjectActions">
+                <file name="NBMReload.instance">
+                    <attr name="instanceCreate" methodvalue="org.netbeans.modules.maven.apisupport.NbmActionGoalProvider.createReloadAction"/>
+                    <attr name="position" intvalue="1000"/>
+                </file>
+            </folder>
         </folder>
     </folder>
 </filesystem>

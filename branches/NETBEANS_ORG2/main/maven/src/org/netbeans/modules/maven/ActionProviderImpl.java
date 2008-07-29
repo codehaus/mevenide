@@ -19,8 +19,11 @@ package org.netbeans.modules.maven;
 import java.awt.event.ActionEvent;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -51,6 +54,7 @@ import org.netbeans.api.project.Project;
 import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.netbeans.modules.maven.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
+import org.netbeans.modules.maven.spi.actions.MavenActionsProvider;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ui.support.DefaultProjectOperations;
 import org.openide.DialogDescriptor;
@@ -86,27 +90,32 @@ public class ActionProviderImpl implements ActionProvider {
         COMMAND_DEBUG_SINGLE,
         COMMAND_DEBUG_TEST_SINGLE,
         "debug.fix", //NOI18N
-        "profile",
-        //"profile-single", // profile-single not supported yet
-        //"profile-tests", // profile-tests not supported yet
 
         //operations
         COMMAND_DELETE,
         COMMAND_RENAME,
         COMMAND_MOVE,
-        COMMAND_COPY,
-        "nbmreload" //TODO make actionproviders mergeble //NOI18N
-        
-
+        COMMAND_COPY
     };
+    
+    Lookup.Result<? extends MavenActionsProvider> result;
 
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(NbMavenProjectImpl proj) {
         project = proj;
+        result = Lookup.getDefault().lookupResult(MavenActionsProvider.class);
     }
 
     public String[] getSupportedActions() {
-        return supported;
+        Set<String> supp = new HashSet<String>();
+        supp.addAll( Arrays.asList( supported));
+        for (MavenActionsProvider add : result.allInstances()) {
+            Set<String> added = add.getSupportedDefaultActions();
+            if (added != null) {
+                supp.addAll( added);
+            }
+        }
+        return supp.toArray(new String[0]);
     }
 
     public void invokeAction(String action, Lookup lookup) {

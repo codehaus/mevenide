@@ -27,9 +27,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.netbeans.modules.maven.MavenSourcesImpl;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -202,6 +204,24 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
         }
         return str.toString();
     }
+
+    /**
+     * default implementation will look in the content of the
+     * @return
+     */
+    public Set<String> getSupportedDefaultActions() {
+        HashSet<String> toRet = new HashSet<String>();
+        ActionToGoalMapping raw = getRawMappings();
+        for (Object obj : raw.getActions()) {
+            NetbeansActionMapping nb = (NetbeansActionMapping) obj;
+            String name = nb.getActionName();
+            if (name != null && !name.startsWith("CUSTOM-")) {
+                toRet.add(name);
+            }
+        }
+        return toRet;
+    }
+    
 
     /**
      * override in children that are listening on changes of model and need refreshing..
