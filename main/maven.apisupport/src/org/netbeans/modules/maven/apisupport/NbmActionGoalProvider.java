@@ -18,6 +18,9 @@ package org.netbeans.modules.maven.apisupport;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Set;
+import javax.swing.Action;
 import org.netbeans.modules.maven.spi.actions.MavenActionsProvider;
 import org.netbeans.modules.maven.api.PluginPropertyUtils;
 import org.netbeans.modules.maven.api.NbMavenProject;
@@ -26,9 +29,10 @@ import org.netbeans.modules.maven.spi.actions.AbstractMavenActionsProvider;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
-import org.netbeans.spi.project.SubprojectProvider;
+import org.netbeans.spi.project.ui.support.ProjectSensitiveActions;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -84,6 +88,15 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     /** Creates a new instance of NbmActionGoalProvider */
     public NbmActionGoalProvider() {
         clearingTask.setPriority(Thread.MIN_PRIORITY);
+    }
+    
+    public Set<String> getSupportedDefaultActions() {
+        return Collections.singleton("nbmreload");
+    }
+    
+    
+    public static Action createReloadAction() {
+        return ProjectSensitiveActions.projectCommandAction("nbmreload", NbBundle.getMessage(NbmActionGoalProvider.class, "ACT_NBM_Reload"), null);
     }
 
     public boolean isActionEnable(String action, Project project, Lookup lookup) {
@@ -207,4 +220,5 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
         }
         return false;
     }
+
 }

@@ -22,11 +22,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
@@ -150,10 +150,12 @@ public class MavenProjectNode extends AbstractNode {
         lst.addAll(Utilities.actionsForPath("Projects/Debugger_Actions_temporary")); //NOI18N
         lst.addAll(Utilities.actionsForPath("Projects/Profiler_Actions_temporary")); //NOI18N
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_TEST, NbBundle.getMessage(MavenProjectNode.class, "ACT_Test"), null));
-        //TODO move to apisupport somehow..
-        Action act = ProjectSensitiveActions.projectCommandAction("nbmreload", NbBundle.getMessage(MavenProjectNode.class, "ACT_NBM_Reload"), null);
-        if (act != null && act.isEnabled()) {
-            lst.add(act);
+
+        List<? extends Action> acts = Utilities.actionsForPath("Projects/org-netbeans-modules-maven/ProjectActions"); //NOI18N
+        for (Action ac : acts) {
+            if (ac != null && ac.isEnabled()) {
+                lst.add(ac);
+            }
         }
         lst.add(null);
 

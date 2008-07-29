@@ -17,6 +17,7 @@
 
 package org.netbeans.modules.maven.spi.actions;
 
+import java.util.Set;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
@@ -44,11 +45,22 @@ public interface MavenActionsProvider {
     /**
      * get a action to maven mapping configuration for the given action. No context specific value replacements
      * happen.
+     * @return
      */
     NetbeansActionMapping getMappingForAction(String actionName, Project project);
 
     /**
-     * return  action supported or not
+     * return is action is supported or not
+     * @param action action name, see ActionProvider for details.
+     * @param project project that the action is invoked on.
+     * @param lookup context for the action
+     * @return
      */
     boolean isActionEnable(String action, Project project, Lookup lookup);
+
+    /**
+     * returns a list of supported actions, see ActionProvider.getSupportedActions()
+     * @return
+     */
+    Set<String> getSupportedDefaultActions();
 }

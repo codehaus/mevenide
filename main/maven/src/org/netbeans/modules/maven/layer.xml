@@ -117,6 +117,8 @@
             </folder>
             <folder name="DependencyActions">
             </folder>
+            <folder name="ProjectActions">
+            </folder>
             <file name="nbactions.xml" url="nbactions.xml"/>
         </folder>
     </folder>
