@@ -36,7 +36,7 @@
             
         <folder name="Project">
             <folder name="Maven2">
-                <attr name="position" intvalue="943"/>
+                <attr name="position" intvalue="513"/>
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.modules.maven.newproject.Bundle"/>
                 <file name="Archetypes">
                     <attr name="position" intvalue="100"/>
