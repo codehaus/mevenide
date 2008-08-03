@@ -18,6 +18,7 @@ package org.codehaus.mevenide.netbeans.embedder;
 
 import java.io.File;
 import org.openide.modules.ModuleInstall;
+import org.openide.util.Exceptions;
 
 /**
  * Module install that checks if the new 6.5 support is installed.
@@ -44,7 +45,9 @@ public class ModInstall extends ModuleInstall {
                         "modules" + File.separator +
                         "maven");
                 if (nex.exists()) {
-                    throw new IllegalStateException("Newer Maven support is installed in NetBeans 6.5 that might clash with this one. Aborting installation.");
+                    IllegalStateException ise = new IllegalStateException("Newer Maven support is installed in NetBeans 6.5 that might clash with this one. Aborting installation.");
+                    Exceptions.attachLocalizedMessage( ise, "Newer Maven support is installed in NetBeans 6.5 that might clash with this one. Aborting installation.");
+                    throw ise;
                 }
            }
        }
