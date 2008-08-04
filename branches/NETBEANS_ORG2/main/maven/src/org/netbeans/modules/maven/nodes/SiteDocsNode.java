@@ -47,7 +47,8 @@ class SiteDocsNode extends FilterNode {
     }
     
     private SiteDocsNode(NbMavenProjectImpl proj, Node orig, boolean isTopLevel) {
-        super(orig, new SiteFilterChildren(proj, orig));
+        //#142744 if orig child is leaf, put leave as well.
+        super(orig, orig.getChildren() == Children.LEAF ? Children.LEAF : new SiteFilterChildren(proj, orig));
         isTopLevelNode = isTopLevel;
         project = proj;
     }
