@@ -45,7 +45,8 @@ class WebAppFilterNode extends FilterNode {
     }
     
     private WebAppFilterNode(Project proj, Node orig, File root, boolean isTopLevel) {
-        super(orig, new WebAppFilterChildren(proj, orig, root));
+        //#142744 if orig child is leaf, put leave as well.
+        super(orig, orig.getChildren() == Children.LEAF ? Children.LEAF : new WebAppFilterChildren(proj, orig, root));
         isTopLevelNode = isTopLevel;
         if (isTopLevel) {
             file = FileUtil.toFileObject(root);
