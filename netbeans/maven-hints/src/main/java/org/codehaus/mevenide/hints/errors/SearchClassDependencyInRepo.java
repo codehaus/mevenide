@@ -203,7 +203,9 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                                 case NEW_ARRAY: {
                                     NewArrayTree arrayTree = (NewArrayTree) initializer;
                                     Tree type = arrayTree.getType();
-                                    itName = ((IdentifierTree) type).getName();
+                                    if(type!=null){
+                                     itName = ((IdentifierTree) type).getName();
+                                    }
                                 }
                                 break;
                             }
