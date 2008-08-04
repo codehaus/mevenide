@@ -212,6 +212,15 @@ public class DependencyNode extends AbstractNode {
 //        if (longLiving) {
 //            ((DependencyChildren)getChildren()).doRefresh();
 //        }
+        //#142784
+        if (longLiving) {
+            if (Children.LEAF == getChildren()) {
+                Children childs = createChildren(getLookup(), true);
+                if (childs != Children.LEAF) {
+                    setChildren(childs);
+                }
+            }
+        }
     }
 
     @Override
@@ -801,7 +810,8 @@ public class DependencyNode extends AbstractNode {
     private static class JarFilterNode extends FilterNode {
 
         JarFilterNode(Node original) {
-            super(original, new JarContentFilterChildren(original));
+            super(original, Children.LEAF == original.getChildren() ?
+                            Children.LEAF : new JarContentFilterChildren(original));
         }
 
         @Override
