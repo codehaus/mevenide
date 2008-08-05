@@ -20,6 +20,7 @@ package org.netbeans.modules.maven.graph;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -30,6 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.api.visual.graph.layout.GraphLayoutFactory;
 import org.netbeans.api.visual.widget.BirdViewController;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -116,6 +118,7 @@ public class DependencyGraphTopComponent extends TopComponent {
                             scene.cleanLayout(pane);
                             birdView = scene.createBirdView();
                             satelliteView = scene.createSatelliteView();
+                            scene.setSelectedObjects(Collections.singleton(scene.getRootArtifact()));
                         }
                     });
                 } catch (Exception e) {

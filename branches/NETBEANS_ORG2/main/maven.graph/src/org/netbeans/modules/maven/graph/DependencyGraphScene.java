@@ -36,6 +36,9 @@ import org.netbeans.api.visual.anchor.AnchorFactory;
 import org.netbeans.api.visual.anchor.AnchorShape;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.graph.GraphScene;
+import org.netbeans.api.visual.graph.layout.GraphLayout;
+import org.netbeans.api.visual.graph.layout.GraphLayoutFactory;
+import org.netbeans.api.visual.graph.layout.GraphLayoutSupport;
 import org.netbeans.api.visual.layout.LayoutFactory;
 import org.netbeans.api.visual.model.ObjectSceneEvent;
 import org.netbeans.api.visual.model.ObjectSceneEventType;
@@ -57,6 +60,7 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
     private LayerWidget connectionLayer;
     private ArtifactGraphNode rootNode;
     
+//    private GraphLayout layout;
     private WidgetAction moveAction = ActionFactory.createMoveAction();
     private WidgetAction popupMenuAction = ActionFactory.createPopupMenuAction(new MyPopupMenuProvider());
     private WidgetAction zoomAction = ActionFactory.createCenteredZoomAction(1.1);
@@ -82,6 +86,8 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
     }
 
     void cleanLayout(JScrollPane panel) {
+//        layout = GraphLayoutFactory.createHierarchicalGraphLayout(this, true, false);
+//        layout.layoutGraph(this);
         layout =  new FruchtermanReingoldLayout(this, panel);
         layout.invokeLayout();
     }
