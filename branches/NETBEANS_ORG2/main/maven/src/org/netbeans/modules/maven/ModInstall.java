@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,7 +40,6 @@ import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
 import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
-import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
@@ -207,6 +205,7 @@ public class ModInstall extends ModuleInstall implements ErrorHandler, EntityRes
                                     Document document = readModuleDocument(fo);
                                     NodeList list = document.getDocumentElement().getElementsByTagName("param"); // NOI18N
                                     int n = list.getLength();
+                                    boolean doNotify = false;
                                     for (int j = 0; j < n; j++) {
                                         Element node = (Element) list.item(j);
                                         if ("enabled".equals(node.getAttribute("name"))) {
@@ -215,6 +214,7 @@ public class ModInstall extends ModuleInstall implements ErrorHandler, EntityRes
                                             String value = text.getNodeValue();
                                             if ("true".equals(value)) {
                                                 // NOI18N
+                                                doNotify = true;
                                                 text.setNodeValue("false"); // NOI18N
                                                 break;
                                             } else {
@@ -222,7 +222,7 @@ public class ModInstall extends ModuleInstall implements ErrorHandler, EntityRes
                                             }
                                         }
                                     }
-                                    if (!notified) {
+                                    if (doNotify && !notified) {
                                         NotifyDescriptor nd = new NotifyDescriptor.Message(NbBundle.getMessage(ModInstall.class, "MSG_Install_Warning"));
                                         nd.setTitle(NbBundle.getMessage(ModInstall.class, "MSG_Install_Warning_Title"));
                                         DialogDisplayer.getDefault().notify(nd);
