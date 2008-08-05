@@ -281,6 +281,7 @@
                 </dependency>
             </module-dependencies>
             <friend-packages>
+                <friend>org.netbeans.modules.jbi.fuji.support</friend>
                 <friend>org.netbeans.modules.maven.apisupport</friend>
                 <friend>org.netbeans.modules.maven.buildplan</friend>
                 <friend>org.netbeans.modules.maven.grammar</friend>
