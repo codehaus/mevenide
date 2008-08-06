@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -432,9 +434,11 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
                 }
             }
         } catch (ArtifactResolutionException ex) {
-            Exceptions.printStackTrace(ex);
+            //#143026
+            Logger.getLogger( BasicPanelVisual.class.getName()).log( Level.FINE, "Cannot download archetype", ex);
         } catch (ArtifactNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+            //#143026
+            Logger.getLogger( BasicPanelVisual.class.getName()).log( Level.FINE, "Cannot download archetype", ex);
         }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
