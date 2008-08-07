@@ -175,10 +175,10 @@ public class TextValueCompleter implements DocumentListener {
 
     public void setLoading(boolean loading) {
         this.loading = loading;
-        if(loading){
+        if (loading) {
           completionListModel.removeAllElements();
           completionListModel.addElement(LOADING);
-        }else{
+        } else {
           completionListModel.removeElement(LOADING);
         }
     }
