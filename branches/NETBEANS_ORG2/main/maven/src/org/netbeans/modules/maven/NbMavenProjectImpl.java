@@ -188,6 +188,7 @@ public final class NbMavenProjectImpl implements Project {
      */
     public synchronized MavenProject getOriginalMavenProject() {
         if (project == null) {
+            long startLoading = System.currentTimeMillis();
             try {
                 MavenExecutionRequest req = new DefaultMavenExecutionRequest();
                 if (configEnabler.isConfigurationEnabled()) {
@@ -287,6 +288,8 @@ public final class NbMavenProjectImpl implements Project {
                 project = oldProject;
             }
             oldProject = null;
+            long endLoading = System.currentTimeMillis();
+            Logger.getLogger(NbMavenProjectImpl.class.getName()).fine( "Loaded project in " + ((endLoading - startLoading) / 1000) + " s at " + getProjectDirectory().getPath());
         }
 
         return project;
