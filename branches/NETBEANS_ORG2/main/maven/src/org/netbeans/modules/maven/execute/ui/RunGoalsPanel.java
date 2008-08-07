@@ -79,7 +79,6 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             goalcompleter.setValueList(strs);
-                            goalcompleter.setLoading(false);
                         }
                     });
                 }
@@ -106,7 +105,6 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         profilecompleter.setValueList(ret);
-                        profilecompleter.setLoading(false);
                     }
                 });
             }
