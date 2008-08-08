@@ -56,7 +56,9 @@ public class AddDependencyPanel extends javax.swing.JPanel {
                 RequestProcessor.getDefault().post(new Runnable() {
                     public void run() {
                         populateArtifact();
-                        populateVersion();
+                        if (txtArtifactId.getText().trim().length() > 0) {
+                            populateVersion();
+                        }
                     }
                 });
             }
@@ -234,7 +236,6 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 groupCompleter.setValueList(lst);
-                groupCompleter.setLoading(false);
             }
         });
 
@@ -247,7 +248,6 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 artifactCompleter.setValueList(lst);
-                artifactCompleter.setLoading(false);
             }
         });
 
@@ -267,7 +267,6 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 versionCompleter.setValueList(vers);
-                versionCompleter.setLoading(false);
             }
         });
 

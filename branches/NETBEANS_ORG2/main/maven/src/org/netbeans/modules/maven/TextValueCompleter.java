@@ -96,6 +96,9 @@ public class TextValueCompleter implements DocumentListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) {
+                    if (LOADING.endsWith(completionList.getSelectedValue().toString())) {
+                        return;
+                    }
                     field.getDocument().removeDocumentListener(TextValueCompleter.this);
                     applyCompletion(completionList.getSelectedValue().toString());
                     hidePopup();
@@ -144,6 +147,9 @@ public class TextValueCompleter implements DocumentListener {
         });
         field.getActionMap().put(ACTION_FILLIN, new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
+                if (LOADING.endsWith(completionList.getSelectedValue().toString())) {
+                    return;
+                }
                 field.getDocument().removeDocumentListener(TextValueCompleter.this);
                 if (completionList.getSelectedValue() != null) {
                     applyCompletion(completionList.getSelectedValue().toString());
