@@ -80,7 +80,6 @@ import org.sonatype.nexus.index.GGrouping;
 import org.sonatype.nexus.index.NexusIndexer;
 import org.sonatype.nexus.index.context.ArtifactIndexingContext;
 import org.sonatype.nexus.index.context.IndexingContext;
-import org.sonatype.nexus.index.context.UnsupportedExistingLuceneIndexException;
 import org.sonatype.nexus.index.creator.AbstractIndexCreator;
 import org.sonatype.nexus.index.creator.IndexCreator;
 import org.sonatype.nexus.index.creator.JarFileContentsIndexCreator;
@@ -376,8 +375,12 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         }
     }
 
-    public File getDefaultIndexLocation() {
-        return new File(repository.getBasedir(), ".index/nexus"); //NOI18N
+    public File getDefaultIndexLocation()  {
+        File repo = new File(repository.getBasedir(), ".index/nexus");
+        if (!repo.exists()) {
+            repo.mkdirs();
+        }
+        return repo;
     }
 
     public Set<String> getGroups(List<RepositoryInfo> repos) {
