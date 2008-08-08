@@ -50,10 +50,10 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     private ChangeListener listener2;
 
     /** Creates a new instance of SubprojectProviderImpl */
-    public SubprojectProviderImpl(NbMavenProjectImpl proj) {
+    public SubprojectProviderImpl(NbMavenProjectImpl proj, NbMavenProject watcher) {
         project = proj;
         listeners = new ArrayList<ChangeListener>();
-        NbMavenProject.addPropertyChangeListener(proj, new PropertyChangeListener() {
+        watcher.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
@@ -71,6 +71,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
                 WeakListeners.change(listener2,
                 MavenFileOwnerQueryImpl.getInstance()));
     }
+
 
     public Set getSubprojects() {
         Set<Project> projects = new HashSet<Project>();

@@ -90,6 +90,7 @@ import org.netbeans.modules.maven.execute.BackwardCompatibilityWithMevenideCheck
 import org.netbeans.modules.maven.queries.MavenBinaryForSourceQueryImpl;
 import org.netbeans.modules.maven.queries.MavenFileEncodingQueryImpl;
 import org.netbeans.spi.project.LookupMerger;
+import org.netbeans.spi.project.SubprojectProvider;
 import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
 import org.netbeans.spi.queries.SharabilityQueryImplementation;
@@ -123,6 +124,7 @@ public final class NbMavenProjectImpl implements Project {
     private ProblemReporterImpl problemReporter;
     private Info projectInfo;
     private MavenSharabilityQueryImpl sharability;
+    private SubprojectProviderImpl subs;
     private MavenProject oldProject;
     private NbMavenProject watcher;
     private ProjectState state;
@@ -161,15 +163,16 @@ public final class NbMavenProjectImpl implements Project {
         folderFileObject = folder;
         projectInfo = new Info();
         sharability = new MavenSharabilityQueryImpl(this);
-        lookup = new LazyLookup(projectInfo, sharability);
+        watcher = ACCESSOR.createWatcher(this);
+        subs = new SubprojectProviderImpl(this, watcher);
+        lookup = new LazyLookup(this, watcher, projectInfo, sharability, subs);
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
         state = projectState;
         problemReporter = new ProblemReporterImpl(this);
-        watcher = ACCESSOR.createWatcher(this);
         auxiliary = new M2AuxilaryConfigImpl(this);
-        auxprops = new MavenProjectPropsImpl(this);
+        auxprops = new MavenProjectPropsImpl(this, auxiliary);
         profileHandler = new ProjectProfileHandlerImpl(this,auxiliary);
         configEnabler = new ConfigurationProviderEnabler(this, auxiliary, profileHandler);
     }
@@ -555,15 +558,19 @@ public final class NbMavenProjectImpl implements Project {
     private class LazyLookup extends ProxyLookup {
         private Lookup lookup;
         boolean initialized = false;
-        LazyLookup(ProjectInformation info, SharabilityQueryImplementation shara) {
-            setLookups(Lookups.fixed(info, shara));
+        LazyLookup(Project ths, NbMavenProject watcher, ProjectInformation info, SharabilityQueryImplementation shara, SubprojectProvider subs) {
+            setLookups(Lookups.fixed(ths, watcher, info, shara, subs));
         }
 
         @Override
         protected synchronized void beforeLookup(Template<?> template) {
             if (!initialized && 
                 (! (ProjectInformation.class.equals(template.getType()) ||
-                    SharabilityQueryImplementation.class.equals(template.getType())))) {
+                    NbMavenProject.class.equals(template.getType()) ||
+                    NbMavenProjectImpl.class.equals(template.getType()) ||
+                    Project.class.equals(template.getType()) ||
+                    SharabilityQueryImplementation.class.equals(template.getType()) ||
+                    SubprojectProvider.class.equals(template.getType())))) {
                 initialized = true;
                 lookup = createBasicLookup();
                 setLookups(lookup);
@@ -586,6 +593,12 @@ public final class NbMavenProjectImpl implements Project {
                 return false;
             }
             if (SharabilityQueryImplementation.class.equals(lm.getMergeableClass())) {
+                return false;
+            }
+            if (SubprojectProvider.class.equals(lm.getMergeableClass())) {
+                return false;
+            }
+            if (NbMavenProject.class.equals(lm.getMergeableClass())) {
                 return false;
             }
         }
@@ -611,7 +624,7 @@ public final class NbMavenProjectImpl implements Project {
                     sharability,
                     new MavenTestForSourceImpl(this),
                     ////            new MavenFileBuiltQueryImpl(this),
-                    new SubprojectProviderImpl(this),
+                    subs,
                     new MavenSourcesImpl(this),
                     new RecommendedTemplatesImpl(this),
                     new MavenSourceLevelImpl(this),

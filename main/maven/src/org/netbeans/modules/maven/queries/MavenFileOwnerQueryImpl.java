@@ -175,6 +175,20 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
     private Project getOwner(File file) {
         //TODO check if the file is from local repo ??
+        boolean passBasicCheck = false;
+        String nm = file.getName();
+        File parentVer = file.getParentFile();
+        if (parentVer != null) {
+            File parentArt = parentVer.getParentFile();
+            if (parentArt != null) {
+                if (nm.startsWith(parentArt.getName() + "-" + parentVer.getName())) {
+                    passBasicCheck = true;
+                }
+            }
+        }
+        if (!passBasicCheck) {
+            return null;
+        }
         Set currentProjects = getAllKnownProjects();
         
         Iterator it = currentProjects.iterator();
@@ -211,7 +225,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
                         NbMavenProjectImpl prj = (NbMavenProjectImpl) iterating.get(index);
                         SubprojectProvider sub = prj.getLookup().lookup(SubprojectProvider.class);
                         if (sub != null) {
-                            Set subs = sub.getSubprojects();
+                            Set<? extends Project> subs = sub.getSubprojects();
                             subs.removeAll(currentProjects);
                             currentProjects.addAll(subs);
                             iterating.addAll(subs);

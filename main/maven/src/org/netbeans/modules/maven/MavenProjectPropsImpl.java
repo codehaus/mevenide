@@ -47,14 +47,12 @@ public class MavenProjectPropsImpl implements AuxiliaryProperties {
     private AuxiliaryConfiguration aux;
     private boolean sharedChanged;
 
-    public MavenProjectPropsImpl(Project project) {
+    public MavenProjectPropsImpl(Project project, AuxiliaryConfiguration aux) {
         prj = project;
+        this.aux = aux;
     }
 
     private AuxiliaryConfiguration getAuxConf() {
-        if (aux == null) {
-            aux = prj.getLookup().lookup(AuxiliaryConfiguration.class);
-        }
         return aux;
     }
 
