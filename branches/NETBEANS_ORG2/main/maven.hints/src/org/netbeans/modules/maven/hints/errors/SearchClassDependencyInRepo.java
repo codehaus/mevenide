@@ -72,7 +72,9 @@ import org.openide.util.RequestProcessor;
  * @author Anuradha G
  */
 public class SearchClassDependencyInRepo implements ErrorRule<Void> {
-    private AtomicBoolean cancel=new AtomicBoolean(false);
+
+    private AtomicBoolean cancel = new AtomicBoolean(false);
+
     public SearchClassDependencyInRepo() {
     }
 
@@ -112,112 +114,120 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         //copyed from ImportClass
         TreePath path = info.getTreeUtilities().pathFor(errorPosition);
-
-        if (path.getParentPath() != null && path.getParentPath().getLeaf().getKind() == Kind.METHOD_INVOCATION) {
-            //#86313:
-            //if the error is in the type parameter, import should be proposed:
-            MethodInvocationTree mit = (MethodInvocationTree) path.getParentPath().getLeaf();
-
-            if (!mit.getTypeArguments().contains(path.getLeaf())) {
-                return Collections.<Fix>emptyList();
-            }
+        if (path.getParentPath() == null) {
+            return Collections.emptyList();
         }
-        if(cancel.get()) return Collections.<Fix>emptyList();
-        if (path.getParentPath() != null) {
-            Tree leaf = path.getParentPath().getLeaf();
-            
-            switch(leaf.getKind()){
-                //genaric handling
-                case PARAMETERIZED_TYPE:{
-                 leaf=path.getParentPath().getParentPath().getLeaf();
+
+        Tree leaf = path.getParentPath().getLeaf();
+
+        switch (leaf.getKind()) {
+            case METHOD_INVOCATION: {
+                MethodInvocationTree mit = (MethodInvocationTree) leaf;
+
+                if (!mit.getTypeArguments().contains(path.getLeaf())) {
+                    return Collections.<Fix>emptyList();
                 }
-                break;
-                case ARRAY_TYPE:{
-                 leaf=path.getParentPath().getParentPath().getLeaf();
-                }
-                break;
             }
-            switch (leaf.getKind()) {
-                case VARIABLE:
-                     {
-                        Name typeName = null;
-                        VariableTree variableTree = (VariableTree) leaf;
-                        if (variableTree.getType() != null) {
-                            switch (variableTree.getType().getKind()) {
-                                case IDENTIFIER:
-                                     {
-                                        typeName = ((IdentifierTree) variableTree.getType()).getName();
-                                    }
-                                    break;
-                                case PARAMETERIZED_TYPE:
-                                     {
-                                        ParameterizedTypeTree ptt = ((ParameterizedTypeTree) variableTree.getType());
-                                        if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
-                                            typeName = ((IdentifierTree) ptt.getType()).getName();
-                                        }
-                                    }
-                                    break;
-                                case ARRAY_TYPE:
-                                     {
-                                        ArrayTypeTree ptt = ((ArrayTypeTree) variableTree.getType());
-                                        if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
-                                            typeName = ((IdentifierTree) ptt.getType()).getName();
-                                        }
-                                    }
-                                    break;
+            case MEMBER_SELECT: {
 
-                            }
-                        }
+                return Collections.<Fix>emptyList();
 
-                        ExpressionTree initializer = variableTree.getInitializer();
-                        if (typeName != null && initializer != null) {
+            }
+            //genaric handling
 
-                            Name itName = null;
-                            switch (initializer.getKind()) {
-                                case NEW_CLASS:
-                                     {
-                                        ExpressionTree identifier = null;
-                                        NewClassTree classTree = (NewClassTree) initializer;
-                                        identifier = classTree.getIdentifier();
-
-                                        if (identifier != null) {
-
-                                            switch (identifier.getKind()) {
-                                                case IDENTIFIER:
-                                                    itName = ((IdentifierTree) identifier).getName();
-                                                    break;
-                                                case PARAMETERIZED_TYPE:
-                                                     {
-
-                                                        ParameterizedTypeTree ptt = ((ParameterizedTypeTree) identifier);
-                                                        if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
-                                                            itName = ((IdentifierTree) ptt.getType()).getName();
-                                                        }
-                                                    }
-                                                    break;
-                                            }
-                                        }
-                                    }
-                                    break;
-                                case NEW_ARRAY: {
-                                    NewArrayTree arrayTree = (NewArrayTree) initializer;
-                                    Tree type = arrayTree.getType();
-                                    if(type!=null){
-                                     itName = ((IdentifierTree) type).getName();
+            case PARAMETERIZED_TYPE:
+                 {
+                    leaf = path.getParentPath().getParentPath().getLeaf();
+                }
+                break;
+            case ARRAY_TYPE:
+                 {
+                    leaf = path.getParentPath().getParentPath().getLeaf();
+                }
+                break;
+        }
+        switch (leaf.getKind()) {
+            case VARIABLE:
+                 {
+                    Name typeName = null;
+                    VariableTree variableTree = (VariableTree) leaf;
+                    if (variableTree.getType() != null) {
+                        switch (variableTree.getType().getKind()) {
+                            case IDENTIFIER:
+                                 {
+                                    typeName = ((IdentifierTree) variableTree.getType()).getName();
+                                }
+                                break;
+                            case PARAMETERIZED_TYPE:
+                                 {
+                                    ParameterizedTypeTree ptt = ((ParameterizedTypeTree) variableTree.getType());
+                                    if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
+                                        typeName = ((IdentifierTree) ptt.getType()).getName();
                                     }
                                 }
                                 break;
-                            }
+                            case ARRAY_TYPE:
+                                 {
+                                    ArrayTypeTree ptt = ((ArrayTypeTree) variableTree.getType());
+                                    if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
+                                        typeName = ((IdentifierTree) ptt.getType()).getName();
+                                    }
+                                }
+                                break;
 
-                            if (typeName.equals(itName)) {
-                                return Collections.<Fix>emptyList();
-                            }
                         }
                     }
-                    break;
 
-            }
+                    ExpressionTree initializer = variableTree.getInitializer();
+                    if (typeName != null && initializer != null) {
+
+                        Name itName = null;
+                        switch (initializer.getKind()) {
+                            case NEW_CLASS:
+                                 {
+                                    ExpressionTree identifier = null;
+                                    NewClassTree classTree = (NewClassTree) initializer;
+                                    identifier = classTree.getIdentifier();
+
+                                    if (identifier != null) {
+
+                                        switch (identifier.getKind()) {
+                                            case IDENTIFIER:
+                                                itName = ((IdentifierTree) identifier).getName();
+                                                break;
+                                            case PARAMETERIZED_TYPE:
+                                                 {
+
+                                                    ParameterizedTypeTree ptt = ((ParameterizedTypeTree) identifier);
+                                                    if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
+                                                        itName = ((IdentifierTree) ptt.getType()).getName();
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                    }
+                                }
+                                break;
+                            case NEW_ARRAY:
+                                 {
+                                    NewArrayTree arrayTree = (NewArrayTree) initializer;
+                                    Tree type = arrayTree.getType();
+                                    if (type != null) {
+                                        itName = ((IdentifierTree) type).getName();
+                                    }
+                                }
+                                break;
+                        }
+
+                        if (typeName.equals(itName)) {
+                            return Collections.<Fix>emptyList();
+                        }
+                    }
+                }
+                break;
+
         }
+
         Token ident = null;
 
         try {
@@ -234,7 +244,9 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         String simpleName = ident.text().toString();
         //copyed from ImportClass-end
-        if(cancel.get()) return Collections.<Fix>emptyList();
+        if (cancel.get()) {
+            return Collections.<Fix>emptyList();
+        }
         boolean isTestSource = false;
 
         MavenProject mp = mavProj.getMavenProject();
@@ -453,6 +465,4 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
             return null;
         }
     }
-    
-   
 }
