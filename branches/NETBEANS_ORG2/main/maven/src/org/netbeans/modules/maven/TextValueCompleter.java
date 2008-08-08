@@ -91,6 +91,7 @@ public class TextValueCompleter implements DocumentListener {
         field.addCaretListener(caretListener);
         completionListModel = new DefaultListModel();
         completionList = new JList(completionListModel);
+        completionList.setFocusable(false);
         completionList.setPrototypeCellValue("lets have it at least this wide and add some more just in case"); //NOI18N
         completionList.addMouseListener(new MouseAdapter() {
             @Override
@@ -110,6 +111,7 @@ public class TextValueCompleter implements DocumentListener {
         listScroller =new JScrollPane(completionList,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        listScroller.setFocusable(false);
         field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),ACTION_LISTDOWN);
         field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),ACTION_LISTUP); 
         field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0),ACTION_LISTPAGEUP); 
