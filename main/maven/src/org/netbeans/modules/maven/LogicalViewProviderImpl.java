@@ -36,6 +36,9 @@ import org.openide.nodes.NodeNotFoundException;
 import org.openide.nodes.NodeOp;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
+import org.openidex.search.FileObjectFilter;
+import org.openidex.search.SearchInfo;
+import org.openidex.search.SearchInfoFactory;
 
 /**
  * provider of logical view, meaning the top node in the projects tab.
@@ -57,8 +60,11 @@ public class LogicalViewProviderImpl implements LogicalViewProvider {
     
     private static Lookup createLookup( NbMavenProjectImpl project ) {
         DataFolder rootFolder = DataFolder.findFolder( project.getProjectDirectory() );
-        // XXX Remove root folder after FindAction rewrite
-        return Lookups.fixed( new Object[] { project, rootFolder } );
+        SearchInfo info = SearchInfoFactory.createSearchInfo( rootFolder.getPrimaryFile(), true,
+                new FileObjectFilter[] {
+                    SearchInfoFactory.VISIBILITY_FILTER,
+                    SearchInfoFactory.SHARABILITY_FILTER});
+        return Lookups.fixed( new Object[] { project, rootFolder, info } );
     }
     
     /**
