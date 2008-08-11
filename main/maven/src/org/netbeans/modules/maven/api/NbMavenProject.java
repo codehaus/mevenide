@@ -39,7 +39,6 @@ import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
-import org.netbeans.modules.maven.MavenProjectPropsImpl;
 import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
