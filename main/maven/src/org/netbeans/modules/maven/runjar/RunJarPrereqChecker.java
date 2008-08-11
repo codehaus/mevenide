@@ -63,7 +63,8 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
 
     private String mainClass;
     
-    public boolean checkRunConfig(String actionName, RunConfig config) {
+    public boolean checkRunConfig(RunConfig config) {
+        String actionName = config.getActionName();
         if ((ActionProvider.COMMAND_RUN.equals(actionName) ||
                 ActionProvider.COMMAND_DEBUG.equals(actionName) ||
                 "profile".equals(actionName)) &&  

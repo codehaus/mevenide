@@ -33,6 +33,6 @@ public interface PrerequisitesChecker {
      * @param config
      * @return true if the execution shall continue., otherwise it will be aborted.
      */
-    boolean checkRunConfig(String actionName, RunConfig config);
+    boolean checkRunConfig(RunConfig config);
 
 }
