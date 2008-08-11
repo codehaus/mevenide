@@ -306,7 +306,7 @@ public class ActionProviderImpl implements ActionProvider {
 
         public void actionPerformed(java.awt.event.ActionEvent e) {
             if (!showUI) {
-                ModelRunConfig rc = new ModelRunConfig(project, mapping);
+                ModelRunConfig rc = new ModelRunConfig(project, mapping, mapping.getActionName());
                 rc.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
@@ -358,7 +358,7 @@ public class ActionProviderImpl implements ActionProvider {
                         ex.printStackTrace();
                     }
                 }
-                ModelRunConfig rc = new ModelRunConfig(project, mapping);
+                ModelRunConfig rc = new ModelRunConfig(project, mapping, mapping.getActionName());
                 rc.setOffline(Boolean.valueOf(pnl.isOffline()));
                 rc.setShowDebug(pnl.isShowDebug());
                 rc.setRecursive(pnl.isRecursive());

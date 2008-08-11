@@ -31,7 +31,7 @@ public final class ModelRunConfig extends BeanRunConfig {
     private NetbeansActionMapping model;
     
     /** Creates a new instance of ModelRunConfig */
-    public ModelRunConfig(Project proj, NetbeansActionMapping mod) {
+    public ModelRunConfig(Project proj, NetbeansActionMapping mod, String actionName) {
         model = mod;
         NbMavenProjectImpl nbprj = proj.getLookup().lookup(NbMavenProjectImpl.class);
         setProject(nbprj);
@@ -42,6 +42,7 @@ public final class ModelRunConfig extends BeanRunConfig {
         setExecutionDirectory(FileUtil.toFile(proj.getProjectDirectory()));
         setRecursive(mod.isRecursive());
         setActivatedProfiles(mod.getActivatedProfiles());
+        setActionName(actionName);
     }
     
 }

@@ -48,6 +48,8 @@ public interface RunConfig {
     String getExecutionName();
     
     String getTaskDisplayName();
+
+    String getActionName();
     
     /**
      * properties to be used in the execution. Do not modify the returned Properties instance.

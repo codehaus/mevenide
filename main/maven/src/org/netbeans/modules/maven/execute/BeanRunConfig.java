@@ -45,6 +45,7 @@ public class BeanRunConfig implements RunConfig {
     private String taskName;
     private boolean interactive = true;
     private RunConfig parent;
+    private String actionName;
     
     /** Creates a new instance of BeanRunConfig */
     public BeanRunConfig() {
@@ -221,6 +222,19 @@ public class BeanRunConfig implements RunConfig {
     
     public void setInteractive(boolean ia) {
         interactive = ia;
+    }
+
+
+    public void setActionName(String actionName) {
+        this.actionName = actionName;
+    }
+
+    public String getActionName()
+    {
+        if (parent != null && actionName == null) {
+            return parent.getActionName();
+        }
+        return actionName;
     }
     
     
