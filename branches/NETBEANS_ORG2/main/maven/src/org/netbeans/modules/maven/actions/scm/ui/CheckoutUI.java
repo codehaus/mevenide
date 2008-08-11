@@ -29,8 +29,10 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Scm;
 import org.netbeans.modules.maven.NbMavenProjectImpl;
 import org.netbeans.modules.maven.api.execute.RunConfig;
+import org.netbeans.modules.maven.execute.BeanRunConfig;
 import org.netbeans.modules.maven.options.MavenCommandSettings;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
 
 /**
@@ -323,101 +325,34 @@ private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
 }//GEN-LAST:event_txtFolderKeyReleased
 
     public RunConfig getRunConfig() {
+        BeanRunConfig brc = new BeanRunConfig();
+        brc.setExecutionDirectory(FileUtil.normalizeFile(new File(txtFolder.getText().trim())));
+        List<String> goals = new ArrayList<String>();
+        goals.add(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_SCM_CHECKOUT));//NOI18N
+        brc.setGoals(goals);
+        brc.setTaskDisplayName(NbBundle.getMessage(CheckoutUI.class, "LBL_Checkout", artifact.getArtifactId() + " : " + artifact.getVersion().toString()));
+        brc.setExecutionName(brc.getTaskDisplayName());
+        Properties properties = new Properties();
+        String path = txtFolder.getText();
 
-        return new RunConfig() {
-           Properties properties = new Properties();
+        properties.put("checkoutDirectory", path);//NOI18N
 
-            public File getExecutionDirectory() {
-                File file = new File(txtFolder.getText());
-                return file;
-            }
+        properties.put("connectionUrl", txtUrl.getText());//NOI18N
 
-            public NbMavenProjectImpl getProject() {
-                return null;
-            }
+        if (txtUser.getText().trim().length() != 0) {
+            properties.put("username", txtUser.getText());//NOI18N
 
-            public List<String> getGoals() {
-
-                List<String> goals = new ArrayList<String>();
-                goals.add(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_SCM_CHECKOUT));//NOI18N
-
-                return goals;
-            }
-
-            public String getExecutionName() {
-                return getTaskDisplayName();
-            }
-
-            public String getTaskDisplayName() {
-                return NbBundle.getMessage(CheckoutUI.class, "LBL_Checkout", artifact.getArtifactId() + " : " + artifact.getVersion().toString());
-            }
-
-            public Properties getProperties() {
-                String path = txtFolder.getText();
-
-                properties.put("checkoutDirectory", path);//NOI18N
-
-                properties.put("connectionUrl", txtUrl.getText());//NOI18N
-
-                if (txtUser.getText().trim().length() != 0) {
-                    properties.put("username", txtUser.getText());//NOI18N
-
-                    properties.put("password ", new String(txtPassword.getPassword()));//NOI18N
-                }
-                Properties newProperties=new Properties();
-                newProperties.putAll(properties);
-                return newProperties;
-            }
-            public void setProperties(Properties properties) {
-              this.properties.clear();
-              this.properties.putAll(properties);
-            }
-            public boolean isShowDebug() {
-                return chkPrintDebugInfo.isSelected();
-            }
-
-            public boolean isShowError() {
-                return chkPrintDebugInfo.isSelected();
-            }
-
-            public Boolean isOffline() {
-                return false;
-            }
-
-            public void setOffline(Boolean bool) {
-                //
-            }
-
-            public boolean isRecursive() {
-                return false;
-            }
-
-            public boolean isUpdateSnapshots() {
-                return false;
-            }
-
-            public List<String> getActivatedProfiles() {
-                return Collections.<String>emptyList();
-            }
-            
-            public void setActivatedProfiles(List<String> activeteProfiles) {
-                
-            }
-
-            public boolean isInteractive() {
-                return true;
-            }
-
-            public String removeProperty(String key) {
-                return (String) properties.remove(key);
-            }
-
-            public String setProperty(String key, String value) {
-                return (String) properties.setProperty(key, value);
-            }
-        };
-
-
+            properties.put("password ", new String(txtPassword.getPassword()));//NOI18N
+        }
+        brc.setProperties(properties);
+        brc.setShowDebug(chkPrintDebugInfo.isSelected());
+        brc.setShowError(chkPrintDebugInfo.isSelected());
+        brc.setOffline(false);
+        brc.setUpdateSnapshots(false);
+        brc.setActivatedProfiles(Collections.<String>emptyList());
+        brc.setInteractive(true);
+        brc.setActionName("scm-checkout"); //NOI18N
+        return brc;
     }
 
     public JButton getCheckoutButton() {

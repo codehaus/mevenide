@@ -287,7 +287,7 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
                 }
             }
             if (action != null) {
-                return new ModelRunConfig(project, action);
+                return new ModelRunConfig(project, action, actionName);
             }
         } catch (XmlPullParserException ex) {
             ex.printStackTrace();

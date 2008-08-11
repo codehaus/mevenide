@@ -106,5 +106,9 @@ public class ProxyRunConfig implements RunConfig {
     public boolean isInteractive() {
         return delegate.isInteractive();
     }
+
+    public String getActionName() {
+        return delegate.getActionName();
+    }
     
 }
