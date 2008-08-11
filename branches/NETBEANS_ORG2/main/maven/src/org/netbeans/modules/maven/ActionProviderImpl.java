@@ -143,18 +143,18 @@ public class ActionProviderImpl implements ActionProvider {
 
         } else {
             setupTaskName(action, rc, lookup);
-            runGoal(action, lookup, rc, true);
+            runGoal(lookup, rc, true);
         }
     }
 
-    private void runGoal(String action, Lookup lookup, RunConfig config, boolean checkShowDialog) {
+    private void runGoal(Lookup lookup, RunConfig config, boolean checkShowDialog) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();
 
         // check the prerequisites
-        Lookup.Result<PrerequisitesChecker> result = config.getProject().getLookup().lookup(new Lookup.Template<PrerequisitesChecker>(PrerequisitesChecker.class));
-        for (PrerequisitesChecker elem : result.allInstances()) {
-            if (!elem.checkRunConfig(action, config)) {
+        Lookup.Result<PrerequisitesChecker> res = config.getProject().getLookup().lookup(new Lookup.Template<PrerequisitesChecker>(PrerequisitesChecker.class));
+        for (PrerequisitesChecker elem : res.allInstances()) {
+            if (!elem.checkRunConfig(config)) {
                 return;
             }
         }
@@ -311,7 +311,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
                 setupTaskName("custom", rc, Lookup.EMPTY); //NOI18N
-                runGoal("custom", Lookup.EMPTY, rc, true); //NOI18N
+                runGoal(Lookup.EMPTY, rc, true); //NOI18N
 
                 return;
             }
@@ -366,7 +366,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
                 setupTaskName("custom", rc, Lookup.EMPTY); //NOI18N
-                runGoal("custom", Lookup.EMPTY, rc, false); //NOI18N
+                runGoal(Lookup.EMPTY, rc, false); //NOI18N
 
             }
         }

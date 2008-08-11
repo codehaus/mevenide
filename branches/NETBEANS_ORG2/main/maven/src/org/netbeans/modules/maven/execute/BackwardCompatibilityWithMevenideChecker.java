@@ -29,7 +29,7 @@ import org.openide.util.Exceptions;
  */
 public class BackwardCompatibilityWithMevenideChecker implements PrerequisitesChecker {
 
-    public boolean checkRunConfig(String actionName, RunConfig config) {
+    public boolean checkRunConfig(RunConfig config) {
         String[] gls = config.getGoals().toArray(new String[0]);
         boolean changed = false;
         for (int i = 0; i < gls.length; i++) {

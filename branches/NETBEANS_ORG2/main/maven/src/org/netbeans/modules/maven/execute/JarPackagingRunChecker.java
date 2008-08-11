@@ -48,7 +48,8 @@ public class JarPackagingRunChecker implements PrerequisitesChecker {
     public JarPackagingRunChecker() {
     }
 
-    public boolean checkRunConfig(String actionName, RunConfig config) {
+    public boolean checkRunConfig(RunConfig config) {
+        String actionName = config.getActionName();
         if (applicableActions.contains(actionName)) {
             Iterator it = config.getGoals().iterator();
             while (it.hasNext()) {

@@ -43,7 +43,8 @@ public class J2EEPrerequisitesChecker implements PrerequisitesChecker {
     public J2EEPrerequisitesChecker() {
     }
 
-    public boolean checkRunConfig(String actionName, RunConfig config) {
+    public boolean checkRunConfig(RunConfig config) {
+        String actionName = config.getActionName();
         if (!applicableActions.contains(actionName)) {
             return true;
         }
