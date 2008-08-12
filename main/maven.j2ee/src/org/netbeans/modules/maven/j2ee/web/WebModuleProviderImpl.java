@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import org.netbeans.modules.maven.api.Constants;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.j2ee.J2eeMavenSourcesImpl;
-import org.netbeans.modules.maven.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
@@ -33,6 +32,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
+import org.netbeans.modules.maven.j2ee.ExecutionChecker;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
@@ -164,7 +164,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
             return serverInstanceID;
         }
-        return MavenDeploymentImpl.DEV_NULL;
+        return ExecutionChecker.DEV_NULL;
     }
     
     /** This method is used to determin type of target server.
@@ -178,7 +178,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
                 return tr;
             }
         }
-        return MavenDeploymentImpl.DEV_NULL;
+        return ExecutionChecker.DEV_NULL;
     }
 
     /**

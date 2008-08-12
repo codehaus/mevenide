@@ -30,10 +30,10 @@ import org.apache.maven.profiles.Profile;
 import org.netbeans.modules.maven.api.Constants;
 import org.netbeans.modules.maven.api.customizer.support.ComboBoxUpdater;
 import org.netbeans.modules.maven.api.customizer.ModelHandle;
-import org.netbeans.modules.maven.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
+import org.netbeans.modules.maven.j2ee.ExecutionChecker;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.util.Exceptions;
@@ -140,7 +140,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                     pub.getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
                 }
 
-                if (MavenDeploymentImpl.DEV_NULL.equals(iID)) {
+                if (ExecutionChecker.DEV_NULL.equals(iID)) {
                     //check if someone moved the property to netbeans-private profile, remove from there then.
                     if (privateProf != null) {
                         if (privateProf.getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER) != null) {
@@ -224,7 +224,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         String[] ids = Deployment.getDefault().getServerInstanceIDs();
         Collection<Wrapper> col = new ArrayList<Wrapper>();
 //        Wrapper selected = null;
-        col.add(new Wrapper(MavenDeploymentImpl.DEV_NULL));
+        col.add(new Wrapper(ExecutionChecker.DEV_NULL));
         for (int i = 0; i < ids.length; i++) {
             Wrapper wr = new Wrapper(ids[i]);
             col.add(wr);
@@ -412,15 +412,15 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         }
         
         public String getServerID() {
-            if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
-                return MavenDeploymentImpl.DEV_NULL;
+            if (ExecutionChecker.DEV_NULL.equals(id)) {
+                return ExecutionChecker.DEV_NULL;
             }
             return Deployment.getDefault().getServerID(id);
         }
         
         @Override
         public String toString() {
-            if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
+            if (ExecutionChecker.DEV_NULL.equals(id)) {
                 return org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "MSG_No_Server");
             }
             return Deployment.getDefault().getServerInstanceDisplayName(id);

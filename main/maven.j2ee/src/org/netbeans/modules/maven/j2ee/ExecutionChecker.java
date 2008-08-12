@@ -42,7 +42,7 @@ import org.openide.windows.OutputWriter;
 public class ExecutionChecker implements ExecutionResultChecker {
 
     private Project project;
-    public static final String DEV_NULL = "WTF"; //NOI18N
+    public static final String DEV_NULL = "WTF-NULL"; //NOI18N
     public static final String DEPLOY = "netbeans.deploy"; //NOI18N
     public static final String DEBUG_MODE = "netbeans.deploy.debugmode"; //NOI18N
     public static final String REDEPLOY = "netbeans.deploy.forceRedeploy"; //NOI18N
