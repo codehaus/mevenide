@@ -86,8 +86,9 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             builder.redirectErrorStream(true);
             builder.directory(workingDir);
             //TODO set the JDK of choice in env
+            String mavenOpts = System.getenv("MAVEN_OPTS") == null ? "" : System.getenv("MAVEN_OPTS");//NOI18N
 //            builder.environment();
-            ioput.getOut().println("NetBeans: Executing:" + StringUtils.join(builder.command().iterator(), " "));//NOI18N - to be shown in log.
+            ioput.getOut().println("NetBeans: Executing '" + StringUtils.join(builder.command().iterator(), " ") + "'");//NOI18N - to be shown in log.
             process = builder.start();
             out.setStdOut(process.getInputStream());
             out.setStdIn(process.getOutputStream());
@@ -145,14 +146,19 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         
     private static List<String> createMavenExecutionCommand(RunConfig config) {
         File mavenHome = MavenExecutionSettings.getDefault().getCommandLinePath();
-        assert mavenHome != null;
         
-        //Do we care?
-        String mavenOpts = System.getenv("MAVEN_OPTS") == null ? "" : System.getenv("MAVEN_OPTS");//NOI18N
         List<String> toRet = new ArrayList<String>();
         String ex = Utilities.isWindows() ? "mvn.bat" : "mvn"; //NOI18N
-        File bin = new File(mavenHome, "bin" + File.separator + ex);//NOI18N
-        toRet.add(bin.getAbsolutePath());
+        if (mavenHome != null) {
+            File bin = new File(mavenHome, "bin" + File.separator + ex);//NOI18N
+            if (bin.exists()) {
+                toRet.add(bin.getAbsolutePath());
+            } else {
+                toRet.add(ex);
+            }
+        } else {
+            toRet.add(ex);
+        }
         
         for (Object key : config.getProperties().keySet()) {
             String val = config.getProperties().getProperty((String)key);
