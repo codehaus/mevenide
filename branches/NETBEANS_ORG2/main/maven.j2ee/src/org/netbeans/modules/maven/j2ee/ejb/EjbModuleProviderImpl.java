@@ -18,7 +18,6 @@ package org.netbeans.modules.maven.j2ee.ejb;
 
 import org.netbeans.modules.maven.api.Constants;
 import org.netbeans.modules.maven.api.NbMavenProject;
-import org.netbeans.modules.maven.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -34,6 +33,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarFactory;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarsInProject;
+import org.netbeans.modules.maven.j2ee.ExecutionChecker;
 import org.netbeans.spi.project.AuxiliaryProperties;
 import org.openide.filesystems.FileObject;
 
@@ -167,7 +167,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
             return serverInstanceID;
         }
-        return MavenDeploymentImpl.DEV_NULL;
+        return ExecutionChecker.DEV_NULL;
     }
     
     @Override
@@ -178,7 +178,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
                 return tr;
             }
         }
-        return MavenDeploymentImpl.DEV_NULL;
+        return ExecutionChecker.DEV_NULL;
     }
     
     @Override
