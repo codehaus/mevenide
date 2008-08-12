@@ -143,7 +143,12 @@ public class SettingsPanel extends javax.swing.JPanel {
     {
         String path = txtCommandLine.getText().trim();
         if (path.length() == 0) {
-            lblExternalVersion.setText(""); //NOI18N
+            String ver = MavenExecutionSettings.getDefaultMavenInstanceVersion();
+            if (ver != null) {
+                lblExternalVersion.setText(NbBundle.getMessage(SettingsPanel.class, "LBL_ExMavenVersion3", ver));//NOI18N
+            } else {
+                lblExternalVersion.setText(ver != null ? ver : ""); //NOI18N
+            }
             return;
         }
         File root = new File(path);
