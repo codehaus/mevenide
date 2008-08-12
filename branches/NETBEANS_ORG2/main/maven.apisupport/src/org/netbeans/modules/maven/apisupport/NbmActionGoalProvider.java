@@ -40,6 +40,8 @@ import org.openide.util.RequestProcessor;
  * @author mkleint
  */
 public class NbmActionGoalProvider implements MavenActionsProvider {
+    static final String NBMRELOAD = "nbmreload";
+    
     private static final RequestProcessor PROCESSOR=new  RequestProcessor("NbmActionGoalProvider Clearing Task");//NOI18N
     private AbstractMavenActionsProvider platformDelegate = new AbstractMavenActionsProvider() {
 
@@ -91,18 +93,18 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     }
     
     public Set<String> getSupportedDefaultActions() {
-        return Collections.singleton("nbmreload");
+        return Collections.singleton(NBMRELOAD);
     }
     
     
     public static Action createReloadAction() {
-        return ProjectSensitiveActions.projectCommandAction("nbmreload", NbBundle.getMessage(NbmActionGoalProvider.class, "ACT_NBM_Reload"), null);
+        return ProjectSensitiveActions.projectCommandAction(NBMRELOAD, NbBundle.getMessage(NbmActionGoalProvider.class, "ACT_NBM_Reload"), null);
     }
 
     public boolean isActionEnable(String action, Project project, Lookup lookup) {
         if (!ActionProvider.COMMAND_RUN.equals(action) &&
                 !ActionProvider.COMMAND_DEBUG.equals(action) &&
-                !"nbmreload".equals(action)) {
+                !NBMRELOAD.equals(action)) {
             return false;
         }
         if (CACHED_PLATFORM == VAL_NOT_CACHED) {
@@ -128,7 +130,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
             Lookup lookup) {
         if (!ActionProvider.COMMAND_RUN.equals(actionName) &&
                 !ActionProvider.COMMAND_DEBUG.equals(actionName) &&
-                !"nbmreload".equals(actionName)) {
+                !NBMRELOAD.equals(actionName)) {
             return null;
         }
         if (isPlatformApp(project)) {
@@ -144,7 +146,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
             Project project) {
         if (!ActionProvider.COMMAND_RUN.equals(actionName) &&
                 !ActionProvider.COMMAND_DEBUG.equals(actionName) &&
-                !"nbmreload".equals(actionName)) {
+                !NBMRELOAD.equals(actionName)) {
             return null;
         }
         if (isPlatformApp(project)) {

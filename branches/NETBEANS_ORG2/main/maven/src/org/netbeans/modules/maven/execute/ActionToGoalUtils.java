@@ -34,7 +34,9 @@ import org.netbeans.modules.maven.configurations.ConfigurationProviderEnabler;
 import org.netbeans.modules.maven.configurations.M2ConfigProvider;
 import org.netbeans.modules.maven.configurations.M2Configuration;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.api.execute.ExecutionResult;
 import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.netbeans.modules.maven.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
@@ -43,6 +45,7 @@ import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
+import org.openide.windows.InputOutput;
 
 /**
  *
@@ -52,6 +55,26 @@ public final class ActionToGoalUtils {
 
     private static final String FO_ATTR_CUSTOM_MAPP = "customActionMappings"; //NOI18N
 
+    public static ResultAccessor ACCESSOR = null;
+    static {
+        // invokes static initializer of ExecutionResult.class
+        // that will assign value to the ACCESSOR field above
+        Class c = ExecutionResult.class;
+        try {
+            Class.forName(c.getName(), true, c.getClassLoader());
+        } catch (Exception ex) {
+            assert false : ex;
+        }
+        assert ACCESSOR != null;
+    }
+    
+    public static abstract class ResultAccessor {
+
+        public abstract ExecutionResult createResult(int result, InputOutput inputoutput, ProgressHandle handle);
+    }
+    
+
+    
     /** Creates a new instance of ActionToGoalUtils */
     private ActionToGoalUtils() {
     }

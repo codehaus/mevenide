@@ -42,6 +42,7 @@ public class MavenApisupportLookupProvider implements LookupProvider {
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
         ic.add(new ApisupportRecoPrivTemplates(project));
+        ic.add(new ExecutionChecker(project));
         return new Provider(project, ic);
     }
     

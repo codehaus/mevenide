@@ -49,6 +49,7 @@ public class J2eeLookupProvider implements LookupProvider {
         ic.add(new J2EEPrerequisitesChecker());
         ic.add(new J2eeRecoPrivTemplates(project));
         ic.add(new J2eeMavenSourcesImpl(project));
+        ic.add(new ExecutionChecker(project));
         Provider prov = new Provider(project, ic);
         ic.add(new POHImpl(project, prov));
         return prov;
