@@ -25,13 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.options.MavenExecutionSettings;
 import hidden.org.codehaus.plexus.util.StringUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.modules.maven.api.execute.ExecutionResult;
+import org.netbeans.modules.maven.api.execute.ExecutionResultChecker;
 import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
@@ -61,6 +61,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
      */
     public void run() {
         final RunConfig clonedConfig = new BeanRunConfig(this.config);
+        int executionresult = -10;
         // check the prerequisites
         if (clonedConfig.getProject() != null) {
             Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
@@ -86,12 +87,11 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             builder.directory(workingDir);
             //TODO set the JDK of choice in env
 //            builder.environment();
-            ioput.getOut().println("WARNING: You are running Maven builds externally, some UI functionality will not be available."); //NOI18N - to be shown in log.
-            ioput.getOut().println("Executing:" + StringUtils.join(builder.command().iterator(), " "));//NOI18N - to be shown in log.
+            ioput.getOut().println("NetBeans: Executing:" + StringUtils.join(builder.command().iterator(), " "));//NOI18N - to be shown in log.
             process = builder.start();
             out.setStdOut(process.getInputStream());
             out.setStdIn(process.getOutputStream());
-            process.waitFor();
+            executionresult = process.waitFor();
             out.waitFor();
         } catch (IOException x) {
             //TODO
@@ -105,23 +105,32 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             }
             throw death;
         } finally {
-            out.buildFinished();
-            
-            //MEVENIDE-623 re add original Properties
-            clonedConfig.setProperties(origanalProperties);
-            
-            handle.finish();
-            ioput.getOut().close();
-            ioput.getErr().close();
-            actionStatesAtFinish();
-            markFreeTab();
-            RequestProcessor.getDefault().post(new Runnable() { //#103460
-                public void run() {
-                    if (clonedConfig.getProject() != null) {
-                        NbMavenProject.fireMavenProjectReload(clonedConfig.getProject());
-                    }
+            try { //defend against badly written extensions..
+                out.buildFinished();
+                Lookup.Result<ExecutionResultChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<ExecutionResultChecker>(ExecutionResultChecker.class));
+                ExecutionResult exRes = ActionToGoalUtils.ACCESSOR.createResult(executionresult, ioput, handle);
+                for (ExecutionResultChecker elem : result.allInstances()) {
+                    elem.executionResult(clonedConfig, exRes);
                 }
-            });
+            }
+            finally {
+                //MEVENIDE-623 re add original Properties
+                clonedConfig.setProperties(origanalProperties);
+
+                handle.finish();
+                ioput.getOut().close();
+                ioput.getErr().close();
+                actionStatesAtFinish();
+                markFreeTab();
+                RequestProcessor.getDefault().post(new Runnable() { //#103460
+                    public void run() {
+                        if (clonedConfig.getProject() != null) {
+                            NbMavenProject.fireMavenProjectReload(clonedConfig.getProject());
+                        }
+                    }
+                });
+                
+            }
             
         }
     }

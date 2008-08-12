@@ -51,13 +51,13 @@ public class MavenDebuggerImpl implements MavenDebugger2 {
     public MavenDebuggerImpl() {
     }
 
-    public void attachDebugger(MavenProject project, Log log, String name, 
+    public void attachDebugger(MavenProject project, Log logger, String name, 
             final String transport,
             final String host, 
             final String address) throws MojoFailureException, MojoExecutionException {
 //        JPDAStart.verifyPaths(getProject(), classpath);
 //        JPDAStart.verifyPaths(getProject(), sourcepath);
-        
+
         final Object[] lock = new Object [1];
         try {
             

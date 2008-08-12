@@ -30,12 +30,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.modules.maven.api.execute.RunUtils;
-import org.netbeans.modules.maven.debug.JPDAStart;
 import org.netbeans.modules.maven.execute.ui.RunGoalsPanel;
 import org.netbeans.modules.maven.spi.lifecycle.MavenBuildPlanSupport;
 import org.openide.DialogDescriptor;
@@ -53,7 +50,7 @@ import org.openide.windows.OutputListener;
  * common code for MAvenExecutors, sharing tabs and actions..
  * @author mkleint
  */
-abstract class AbstractMavenExecutor extends OutputTabMaintainer implements MavenExecutor, Cancellable {
+public abstract class AbstractMavenExecutor extends OutputTabMaintainer implements MavenExecutor, Cancellable {
 
     protected RunConfig config;
     protected ReRunAction rerun;
@@ -94,7 +91,7 @@ abstract class AbstractMavenExecutor extends OutputTabMaintainer implements Mave
 //        forbidden.add("https.nonProxyHosts");
 
     }
-
+    
     protected AbstractMavenExecutor(RunConfig conf) {
         super(conf.getExecutionName());
         config = conf;

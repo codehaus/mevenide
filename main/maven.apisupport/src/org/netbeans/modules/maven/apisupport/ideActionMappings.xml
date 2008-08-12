@@ -30,8 +30,7 @@
     <action>
         <actionName>nbmreload</actionName>
         <goals>
-            <goal>install</goal>
-            <goal>org.netbeans.plugins:netbeans-nbmreload-plugin:2.0:reload</goal>
+            <goal>package</goal>
         </goals>
     </action>
 

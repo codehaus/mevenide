@@ -38,6 +38,9 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.netbeans.api.options.OptionsDisplayer;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.modules.maven.embedder.exec.ProgressTransferListener;
@@ -47,15 +50,20 @@ import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.modules.maven.api.execute.ExecutionResult;
+import org.netbeans.modules.maven.api.execute.ExecutionResultChecker;
 import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.windows.InputOutput;
+import org.openide.windows.OutputEvent;
+import org.openide.windows.OutputListener;
 
 /**
  * support for executing maven, from the ide using embedder
@@ -103,8 +111,22 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         actionStatesAtStart();
         String basedir = System.getProperty(BASEDIR);//NOI18N
         handle.start();
+        ioput.getOut().println("WARNING: You are running embedded Maven builds, some build may fail due to incompatibilities with latest Maven release."); //NOI18N - to be shown in log.
+        try {
+            ioput.getOut().println("         To set Maven instance to use for building, click here.", //NOI18N - to be shown in log.
+                    new OutputListener() {
+                public void outputLineSelected(OutputEvent ev) {}
+                public void outputLineAction(OutputEvent ev) {
+                    OptionsDisplayer.getDefault().open(OptionsDisplayer.ADVANCED + "/Maven"); //NOI18N - the id is the name of instance in layers.
+                }
+                public void outputLineCleared(OutputEvent ev) {}
+            });
+        } catch (IOException e) {
+            Exceptions.printStackTrace(e);
+        }
         processInitialMessage();
         MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+        int executionResult = -10;
         try {
             MavenEmbedder embedder;
             ProgressTransferListener.setAggregateHandle(handle);
@@ -217,6 +239,9 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             CLIReportingUtils.logResult(req, res, out);
             if (res.hasExceptions()) {
                 //TODO something?
+                executionResult = -1;
+            } else {
+                executionResult = 0;
             }
 //        } catch (MavenExecutionException ex) {
 //            LOGGER.log(Level.FINE, ex.getMessage(), ex);
@@ -225,48 +250,62 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         } catch (RuntimeException re) {
             CLIReportingUtils.showError("Runtime Exception thrown during execution", re, req.isShowErrors(), req.getErrorReporter(), out);//NOI18N - part of maven output
             LOGGER.log(Level.FINE, re.getMessage(), re);
+            executionResult = -2;
         } catch (ThreadDeath death) {
 //            cancel();
             CLIReportingUtils.showError("Killed.", new Exception(""), false, req.getErrorReporter(), out); //NOI18N - part of maven output
             shutdownOutput(ioput);
             ioput = null;
+            executionResult = ExecutionResult.EXECUTION_ABORTED;
             throw death;
         } finally {
             finishing = true; //#103460
-            out.buildFinished();
-            shutdownOutput(ioput);
-            handle.finish();
-            handle = null;
-            ProgressTransferListener.clearAggregateHandle();
-            //SUREFIRE-94/MEVENIDE-412 the surefire plugin sets basedir environment variable, which breaks ant integration
-            // in netbeans.
-            if (basedir == null) {
-                System.getProperties().remove(BASEDIR);
-            } else {
-                System.setProperty( BASEDIR,basedir);
+            ProgressHandle ph = ProgressHandleFactory.createSystemHandle( "Additional maven build processing");
+            ph.start();
+            try { //defend against badly written extensions..
+                out.buildFinished();
+                Lookup.Result<ExecutionResultChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<ExecutionResultChecker>(ExecutionResultChecker.class));
+                ExecutionResult exRes = ActionToGoalUtils.ACCESSOR.createResult(executionResult, ioput, ph);
+                for (ExecutionResultChecker elem : result.allInstances()) {
+                    elem.executionResult(clonedConfig, exRes);
+                }
             }
-            //MEVENIDE-623 re add original Properties
-            clonedConfig.setProperties(origanalProperties);
-            
-            actionStatesAtFinish();
-            EmbedderFactory.resetProjectEmbedder();
-            final List<File> fireList = MyLifecycleExecutor.getAffectedProjects();
-            RequestProcessor.getDefault().post(new Runnable() { //#103460
-                public void run() {
-                    for (File elem: fireList) {
-                        if (elem == null) {
-                            // during archetype creation?
-                            continue;
-                        }
-                        FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(elem));
-                        if (fo != null) {
-                            //TODO have the firing based on open projects only..
-                            NbMavenProject.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
+            finally {
+                ph.finish();
+                shutdownOutput(ioput);
+                handle.finish();
+                handle = null;
+                ProgressTransferListener.clearAggregateHandle();
+                //SUREFIRE-94/MEVENIDE-412 the surefire plugin sets basedir environment variable, which breaks ant integration
+                // in netbeans.
+                if (basedir == null) {
+                    System.getProperties().remove(BASEDIR);
+                } else {
+                    System.setProperty( BASEDIR,basedir);
+                }
+                //MEVENIDE-623 re add original Properties
+                clonedConfig.setProperties(origanalProperties);
+
+                actionStatesAtFinish();
+                EmbedderFactory.resetProjectEmbedder();
+                final List<File> fireList = MyLifecycleExecutor.getAffectedProjects();
+                RequestProcessor.getDefault().post(new Runnable() { //#103460
+                    public void run() {
+                        for (File elem: fireList) {
+                            if (elem == null) {
+                                // during archetype creation?
+                                continue;
+                            }
+                            FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(elem));
+                            if (fo != null) {
+                                //TODO have the firing based on open projects only..
+                                NbMavenProject.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
+                            }
                         }
                     }
-                }
-            });
-            doRemoveAllShutdownHooks();
+                });
+                doRemoveAllShutdownHooks();
+            }
         }
     }
     

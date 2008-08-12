@@ -17,8 +17,10 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.netbeans.plugins:netbeans-deploy-plugin:2.0:deploy</goal>
         </goals>
+        <properties>
+            <netbeans.deploy>true</netbeans.deploy>
+        </properties>
     </action>
     <action>
         <actionName>run.single</actionName>
@@ -30,7 +32,8 @@
             <goal>org.netbeans.plugins:netbeans-deploy-plugin:2.0:deploy</goal>
         </goals>
         <properties>
-            <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>
+            <netbeans.deploy>true</netbeans.deploy>
+            <netbeans.deploy.clientUrlPart>${webpagePath}</netbeans.deploy.clientUrlPart>
         </properties>
     </action>
     <action>
@@ -42,10 +45,10 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.netbeans.plugins:netbeans-deploy-plugin:2.0:deploy</goal>
         </goals>
         <properties>
             <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
+            <netbeans.deploy>true</netbeans.deploy>
         </properties>
     </action>
     <action>
@@ -55,11 +58,11 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.netbeans.plugins:netbeans-deploy-plugin:2.0:deploy</goal>
         </goals>
         <properties>
-            <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>
+            <netbeans.deploy.clientUrlPart>${webpagePath}</netbeans.deploy.clientUrlPart>
             <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
+            <netbeans.deploy>true</netbeans.deploy>
         </properties>
     </action>
     
