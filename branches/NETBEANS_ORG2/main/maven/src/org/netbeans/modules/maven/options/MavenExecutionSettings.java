@@ -137,13 +137,6 @@ public class MavenExecutionSettings  {
         return getPreferences().getBoolean(PROP_SYNCH_PROXY, true);
     }
     
-    public boolean isUseCommandLine() {
-        return getPreferences().getBoolean(PROP_USE_COMMANDLINE, true);
-    }
-
-    public void setUseCommandLine(boolean useCommandLine) {
-        getPreferences().putBoolean(PROP_USE_COMMANDLINE, useCommandLine);
-    }
     
     public File getCommandLinePath() {
         String str =  getPreferences().get(PROP_COMMANDLINE_PATH, null);
