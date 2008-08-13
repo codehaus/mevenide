@@ -254,6 +254,9 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     private void addJavaRootFolders(FileObject fo) {
         try {
             Project prj = ProjectManager.getDefault().findProject(fo);
+            if (prj == null) { //#143596
+                return;
+            }
             NbMavenProject watch = prj.getLookup().lookup(NbMavenProject.class);
             if (watch != null) {
                 // do not create java/test for pom type projects.. most probably not relevant.
