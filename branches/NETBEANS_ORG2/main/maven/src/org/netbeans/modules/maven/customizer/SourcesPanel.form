@@ -19,7 +19,7 @@
           <ComponentRef name="txtProjectFolder"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/customizer/Bundle.properties" key="CTL_ProjectFolder" replaceFormat="org.openide.util.NbBundle.getBundle({sourceFileName}.class).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="org/netbeans/modules/maven/customizer/Bundle.properties" key="CTL_ProjectFolder" replaceFormat="org.openide.util.NbBundle.getBundle({sourceFileName}.class).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Constraints>
@@ -67,7 +67,7 @@
               <ComponentRef name="comSourceLevel"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/codehaus/mevenide/netbeans/customizer/Bundle.properties" key="TXT_SourceLevel" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/netbeans/modules/maven/customizer/Bundle.properties" key="TXT_SourceLevel" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -108,7 +108,7 @@
               <ComponentRef name="comEncoding"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/codehaus/mevenide/netbeans/customizer/Bundle.properties" key="TXT_Encoding" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/netbeans/modules/maven/customizer/Bundle.properties" key="TXT_Encoding" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <AuxValues>

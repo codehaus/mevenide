@@ -63,7 +63,7 @@
     <Component class="javax.swing.JLabel" name="lblId">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/configurations/Bundle.properties" key="NewConfigurationPanel.lblId.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/netbeans/modules/maven/configurations/Bundle.properties" key="NewConfigurationPanel.lblId.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
@@ -72,7 +72,7 @@
     <Component class="javax.swing.JCheckBox" name="cbShared">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/configurations/Bundle.properties" key="NewConfigurationPanel.cbShared.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/netbeans/modules/maven/configurations/Bundle.properties" key="NewConfigurationPanel.cbShared.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
@@ -82,14 +82,14 @@
           <ComponentRef name="txtActivate"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/configurations/Bundle.properties" key="NewConfigurationPanel.lblActivate.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/netbeans/modules/maven/configurations/Bundle.properties" key="NewConfigurationPanel.lblActivate.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblHint">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/configurations/Bundle.properties" key="NewConfigurationPanel.lblHint.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/netbeans/modules/maven/configurations/Bundle.properties" key="NewConfigurationPanel.lblHint.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="verticalAlignment" type="int" value="1"/>
       </Properties>
