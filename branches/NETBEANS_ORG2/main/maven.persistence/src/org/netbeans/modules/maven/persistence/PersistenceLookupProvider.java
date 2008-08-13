@@ -44,6 +44,7 @@ public class PersistenceLookupProvider implements LookupProvider {
         assert prj != null;
         return Lookups.fixed(new Object[] {
             new MavenPersistenceProvider(prj),
+            new EntityClassScopeProviderImpl(prj),
             new RecoTemp(),
             new CPExtender(prj)
         });
