@@ -196,7 +196,7 @@ public class ActionMappings extends javax.swing.JPanel {
 
                 Profile prof = handle.getNetbeansPrivateProfile(false);
                 if (prof != null && prof.getProperties().getProperty(Constants.HINT_USE_EXTERNAL) != null) {
-                    prof.getProperties().setProperty(Constants.HINT_USE_EXTERNAL, value == null ? "false" : value.toString());
+                    prof.getProperties().setProperty(Constants.HINT_USE_EXTERNAL, value == null ? "true" : value.toString());
                     if (hasConfig) {
                         // in this case clean up the auxiliary config
                         props.put(Constants.HINT_USE_EXTERNAL, null, true);
@@ -206,7 +206,7 @@ public class ActionMappings extends javax.swing.JPanel {
                 }
 
                 if (handle.getProject().getProperties().containsKey(Constants.HINT_USE_EXTERNAL)) {
-                    handle.getPOMModel().addProperty(Constants.HINT_USE_EXTERNAL, value == null ? "false" : value.toString()); //NOI18N
+                    handle.getPOMModel().addProperty(Constants.HINT_USE_EXTERNAL, value == null ? "true" : value.toString()); //NOI18N
                     handle.markAsModified(handle.getPOMModel());
                     if (hasConfig) {
                         // in this case clean up the auxiliary config
@@ -218,7 +218,7 @@ public class ActionMappings extends javax.swing.JPanel {
             }
 
             public boolean getDefaultValue() {
-                return false;
+                return true;
             }
         };
         clearFields();
