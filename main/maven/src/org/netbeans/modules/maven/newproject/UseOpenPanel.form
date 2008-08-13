@@ -33,7 +33,7 @@
         <Property name="lineWrap" type="boolean" value="true"/>
         <Property name="rows" type="int" value="5"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/newproject/Bundle.properties" key="UseOpenPanel.jTextArea1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/netbeans/modules/maven/newproject/Bundle.properties" key="UseOpenPanel.jTextArea1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="wrapStyleWord" type="boolean" value="true"/>
         <Property name="opaque" type="boolean" value="false"/>
