@@ -50,7 +50,6 @@ public final class RunUtils {
                 useEmbedded = true;
             }
         }
-        useEmbedded = useEmbedded || !MavenExecutionSettings.getDefault().isUseCommandLine();
         
         if (!useEmbedded && MavenExecutionSettings.canFindExternalMaven()) {
             exec = new MavenCommandLineExecutor(config);

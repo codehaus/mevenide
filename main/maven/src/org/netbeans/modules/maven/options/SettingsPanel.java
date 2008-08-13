@@ -203,7 +203,6 @@ public class SettingsPanel extends javax.swing.JPanel {
         rbChecksumNone.setSelected(true);
         comIndex.setSelectedIndex(0);
         cbSnapshots.setSelected(true);
-        cbUseCommandLine.setSelected(false);
     }
     
     private void documentChanged(DocumentEvent e) {
@@ -272,7 +271,6 @@ public class SettingsPanel extends javax.swing.JPanel {
         lblCommandLine = new javax.swing.JLabel();
         txtCommandLine = new javax.swing.JTextField();
         btnCommandLine = new javax.swing.JButton();
-        cbUseCommandLine = new javax.swing.JCheckBox();
         btnGoals = new javax.swing.JButton();
         lblEmbeddedVersion = new javax.swing.JLabel();
         lblExternalVersion = new javax.swing.JLabel();
@@ -464,10 +462,6 @@ public class SettingsPanel extends javax.swing.JPanel {
             }
         });
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbUseCommandLine, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbUseCommandLine.text")); // NOI18N
-        cbUseCommandLine.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        cbUseCommandLine.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
         org.openide.awt.Mnemonics.setLocalizedText(btnGoals, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.btnGoals.text")); // NOI18N
         btnGoals.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -521,8 +515,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                                 .add(6, 6, 6)
                                 .add(btnCommandLine))
                             .add(org.jdesktop.layout.GroupLayout.LEADING, lblExternalVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                    .add(cbUseCommandLine))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
                 .addContainerGap())
         );
 
@@ -539,9 +532,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(btnCommandLine))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblExternalVersion, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbUseCommandLine)
-                .add(34, 34, 34)
+                .add(55, 55, 55)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(btnGoals)
@@ -558,7 +549,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(pnlPlugins, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(pnlFail, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 7, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblLocalRepository)
                     .add(btnLocalRepository)
@@ -675,7 +666,6 @@ public class SettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox cbOffline;
     private javax.swing.JCheckBox cbPluginRegistry;
     private javax.swing.JCheckBox cbSnapshots;
-    private javax.swing.JCheckBox cbUseCommandLine;
     private javax.swing.JComboBox comIndex;
     private javax.swing.JLabel lblCommandLine;
     private javax.swing.JLabel lblEmbeddedVersion;
@@ -706,7 +696,6 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbErrors.setSelected(MavenExecutionSettings.getDefault().isShowErrors());
         cbErrors.putClientProperty(CP_SELECTED, Boolean.valueOf(cbErrors.isSelected()));
         cbDebug.setSelected(MavenExecutionSettings.getDefault().isShowDebug());
-        cbUseCommandLine.setSelected(MavenExecutionSettings.getDefault().isUseCommandLine());
         
         txtCommandLine.getDocument().removeDocumentListener(docList);
         File command = MavenExecutionSettings.getDefault().getCommandLinePath();
@@ -752,7 +741,6 @@ public class SettingsPanel extends javax.swing.JPanel {
         MavenExecutionSettings.getDefault().setUsePluginRegistry(cbPluginRegistry.isSelected());
         MavenExecutionSettings.getDefault().setShowDebug(cbDebug.isSelected());
         MavenExecutionSettings.getDefault().setShowErrors(cbErrors.isSelected());
-        MavenExecutionSettings.getDefault().setUseCommandLine(cbUseCommandLine.isSelected());
         String cl = txtCommandLine.getText().trim();
         if (cl.length() == 0) {
             cl = null;
