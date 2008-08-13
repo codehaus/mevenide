@@ -28,11 +28,15 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.options.MavenExecutionSettings;
 import hidden.org.codehaus.plexus.util.StringUtils;
+import java.util.Collection;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.modules.maven.api.execute.ActiveJ2SEPlatformProvider;
 import org.netbeans.modules.maven.api.execute.ExecutionResult;
 import org.netbeans.modules.maven.api.execute.ExecutionResultChecker;
 import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -43,6 +47,8 @@ import org.openide.windows.InputOutput;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenCommandLineExecutor extends AbstractMavenExecutor {
+    static final String ENV_PREFIX = "Env."; //NOI18N
+    static final String ENV_JAVAHOME = "Env.JAVA_HOME"; //NOI18N
     
     private ProgressHandle handle;
     private CommandLineOutputHandler out;
@@ -85,10 +91,42 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             ProcessBuilder builder = new ProcessBuilder(cmdLine);
             builder.redirectErrorStream(true);
             builder.directory(workingDir);
-            //TODO set the JDK of choice in env
-            String mavenOpts = System.getenv("MAVEN_OPTS") == null ? "" : System.getenv("MAVEN_OPTS");//NOI18N
 //            builder.environment();
+            
             ioput.getOut().println("NetBeans: Executing '" + StringUtils.join(builder.command().iterator(), " ") + "'");//NOI18N - to be shown in log.
+            boolean hasJavaSet = false;
+            for (Object key : clonedConfig.getProperties().keySet()) {
+                String keyStr = (String)key;
+                if (keyStr.startsWith(ENV_PREFIX)) {
+                    String env = keyStr.substring(ENV_PREFIX.length());
+                    String val = clonedConfig.getProperties().getProperty(keyStr);
+                    builder.environment().put(env, val);
+                    ioput.getOut().println("NetBeans:      " + env + "=" + val);
+                    if (keyStr.equals(ENV_JAVAHOME)) {
+                        hasJavaSet = true;
+                    }
+                }
+            }
+            if (!hasJavaSet) {
+                if (config.getProject() != null) {
+                    ActiveJ2SEPlatformProvider javaprov = config.getProject().getLookup().lookup(ActiveJ2SEPlatformProvider.class);
+                    File path = null;
+                    FileObject java = javaprov.getJavaPlatform().findTool("java"); //NOI18N
+                    if (java != null) {
+                        Collection<FileObject> objs = javaprov.getJavaPlatform().getInstallFolders();
+                        for (FileObject fo : objs) {
+                            if (FileUtil.isParentOf(fo, java)) {
+                                path = FileUtil.toFile(fo);
+                                break;
+                            }
+                        }
+                    }
+                    if (path != null) {
+                        builder.environment().put(ENV_JAVAHOME, path.getAbsolutePath());
+                        ioput.getOut().println("NetBeans:      JAVA_HOME =" + path.getAbsolutePath());
+                    }
+                }
+            }
             process = builder.start();
             out.setStdOut(process.getInputStream());
             out.setStdIn(process.getOutputStream());
@@ -162,7 +200,11 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         
         for (Object key : config.getProperties().keySet()) {
             String val = config.getProperties().getProperty((String)key);
-            toRet.add("-D" + key + "=" + val);//NOI18N
+            String keyStr = (String)key;
+            if (!keyStr.startsWith(ENV_PREFIX)) {
+                //skip envs, these get filled in later.
+                toRet.add("-D" + key + "=" + val);//NOI18N
+            }
         }
 
         if (config.isOffline() != null && config.isOffline().booleanValue()) {
