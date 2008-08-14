@@ -22,6 +22,7 @@ import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.deployment.plugins.api.ServerDebugInfo;
+import org.netbeans.modules.maven.api.Constants;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.execute.ExecutionContext;
 import org.netbeans.modules.maven.api.execute.ExecutionResultChecker;
@@ -43,9 +44,6 @@ public class ExecutionChecker implements ExecutionResultChecker {
 
     private Project project;
     public static final String DEV_NULL = "WTF-NULL"; //NOI18N
-    public static final String DEPLOY = "netbeans.deploy"; //NOI18N
-    public static final String DEBUG_MODE = "netbeans.deploy.debugmode"; //NOI18N
-    public static final String REDEPLOY = "netbeans.deploy.forceRedeploy"; //NOI18N
     public static final String MODULEURI = "netbeans.deploy.clientModuleUri"; //NOI18N
     public static final String CLIENTURLPART = "netbeans.deploy.clientUrlPart"; //NOI18N
     
@@ -55,12 +53,12 @@ public class ExecutionChecker implements ExecutionResultChecker {
     }
 
     public void executionResult(RunConfig config, ExecutionContext res, int resultCode) {
-        boolean depl = Boolean.parseBoolean(config.getProperties().getProperty(DEPLOY));
+        boolean depl = Boolean.parseBoolean(config.getProperties().getProperty(Constants.ACTION_PROPERTY_DEPLOY));
         if (depl && resultCode == 0) {
             String moduleUri = config.getProperties().getProperty(MODULEURI);
             String clientUrl = config.getProperties().getProperty(CLIENTURLPART, "");
-            boolean redeploy = Boolean.parseBoolean(config.getProperties().getProperty(REDEPLOY, "true")); //NOI18N
-            boolean debugmode = Boolean.parseBoolean(config.getProperties().getProperty(DEBUG_MODE)); //NOI18N
+            boolean redeploy = Boolean.parseBoolean(config.getProperties().getProperty(Constants.ACTION_PROPERTY_DEPLOY_REDEPLOY, "true")); //NOI18N
+            boolean debugmode = Boolean.parseBoolean(config.getProperties().getProperty(Constants.ACTION_PROPERTY_DEPLOY_DEBUG_MODE)); //NOI18N
             performDeploy(res, debugmode, clientUrl, moduleUri, redeploy);
         }
     }

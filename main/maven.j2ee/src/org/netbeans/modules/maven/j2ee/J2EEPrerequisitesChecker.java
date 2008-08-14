@@ -48,6 +48,7 @@ public class J2EEPrerequisitesChecker implements PrerequisitesChecker {
         if (!applicableActions.contains(actionName)) {
             return true;
         }
+        //TODO check if an app server is selected and prompt for one if not.
         J2eeModuleProvider provider = config.getProject().getLookup().lookup(J2eeModuleProvider.class);
         if (provider != null) {
             checkWarInplace(config, provider);
