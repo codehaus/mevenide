@@ -85,13 +85,35 @@ public interface Constants {
 
 
     /**
-     * will start a debugger before invoking an project related action.
+     * When used as a property when executing maven, it will start a debugger before invoking a project related action.
      * will replace the ${jpda.address} expression in action's properties with the correct value of
-     * port number.
+     * localhost port number.
      * allowed values:
+     * <ul>
+     * <li>
      * true - starts the debugger and waits for the process to attach to it.
+     * </li>
+     * <li>
      * maven - starts the debugger and generates correct MAVEN_OPTS value that is passed to the command line maven executable.
+     * MAVEN_OPTS=-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}
+     * </li>
+     * </ul>
      */
     public static final String ACTION_PROPERTY_JPDALISTEN = "jpda.listen";
+
+    /**
+     * 
+     */
+    public static final String ACTION_PROPERTY_DEPLOY = "netbeans.deploy"; //NOI18N
+
+    /**
+     *
+     */
+    public static final String ACTION_PROPERTY_DEPLOY_DEBUG_MODE = "netbeans.deploy.debugmode"; //NOI18N
+
+    /**
+     *
+     */
+    public static final String ACTION_PROPERTY_DEPLOY_REDEPLOY = "netbeans.deploy.forceRedeploy"; //NOI18N
     
 }
