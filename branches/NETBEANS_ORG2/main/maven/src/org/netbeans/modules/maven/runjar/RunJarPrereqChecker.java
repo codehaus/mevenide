@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.modules.maven.runjar;
 
 import java.awt.Dialog;
@@ -62,32 +61,34 @@ import org.openide.util.NbBundle;
 public class RunJarPrereqChecker implements PrerequisitesChecker {
 
     private String mainClass;
-    
+
     public boolean checkRunConfig(RunConfig config) {
         String actionName = config.getActionName();
-        if ((ActionProvider.COMMAND_RUN.equals(actionName) ||
-                ActionProvider.COMMAND_DEBUG.equals(actionName) ||
-                "profile".equals(actionName)) &&  
-                NbMavenProject.TYPE_JAR.equals(
-                      config.getProject().getLookup().lookup(NbMavenProject.class).getPackagingType())) 
-        {
-            Set<Map.Entry<Object, Object>> entries = config.getProperties().entrySet();
-            String mc = null;
-            for (Map.Entry<Object, Object> str : entries) {
-                if ("exec.executable".equals(str.getKey())) { //NOI18N
-                    // check for "java" and replace it with absolute path to 
-                    // project j2seplaform's java.exe
-                    String val = (String) str.getValue();
-                    if ("java".equals(val)) { //NOI18N
-                        ActiveJ2SEPlatformProvider plat = config.getProject().getLookup().lookup(ActiveJ2SEPlatformProvider.class);
-                        assert plat != null;
-                        FileObject fo = plat.getJavaPlatform().findTool(val);
-                        if (fo != null) {
-                            File fl = FileUtil.toFile(fo);
-                            config.setProperty("exec.executable", fl.getAbsolutePath()); //NOI18N
-                        }
+        Set<Map.Entry<Object, Object>> entries = config.getProperties().entrySet();
+        for (Map.Entry<Object, Object> str : entries) {
+            if ("exec.executable".equals(str.getKey())) { //NOI18N
+                // check for "java" and replace it with absolute path to
+                // project j2seplaform's java.exe
+                String val = (String) str.getValue();
+                if ("java".equals(val)) { //NOI18N
+                    ActiveJ2SEPlatformProvider plat = config.getProject().getLookup().lookup(ActiveJ2SEPlatformProvider.class);
+                    assert plat != null;
+                    FileObject fo = plat.getJavaPlatform().findTool(val);
+                    if (fo != null) {
+                        File fl = FileUtil.toFile(fo);
+                        config.setProperty("exec.executable", fl.getAbsolutePath()); //NOI18N
                     }
                 }
+            }
+        }
+
+        if ((ActionProvider.COMMAND_RUN.equals(actionName) ||
+                ActionProvider.COMMAND_DEBUG.equals(actionName) ||
+                "profile".equals(actionName)) &&
+                NbMavenProject.TYPE_JAR.equals(
+                config.getProject().getLookup().lookup(NbMavenProject.class).getPackagingType())) {
+            String mc = null;
+            for (Map.Entry<Object, Object> str : entries) {
                 String val = (String) str.getValue();
                 if (val.contains("${packageClassName}")) { //NOI18N
                     //show dialog to choose main class.
@@ -110,7 +111,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
             return mainClass;
         }
         List<FileObject> roots = new ArrayList<FileObject>();
-        Sources srcs =  ProjectUtils.getSources(project);
+        Sources srcs = ProjectUtils.getSources(project);
         SourceGroup[] grps = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
         for (int i = 0; i < grps.length; i++) {
             SourceGroup sourceGroup = grps[i];
@@ -123,7 +124,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
             SourceGroup sourceGroup = grps[i];
             roots.add(sourceGroup.getRootFolder());
         }
-        final JButton okButton  = new JButton (NbBundle.getMessage (RunJarPrereqChecker.class, "LBL_ChooseMainClass_OK"));
+        final JButton okButton = new JButton(NbBundle.getMessage(RunJarPrereqChecker.class, "LBL_ChooseMainClass_OK"));
 //        JButton okButton.getAccessibleContext().setAccessibleDescription (NbBundle.getMessage (RunJarPanel.class, "AD_ChooseMainClass_OK"));
 
 
@@ -175,7 +176,6 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
             NetbeansActionMapping mapp = ActionToGoalUtils.getDefaultMapping(actionName, project);
             mapping.addAction(mapp);
             Set<Map.Entry<Object, Object>> entries = mapp.getProperties().entrySet();
-            String mc = null;
             for (Map.Entry<Object, Object> str : entries) {
                 String val = (String) str.getValue();
                 if (val.contains("${packageClassName}")) { //NOI18N
