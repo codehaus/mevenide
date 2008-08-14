@@ -25,7 +25,7 @@ import org.openide.windows.InputOutput;
  *
  * @author mkleint
  */
-public final class ExecutionResult {
+public final class ExecutionContext {
 
     private int res;
     private InputOutput io;
@@ -38,7 +38,7 @@ public final class ExecutionResult {
         impl.assign();
     }
     
-    static class AccessorImpl extends ActionToGoalUtils.ResultAccessor {
+    static class AccessorImpl extends ActionToGoalUtils.ContextAccessor {
         
          public void assign() {
              if (ActionToGoalUtils.ACCESSOR == null) {
@@ -47,19 +47,14 @@ public final class ExecutionResult {
          }
     
         @Override
-        public ExecutionResult createResult(int result, InputOutput inputoutput, ProgressHandle handle) {
-            return new ExecutionResult(result, inputoutput, handle);
+        public ExecutionContext createContext(InputOutput inputoutput, ProgressHandle handle) {
+            return new ExecutionContext(inputoutput, handle);
         }
     }
 
-    private ExecutionResult(int result, InputOutput inputoutput, ProgressHandle handle) {
-        res = result;
+    private ExecutionContext(InputOutput inputoutput, ProgressHandle handle) {
         this.io = inputoutput;
         this.handle = handle;
-    }
-
-    public int getExitCode() {
-        return res;
     }
 
     public InputOutput getInputOutput() {

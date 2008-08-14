@@ -76,9 +76,22 @@ public interface Constants {
     public static final String SOURCE_PARAM = "source";//NOI18N
     public static final String TARGET_PARAM = "target";//NOI18N
 
-    //this property was introduced as part of this proposal:
-    //http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
+    /**
+     *
+     * this property was introduced as part of this proposal:
+     * http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
+     */
     public static String ENCODING_PROP = "project.build.sourceEncoding"; //NOI18N
 
+
+    /**
+     * will start a debugger before invoking an project related action.
+     * will replace the ${jpda.address} expression in action's properties with the correct value of
+     * port number.
+     * allowed values:
+     * true - starts the debugger and waits for the process to attach to it.
+     * maven - starts the debugger and generates correct MAVEN_OPTS value that is passed to the command line maven executable.
+     */
+    public static final String ACTION_PROPERTY_JPDALISTEN = "jpda.listen";
     
 }

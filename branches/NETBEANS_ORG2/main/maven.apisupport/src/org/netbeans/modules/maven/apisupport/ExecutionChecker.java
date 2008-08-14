@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import org.netbeans.api.project.Project;
 import org.netbeans.core.startup.TestModuleDeployer;
 import org.netbeans.modules.maven.api.NbMavenProject;
-import org.netbeans.modules.maven.api.execute.ExecutionResult;
+import org.netbeans.modules.maven.api.execute.ExecutionContext;
 import org.netbeans.modules.maven.api.execute.ExecutionResultChecker;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.openide.filesystems.FileUtil;
@@ -41,9 +41,9 @@ public class ExecutionChecker implements ExecutionResultChecker {
         project = prj;
     }
 
-    public void executionResult(RunConfig config, ExecutionResult res) {
+    public void executionResult(RunConfig config, ExecutionContext res, int resultCode) {
 
-        if (NbmActionGoalProvider.NBMRELOAD.equals(config.getActionName()) && res.getExitCode() == 0) {
+        if (NbmActionGoalProvider.NBMRELOAD.equals(config.getActionName()) && resultCode == 0) {
             DirectoryScanner scanner = new DirectoryScanner();
             NbMavenProject prj = project.getLookup().lookup(NbMavenProject.class);
             File basedir = new File(prj.getMavenProject().getBuild().getDirectory(), "nbm"); //NOI18N
