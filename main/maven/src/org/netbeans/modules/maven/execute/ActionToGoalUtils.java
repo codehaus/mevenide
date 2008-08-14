@@ -36,7 +36,7 @@ import org.netbeans.modules.maven.configurations.M2Configuration;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.Project;
-import org.netbeans.modules.maven.api.execute.ExecutionResult;
+import org.netbeans.modules.maven.api.execute.ExecutionContext;
 import org.netbeans.modules.maven.execute.model.ActionToGoalMapping;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.netbeans.modules.maven.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
@@ -55,11 +55,11 @@ public final class ActionToGoalUtils {
 
     private static final String FO_ATTR_CUSTOM_MAPP = "customActionMappings"; //NOI18N
 
-    public static ResultAccessor ACCESSOR = null;
+    public static ContextAccessor ACCESSOR = null;
     static {
         // invokes static initializer of ExecutionResult.class
         // that will assign value to the ACCESSOR field above
-        Class c = ExecutionResult.class;
+        Class c = ExecutionContext.class;
         try {
             Class.forName(c.getName(), true, c.getClassLoader());
         } catch (Exception ex) {
@@ -68,9 +68,9 @@ public final class ActionToGoalUtils {
         assert ACCESSOR != null;
     }
     
-    public static abstract class ResultAccessor {
+    public static abstract class ContextAccessor {
 
-        public abstract ExecutionResult createResult(int result, InputOutput inputoutput, ProgressHandle handle);
+        public abstract ExecutionContext createContext(InputOutput inputoutput, ProgressHandle handle);
     }
     
 

@@ -23,6 +23,6 @@ package org.netbeans.modules.maven.api.execute;
  */
 public interface ExecutionResultChecker {
 
-    void executionResult(RunConfig config, ExecutionResult res);
+    void executionResult(RunConfig config, ExecutionContext res, int resultCode);
 
 }

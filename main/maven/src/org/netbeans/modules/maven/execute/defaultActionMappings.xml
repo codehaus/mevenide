@@ -143,10 +143,9 @@
         </packagings>
         <goals>
             <goal>compile</goal>
-            <goal>org.netbeans.plugins:netbeans-debugger-plugin:2.0:reload</goal>
         </goals>
         <properties>
-            <netbeans.debug.class>${packageClassName}</netbeans.debug.class>
+            <jpda.stopclass>${packageClassName}</jpda.stopclass>
         </properties>
     </action>
     

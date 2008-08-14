@@ -50,7 +50,7 @@ import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.FileOwnerQuery;
-import org.netbeans.modules.maven.api.execute.ExecutionResult;
+import org.netbeans.modules.maven.api.execute.ExecutionContext;
 import org.netbeans.modules.maven.api.execute.ExecutionResultChecker;
 import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
 import org.openide.awt.StatusDisplayer;
@@ -97,17 +97,24 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         finishing = false;
         RunConfig clonedConfig = new BeanRunConfig(this.config);
         // check the prerequisites
+        InputOutput ioput = getInputOutput();
         if (clonedConfig.getProject() != null) {
-            Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
-            for (LateBoundPrerequisitesChecker elem : result.allInstances()) {
-                if (!elem.checkRunConfig(clonedConfig)) {
-                    return;
+            ProgressHandle ph = ProgressHandleFactory.createSystemHandle("Additional maven build processing");
+            ph.start();
+            ExecutionContext exCon = ActionToGoalUtils.ACCESSOR.createContext(ioput, ph);
+            try {
+                Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
+                for (LateBoundPrerequisitesChecker elem : result.allInstances()) {
+                    if (!elem.checkRunConfig(clonedConfig, exCon)) {
+                        return;
+                    }
                 }
+            } finally {
+                ph.finish();
             }
         }
         
         final Properties origanalProperties = clonedConfig.getProperties();
-        InputOutput ioput = getInputOutput();
         actionStatesAtStart();
         String basedir = System.getProperty(BASEDIR);//NOI18N
         handle.start();
@@ -256,7 +263,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             CLIReportingUtils.showError("Killed.", new Exception(""), false, req.getErrorReporter(), out); //NOI18N - part of maven output
             shutdownOutput(ioput);
             ioput = null;
-            executionResult = ExecutionResult.EXECUTION_ABORTED;
+            executionResult = ExecutionContext.EXECUTION_ABORTED;
             throw death;
         } finally {
             finishing = true; //#103460
@@ -265,9 +272,9 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             try { //defend against badly written extensions..
                 out.buildFinished();
                 Lookup.Result<ExecutionResultChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<ExecutionResultChecker>(ExecutionResultChecker.class));
-                ExecutionResult exRes = ActionToGoalUtils.ACCESSOR.createResult(executionResult, ioput, ph);
+               ExecutionContext exCon = ActionToGoalUtils.ACCESSOR.createContext(ioput, ph);
                 for (ExecutionResultChecker elem : result.allInstances()) {
-                    elem.executionResult(clonedConfig, exRes);
+                    elem.executionResult(clonedConfig, exCon, executionResult);
                 }
             }
             finally {

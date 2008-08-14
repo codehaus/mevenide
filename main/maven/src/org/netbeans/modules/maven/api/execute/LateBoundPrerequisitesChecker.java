@@ -32,6 +32,6 @@ public interface LateBoundPrerequisitesChecker {
      * @param config
      * @return true if the execution shall continue., otherwise it will be aborted.
      */
-    boolean checkRunConfig(RunConfig config);
+    boolean checkRunConfig(RunConfig config, ExecutionContext con);
 
 }

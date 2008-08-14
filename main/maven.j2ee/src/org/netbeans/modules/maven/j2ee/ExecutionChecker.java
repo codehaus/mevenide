@@ -23,7 +23,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.deployment.plugins.api.ServerDebugInfo;
 import org.netbeans.modules.maven.api.NbMavenProject;
-import org.netbeans.modules.maven.api.execute.ExecutionResult;
+import org.netbeans.modules.maven.api.execute.ExecutionContext;
 import org.netbeans.modules.maven.api.execute.ExecutionResultChecker;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.modules.maven.bridges.debugger.MavenDebugger;
@@ -54,9 +54,9 @@ public class ExecutionChecker implements ExecutionResultChecker {
         project = prj;
     }
 
-    public void executionResult(RunConfig config, ExecutionResult res) {
+    public void executionResult(RunConfig config, ExecutionContext res, int resultCode) {
         boolean depl = Boolean.parseBoolean(config.getProperties().getProperty(DEPLOY));
-        if (depl && res.getExitCode() == 0) {
+        if (depl && resultCode == 0) {
             String moduleUri = config.getProperties().getProperty(MODULEURI);
             String clientUrl = config.getProperties().getProperty(CLIENTURLPART, "");
             boolean redeploy = Boolean.parseBoolean(config.getProperties().getProperty(REDEPLOY, "true")); //NOI18N
@@ -65,7 +65,7 @@ public class ExecutionChecker implements ExecutionResultChecker {
         }
     }
 
-    private void performDeploy(ExecutionResult res, boolean debugmode, String clientModuleUri, String clientUrlPart, boolean forceRedeploy) {
+    private void performDeploy(ExecutionContext res, boolean debugmode, String clientModuleUri, String clientUrlPart, boolean forceRedeploy) {
         FileUtil.refreshFor(FileUtil.toFile(project.getProjectDirectory()));
         OutputWriter err = res.getInputOutput().getErr();
         OutputWriter out = res.getInputOutput().getOut();

@@ -26,9 +26,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import org.apache.maven.embedder.MavenEmbedderLogger;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import org.netbeans.api.debugger.DebuggerEngine;
 import org.netbeans.api.debugger.DebuggerManager;
 import org.netbeans.api.debugger.DebuggerManagerAdapter;
@@ -38,6 +37,7 @@ import org.netbeans.api.debugger.jpda.MethodBreakpoint;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.project.Project;
 import org.openide.util.RequestProcessor;
+import org.openide.windows.InputOutput;
 
 
 /**
@@ -62,42 +62,30 @@ public class JPDAStart implements Runnable {
      */
     private String stopClassName;
     
-    private Object[] lock;
-    
-    private MavenEmbedderLogger log;
+    private final Object[] lock = new Object[2];
     
     private Project project;
-    
-    public void setLog(MavenEmbedderLogger logger) {
-        log = logger;
+    private InputOutput io;
+
+    JPDAStart(InputOutput inputOutput) {
+        io = inputOutput;
     }
     
-    private MavenEmbedderLogger getLog() {
-        return log;
-    }
     /**
      * returns the port/address that the debugger listens to..
      */
-    public String execute(Project project) throws MojoExecutionException, MojoFailureException {
+    public String execute(Project project) throws Throwable {
         this.project = project;
-        getLog().info("JPDA Listening Starting..."); //NOI18N
-        lock = new Object [2];
-        synchronized (lock) {
+        io.getOut().println("NetBeans: JPDA Listening Start..."); //NOI18N
 //            getLog().debug("Entering synch lock"); //NOI18N
-            lock = new Object [2];
-            synchronized (lock) {
+        synchronized (lock) {
 //                getLog().debug("Entered synch lock"); //NOI18N
-                RequestProcessor.getDefault().post(this);
-                try {
+            RequestProcessor.getDefault().post(this);
 //                    getLog().debug("Entering wait"); //NOI18N
-                    lock.wait();
+            lock.wait();
 //                    getLog().debug("Wait finished"); //NOI18N
-                    if (lock [1] != null) {
-                        throw new MojoExecutionException("", (Throwable) lock [1]); //NOI18N
-                    }
-                } catch (InterruptedException e) {
-                    throw new MojoExecutionException("Interrupted.", e); //NOI18N
-                }
+            if (lock[1] != null) {
+                throw ((Throwable) lock[1]); //NOI18N
             }
         }
         return (String)lock[0];
@@ -139,8 +127,8 @@ public class JPDAStart implements Runnable {
 //                    getProject ().setNewProperty (getAddressProperty (), address);
                     lock[0] = address;
                 }
-                getLog().info("JPDA Address: " + address); //NOI18N
-                getLog().info("Port:" + lock[0]); //NOI18N
+                io.getOut().println("JPDA Address: " + address); //NOI18N
+                io.getOut().println("Port:" + lock[0]); //NOI18N
                 
                 ClassPath sourcePath = Utils.createSourcePath(project);
                 ClassPath jdkSourcePath = Utils.createJDKSourcePath(project);
@@ -167,16 +155,17 @@ public class JPDAStart implements Runnable {
                                                         new Object[]{properties});
                         }
                         catch (DebuggerStartException ex) {
-                            getLog().error("Debugger Start Error", ex); //NOI18N
+                            io.getErr().println("Debugger Start Error."); //NOI18N
+                            Logger.getLogger(JPDAStart.class.getName()).log(Level.INFO, "Debugger Start Error.", ex);
                         }
                     }
                 });
             } catch (java.io.IOException ioex) {
-                getLog().error("IO Error", ioex); //NOI18N
+                io.getErr().println("IO Error:"); //NOI18N
 //                org.openide.ErrorManager.getDefault().notify(ioex);
                 lock[1] = ioex;
             } catch (com.sun.jdi.connect.IllegalConnectorArgumentsException icaex) {
-                getLog().error("Illegal Connector", icaex); //NOI18N
+                io.getErr().println("Illegal Connector"); //NOI18N
                 lock[1] = icaex;
             } finally {
                 lock.notify();

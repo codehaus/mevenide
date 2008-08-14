@@ -32,7 +32,7 @@ import java.util.Collection;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.modules.maven.api.execute.ActiveJ2SEPlatformProvider;
-import org.netbeans.modules.maven.api.execute.ExecutionResult;
+import org.netbeans.modules.maven.api.execute.ExecutionContext;
 import org.netbeans.modules.maven.api.execute.ExecutionResultChecker;
 import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
 import org.openide.filesystems.FileObject;
@@ -68,17 +68,18 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
     public void run() {
         final RunConfig clonedConfig = new BeanRunConfig(this.config);
         int executionresult = -10;
+        InputOutput ioput = getInputOutput();
+        ExecutionContext exCon = ActionToGoalUtils.ACCESSOR.createContext(ioput, handle);
         // check the prerequisites
         if (clonedConfig.getProject() != null) {
             Lookup.Result<LateBoundPrerequisitesChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<LateBoundPrerequisitesChecker>(LateBoundPrerequisitesChecker.class));
             for (LateBoundPrerequisitesChecker elem : result.allInstances()) {
-                if (!elem.checkRunConfig(clonedConfig)) {
+                if (!elem.checkRunConfig(clonedConfig, exCon)) {
                     return;
                 }
             }
         }
         
-        InputOutput ioput = getInputOutput();
         final Properties origanalProperties = clonedConfig.getProperties();
         actionStatesAtStart();
         handle.start();
@@ -147,9 +148,8 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             try { //defend against badly written extensions..
                 out.buildFinished();
                 Lookup.Result<ExecutionResultChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<ExecutionResultChecker>(ExecutionResultChecker.class));
-                ExecutionResult exRes = ActionToGoalUtils.ACCESSOR.createResult(executionresult, ioput, handle);
                 for (ExecutionResultChecker elem : result.allInstances()) {
-                    elem.executionResult(clonedConfig, exRes);
+                    elem.executionResult(clonedConfig, exCon, executionresult);
                 }
             }
             finally {

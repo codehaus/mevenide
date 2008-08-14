@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.api.project.Project;
 import org.netbeans.lib.profiler.common.Profiler;
+import org.netbeans.modules.maven.api.execute.ExecutionContext;
 import org.netbeans.modules.maven.api.execute.LateBoundPrerequisitesChecker;
 import org.netbeans.modules.profiler.utils.ProjectUtilities;
 import org.openide.util.RequestProcessor;
@@ -49,7 +50,7 @@ public class RunCheckerImpl implements LateBoundPrerequisitesChecker {
         project = prj;
     }
     
-    public boolean checkRunConfig(RunConfig config) {
+    public boolean checkRunConfig(RunConfig config, ExecutionContext context) {
         Properties configProperties = config.getProperties();
 
         if (ACTION_PROFILE.equals(config.getActionName())) { // action "profile"
