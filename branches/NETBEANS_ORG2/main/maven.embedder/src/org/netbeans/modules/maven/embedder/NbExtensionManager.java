@@ -19,6 +19,7 @@ package org.netbeans.modules.maven.embedder;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.extension.DefaultExtensionManager;
 import org.apache.maven.extension.ExtensionManagerException;
@@ -38,6 +39,8 @@ public class NbExtensionManager extends DefaultExtensionManager {
 
     protected Field wagonMan;
 
+    private Logger LOG = Logger.getLogger(NbExtensionManager.class.getName());
+
     /** Creates a new instance of NbExtensionManager */
     public NbExtensionManager() {
         super();
@@ -53,51 +56,60 @@ public class NbExtensionManager extends DefaultExtensionManager {
     
     @Override
     public void addExtension(Extension extension, Model originatingModel, List remoteRepositories, MavenExecutionRequest request) throws ExtensionManagerException {
-        openSesame();
+        String key = extension.getGroupId() + ":" + extension.getArtifactId();
+        openSesame(key);
         try {
+            LOG.fine("add extension1=" + extension.getGroupId() + ":" + extension.getArtifactId() + ":" + extension.getVersion()); //NOI18N
             super.addExtension(extension, originatingModel, remoteRepositories, request);
         } finally {
-            closeSesame();
+            LOG.fine("---------------------------------------------------------");
+            closeSesame(key);
         }
     }
 
     @Override
     public void addExtension(Extension extension, MavenProject project, MavenExecutionRequest request) throws ExtensionManagerException {
-        openSesame();
+        String key = extension.getGroupId() + ":" + extension.getArtifactId();
+        openSesame(key);
         try {
+            LOG.fine("add extension2=" + extension.getGroupId() + ":" + extension.getArtifactId() + ":" + extension.getVersion());
             super.addExtension(extension, project, request);
         } finally {
-            closeSesame();
+            LOG.fine("---------------------------------------------------------");
+            closeSesame(key);
         }
     }
 
     @Override
     public void addPluginAsExtension(Plugin plugin, Model originatingModel, List remoteRepositories, MavenExecutionRequest request) throws ExtensionManagerException {
-        openSesame();
+        String key = plugin.getGroupId() + ":" + plugin.getArtifactId();
+        openSesame(key);
         try {
+            LOG.fine("add plugin as ext=" + plugin.getGroupId() + ":" + plugin.getArtifactId() + ":" + plugin.getVersion());
             super.addPluginAsExtension(plugin, originatingModel, remoteRepositories, request);
         } finally {
-            closeSesame();
+            LOG.fine("---------------------------------------------------------");
+            closeSesame(key);
         }
     }
 
     @Override
     public void registerWagons() {
-        openSesame();
         try {
+            LOG.fine("register wagons...");
             super.registerWagons();
         } finally {
-            closeSesame();
+            LOG.fine("---------------------------------------------------------");
         }
     }
 
-    private void closeSesame() {
+    private void closeSesame(String str) {
         if (wagonMan != null) {
             try {
                 Object manObj = wagonMan.get(this);
                 if (manObj instanceof NbWagonManager) {
                     NbWagonManager manager = (NbWagonManager)manObj;
-                    manager.closeSesame();
+                    manager.cleanLetGone(str);
                 }
             } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
@@ -107,13 +119,13 @@ public class NbExtensionManager extends DefaultExtensionManager {
         }
     }
 
-    private void openSesame() {
+    private void openSesame(String str) {
         if (wagonMan != null) {
             try {
                 Object manObj = wagonMan.get(this);
                 if (manObj instanceof NbWagonManager) {
                     NbWagonManager manager = (NbWagonManager)manObj;
-                    manager.openSesame();
+                    manager.letGoThrough(str);
                 }
             } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
