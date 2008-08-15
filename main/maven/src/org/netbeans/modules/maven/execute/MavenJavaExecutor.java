@@ -174,48 +174,9 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             
             embedder = EmbedderFactory.createExecuteEmbedder(out);
             super.buildPlan.setEmbedder(embedder);
-//mkleint: not relevant anymore, we don't ship the repository, rely on central repo instead.
-//            File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);//NOI18N
-//            //TODO we should get completely rid of this..
-//            Profile myProfile = new Profile();
-//            if (repoRoot != null) {
-//                //can happen when users don't install the repository module.
-//                myProfile.setId(PROFILE_PUBLIC);//NOI18N
-//                Repository repo = new Repository();
-//                repo.setUrl("file://" + repoRoot.getAbsolutePath());//NOI18N
-//                repo.setId("netbeansIDE-repo-internal");//NOI18N
-//                RepositoryPolicy snap = new RepositoryPolicy();
-//                snap.setEnabled(false);
-//                repo.setSnapshots(snap);
-//                repo.setName("NetBeans IDE internal Repository hosting plugins that are executable in NetBeans IDE only.");//NOI18N
-//                myProfile.addPluginRepository(repo);
-//                Activation act = new Activation();
-//                ActivationProperty prop = new ActivationProperty();
-//                prop.setName("netbeans.execution");//NOI18N
-//                prop.setValue("true");//NOI18N
-//                act.setProperty(prop);
-//                myProfile.setActivation(act);
-//            }
-            
-            //TODO we need to reenact the custom dynamic profile.
-//            Settings settings = embedder.buildSettings( userSettingsPath,
-//                    globalSettingsPath,
-//                    MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
-//            if (repoRoot != null) {
-//                settings.addProfile(myProfile);
-//            }
-//            settings.setUsePluginRegistry(MavenExecutionSettings.getDefault().isUsePluginRegistry());
-//            //MEVENIDE-407
-//            if (settings.getLocalRepository() == null) {
-//                settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());//NOI18N
-//            }
-//            if (MavenExecutionSettings.getDefault().isSynchronizeProxy()) {
-//            }
             
             req.addActiveProfiles(clonedConfig.getActivatedProfiles());
             
-            // TODO remove explicit activation
-            req.addActiveProfile(PROFILE_PUBLIC).addActiveProfile(PROFILE_PRIVATE);
             //            req.activateDefaultEventMonitor();
             if (clonedConfig.isOffline() != null) {
                 req.setOffline(clonedConfig.isOffline().booleanValue());
