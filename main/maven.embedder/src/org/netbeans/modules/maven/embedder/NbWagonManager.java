@@ -19,6 +19,7 @@ package org.netbeans.modules.maven.embedder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.manager.DefaultWagonManager;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
@@ -32,9 +33,12 @@ import org.apache.maven.wagon.TransferFailedException;
  */
 public class NbWagonManager extends DefaultWagonManager {
 
-    private List<Artifact> letGoes = new ArrayList<Artifact>();
-    private static ThreadLocal<Boolean> gatesOpened = new ThreadLocal<Boolean>();
+    private final List<Artifact> letGoes = new ArrayList<Artifact>();
+    //#14276 be very picky about what extesions/plugins get through..
+    //<String> has this format GroupID:ArtifactID
+    private final List<String> letGoes2 = new ArrayList<String>();
 
+    private Logger LOG = Logger.getLogger(NbWagonManager.class.getName());
     /** Creates a new instance of NbWagonManager */
     public NbWagonManager() {
     }
@@ -53,27 +57,30 @@ public class NbWagonManager extends DefaultWagonManager {
         }
     }
     
-    public void openSesame() {
+    //#14276
+    public void letGoThrough(String key) {
         synchronized (letGoes) {
-            gatesOpened.set(true);
+            letGoes2.add(key);
         }
     }
     
-    public void closeSesame() {
+    //#14276
+    public void cleanLetGone(String key) {
         synchronized (letGoes) {
-            gatesOpened.set(false);
+            letGoes2.remove(key);
         }
     }
-
+    
     @Override
     public void getArtifact(Artifact artifact, List remoteRepositories) throws TransferFailedException, ResourceDoesNotExistException {
 //        System.out.println("getArtifact1 =" + artifact);
         boolean cont;
         synchronized (letGoes) {
-            cont = areGatesOpened() || letGoes.contains(artifact);
+            cont = letGoes2.contains(artifact.getGroupId() + ":" + artifact.getArtifactId())
+                    || letGoes.contains(artifact);
         }
         if (cont) {
-//            System.out.println("downloading1=" + artifact + " gates=" + gatesOpened.get());
+            LOG.fine("            downloading1=" + artifact);
             try {
                 super.getArtifact(artifact, remoteRepositories);
             } catch (TransferFailedException exc) {
@@ -110,8 +117,13 @@ public class NbWagonManager extends DefaultWagonManager {
 
     @Override
     public void getArtifactMetadata(ArtifactMetadata metadata, ArtifactRepository remoteRepository, File destination, String checksumPolicy) throws TransferFailedException, ResourceDoesNotExistException {
-        if (areGatesOpened()) {
+        boolean cont;
+        synchronized (letGoes) {
+            cont = letGoes2.contains(metadata.getGroupId() + ":" + metadata.getArtifactId()); //NOI18N
+        }
+        if (cont) {
 //            System.out.println("checking metadata");
+            LOG.fine("            metadata=" + metadata.getGroupId() + ":" + metadata.getArtifactId());
             super.getArtifactMetadata(metadata, remoteRepository, destination, checksumPolicy);
         }
 //        System.out.println("getartifact metadata=" + metadata);
@@ -123,8 +135,12 @@ public class NbWagonManager extends DefaultWagonManager {
             ArtifactRepository repository,
             boolean forceUpdateCheck) throws TransferFailedException, ResourceDoesNotExistException 
     {
-        if (areGatesOpened()) {
-//            System.out.println("downloading2=" + artifact + " " + " gates=" + gatesOpened.get());
+        boolean cont;
+        synchronized (letGoes) {
+            cont = letGoes2.contains(artifact.getGroupId() + ":" + artifact.getArtifactId());
+        }
+        if (cont) {
+            LOG.fine("               downloading2=" + artifact);
             super.getArtifact(artifact, repository, forceUpdateCheck);
         } else {
             artifact.setResolved(true);
@@ -139,10 +155,11 @@ public class NbWagonManager extends DefaultWagonManager {
     {
         boolean cont;
         synchronized (letGoes) {
-            cont = areGatesOpened() || letGoes.contains(artifact);
+            cont = letGoes2.contains(artifact.getGroupId() + ":" + artifact.getArtifactId())
+                    || letGoes.contains(artifact);
         }
         if (cont) {
-//            System.out.println("downloading3=" + artifact + " gates=" + gatesOpened.get());
+            LOG.fine("               downloading3=" + artifact);
             try {
                 super.getArtifact(artifact, remoteRepositories, forceUpdateCheck);
             } catch (TransferFailedException exc) {
@@ -161,8 +178,4 @@ public class NbWagonManager extends DefaultWagonManager {
 
     }
     
-    private boolean areGatesOpened() {
-        Boolean b = gatesOpened.get();
-        return b != null ? b : false;
-    }
 }
