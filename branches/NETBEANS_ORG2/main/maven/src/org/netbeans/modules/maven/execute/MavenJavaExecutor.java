@@ -89,6 +89,11 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         handle.addContributor(backupContrib);
     }
     
+    protected boolean isEmbedded() {
+        return true;
+    }
+
+    
     
     /**
      * not to be called directrly.. use execute();

@@ -129,7 +129,11 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
     protected final void actionStatesAtStart() {
         rerun.setEnabled(false);
         rerunDebug.setEnabled(false);
-        buildPlan.setEnabled(true);
+        if (this instanceof MavenCommandLineExecutor) {
+            buildPlan.setEnabled(false);
+        } else {
+            buildPlan.setEnabled(true);
+        }
         stop.setEnabled(true);
 
     }
@@ -185,13 +189,26 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         rerunDebug.setConfig(config);
         buildPlan.setConfig(config);
         stop.setExecutor(this);
-        Action[] actions = new Action[]{
-            rerun,
-            rerunDebug,
-            buildPlan,
-            stop
-        };
+        Action[] actions;
+        if (! isEmbedded()) {
+            actions = new Action[]{
+                rerun,
+                rerunDebug,
+                stop
+            };
+        } else {
+            actions = new Action[]{
+                rerun,
+                rerunDebug,
+                buildPlan,
+                stop
+            };
+        }
         return actions;
+    }
+
+    protected boolean isEmbedded() {
+        return false;
     }
 
     static class ReRunAction extends AbstractAction {

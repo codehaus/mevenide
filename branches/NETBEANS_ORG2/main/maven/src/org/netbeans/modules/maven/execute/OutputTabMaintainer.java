@@ -38,7 +38,8 @@ public abstract class OutputTabMaintainer {
      * These are closed when you start a fresh process.
      * Map from tab to tab display name.
      */
-    protected static final Map freeTabs = new WeakHashMap();
+    protected static final Map<InputOutput, Collection<String>> freeTabs =
+            new WeakHashMap<InputOutput, Collection<String>>();
     
     protected InputOutput io;
     private String name;
@@ -59,9 +60,10 @@ public abstract class OutputTabMaintainer {
         
     }
     
-    protected Collection createContext() {
-        Collection toRet = new ArrayList();
+    protected Collection<String> createContext() {
+        Collection<String> toRet = new ArrayList<String>();
         toRet.add(name);
+        toRet.add(this.getClass().getName());
         return toRet;
     }
     
@@ -78,13 +80,12 @@ public abstract class OutputTabMaintainer {
     
     protected final InputOutput createInputOutput() {
         synchronized (freeTabs) {
-            Iterator it = freeTabs.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                InputOutput free = (InputOutput)entry.getKey();
-                Iterator vals = ((Collection)entry.getValue()).iterator();
-                String freeName = (String)vals.next();
-                if (io == null && freeName.equals(name)) {
+            for (Map.Entry<InputOutput, Collection<String>> entry : freeTabs.entrySet()) {
+                InputOutput free = entry.getKey();
+                Iterator<String> vals = entry.getValue().iterator();
+                String freeName = vals.next();
+                String type = vals.next();
+                if (io == null && freeName.equals(name) && type.equals(this.getClass().getName())) {
                     // Reuse it.
                     io = free;
                     reassignAdditionalContext(vals);
