@@ -59,6 +59,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 InputStream in = null;
                 try {
                     in = config.getInputStream();
+                    //TODO shall be have some kind of caching here to prevent frequent IO?
                     doc = XMLUtil.parse(new InputSource(in), false, true, null, null);
                     return findElement(doc.getDocumentElement(), elementName, namespace);
                 } catch (SAXException ex) {
