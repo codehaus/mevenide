@@ -123,11 +123,16 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
                         }
                     }
                     if (path != null) {
-                        builder.environment().put(ENV_JAVAHOME, path.getAbsolutePath());
+                        builder.environment().put(ENV_JAVAHOME.substring(ENV_PREFIX.length()), path.getAbsolutePath());
                         ioput.getOut().println("NetBeans:      JAVA_HOME =" + path.getAbsolutePath());
                     }
                 }
             }
+//debugging..            
+//            Map<String, String> env = builder.environment();
+//            for (String key : env.keySet()) {
+//                ioput.getOut().println(key + ":" + env.get(key));
+//            }
             process = builder.start();
             out.setStdOut(process.getInputStream());
             out.setStdIn(process.getOutputStream());
@@ -135,10 +140,10 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             out.waitFor();
         } catch (IOException x) {
             //TODO
-            LOGGER.log(Level.INFO , x.getMessage(), x);
+            LOGGER.log(Level.WARNING , x.getMessage(), x);
         } catch (InterruptedException x) {
             //TODO
-            LOGGER.log(Level.INFO , x.getMessage(), x);
+            LOGGER.log(Level.WARNING , x.getMessage(), x);
         } catch (ThreadDeath death) {
             if (process != null) {
                 process.destroy();
