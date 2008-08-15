@@ -237,10 +237,12 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             ph.start();
             try { //defend against badly written extensions..
                 out.buildFinished();
-                Lookup.Result<ExecutionResultChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<ExecutionResultChecker>(ExecutionResultChecker.class));
-               ExecutionContext exCon = ActionToGoalUtils.ACCESSOR.createContext(ioput, ph);
-                for (ExecutionResultChecker elem : result.allInstances()) {
-                    elem.executionResult(clonedConfig, exCon, executionResult);
+                if (clonedConfig.getProject() != null) {
+                    Lookup.Result<ExecutionResultChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<ExecutionResultChecker>(ExecutionResultChecker.class));
+                    ExecutionContext exCon = ActionToGoalUtils.ACCESSOR.createContext(ioput, ph);
+                    for (ExecutionResultChecker elem : result.allInstances()) {
+                        elem.executionResult(clonedConfig, exCon, executionResult);
+                    }
                 }
             }
             finally {
