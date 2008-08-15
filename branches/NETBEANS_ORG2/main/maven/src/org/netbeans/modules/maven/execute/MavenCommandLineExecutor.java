@@ -147,9 +147,11 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         } finally {
             try { //defend against badly written extensions..
                 out.buildFinished();
-                Lookup.Result<ExecutionResultChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<ExecutionResultChecker>(ExecutionResultChecker.class));
-                for (ExecutionResultChecker elem : result.allInstances()) {
-                    elem.executionResult(clonedConfig, exCon, executionresult);
+                if (clonedConfig.getProject() != null) {
+                    Lookup.Result<ExecutionResultChecker> result = clonedConfig.getProject().getLookup().lookup(new Lookup.Template<ExecutionResultChecker>(ExecutionResultChecker.class));
+                    for (ExecutionResultChecker elem : result.allInstances()) {
+                        elem.executionResult(clonedConfig, exCon, executionresult);
+                    }
                 }
             }
             finally {
