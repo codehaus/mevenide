@@ -46,10 +46,12 @@ public class MavenProjectPropsImpl implements AuxiliaryProperties {
     private TreeMap<String, String> transPropsPrivate;
     private AuxiliaryConfiguration aux;
     private boolean sharedChanged;
+    private NbMavenProject nbprj;
 
-    public MavenProjectPropsImpl(Project project, AuxiliaryConfiguration aux) {
+    public MavenProjectPropsImpl(Project project, AuxiliaryConfiguration aux, NbMavenProject pr) {
         prj = project;
         this.aux = aux;
+        nbprj = pr;
     }
 
     private AuxiliaryConfiguration getAuxConf() {
@@ -77,7 +79,7 @@ public class MavenProjectPropsImpl implements AuxiliaryProperties {
             }
         }
         if (shared && usePom) {
-            String val = prj.getLookup().lookup(NbMavenProject.class).getMavenProject().getProperties().getProperty(key);
+            String val = nbprj.getMavenProject().getProperties().getProperty(key);
             if (val != null) {
                 return val;
             }
@@ -104,7 +106,7 @@ public class MavenProjectPropsImpl implements AuxiliaryProperties {
     public synchronized Iterable<String> listKeys(boolean shared) {
         TreeMap<String, String> props = readProperties(getAuxConf(), shared);
         if (shared) {
-            Properties mvnprops =  prj.getLookup().lookup(NbMavenProject.class).getMavenProject().getProperties();
+            Properties mvnprops =  nbprj.getMavenProject().getProperties();
             for (Object prop: mvnprops.keySet()) {
                 props.put((String)prop, "any"); //NOI18N
             }
