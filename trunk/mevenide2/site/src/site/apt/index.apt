@@ -4,6 +4,10 @@ Introduction
 It allows to open any Maven project natively within the IDE without any imports.
 
 * News:
+    
+    2008/08/15 - The latest version (3.1.4) of 3.1.x series was released, it works in 6.1. It can be installed through the 6.1 update center.
+Alternatively it can be downloaded as a {{{http://mevenide.codehaus.org/release/mevenide2-netbeans-3.1.4.zip}zip file}}. Please do not install this version into 6.5 beta and later NetBeans builds.
+The NetBeans Maven support is in the process of migrating to become part of default NetBeans distribution. The binaries on 6.5 beta+ update center are more uptodate and could clash with the 3.1.x series when installed in paralel.
 
     2008/05/07 - Version 3.1 release is out. It is available from the default stable update center of NetBeans 6.0 and 6.1
 or as a {{{http://mevenide.codehaus.org/release/mevenide2-netbeans-3.1.1.zip}zip file with NBMs}}
