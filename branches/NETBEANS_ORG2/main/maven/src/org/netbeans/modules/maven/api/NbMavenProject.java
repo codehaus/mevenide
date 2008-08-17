@@ -280,9 +280,7 @@ public final class NbMavenProject {
     }
     
     private void doFireReload() {
-        //TODO is root folder refresh enough?
-        // replace with FileUtil.refresh(File) once it gets into the netbeans.org codebase.
-        project.getProjectDirectory().refresh();
+        FileUtil.refreshFor(FileUtil.toFile(project.getProjectDirectory()));
         FileObject fo = FileUtil.toFileObject(MavenSettingsSingleton.getInstance().getM2UserDir());
         if (fo != null) {
             fo.refresh();
