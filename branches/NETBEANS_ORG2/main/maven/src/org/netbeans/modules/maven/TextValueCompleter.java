@@ -149,12 +149,13 @@ public class TextValueCompleter implements DocumentListener {
         });
         field.getActionMap().put(ACTION_FILLIN, new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                if (LOADING.endsWith(completionList.getSelectedValue().toString())) {
+                Object selVal = completionList.getSelectedValue();
+                if (selVal != null && LOADING.endsWith(selVal.toString())) {
                     return;
                 }
                 field.getDocument().removeDocumentListener(TextValueCompleter.this);
-                if (completionList.getSelectedValue() != null) {
-                    applyCompletion(completionList.getSelectedValue().toString());
+                if (selVal != null) {
+                    applyCompletion(selVal.toString());
                 }
                 hidePopup();
                 field.getDocument().addDocumentListener(TextValueCompleter.this);
