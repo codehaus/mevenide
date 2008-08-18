@@ -25,6 +25,8 @@ import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
 
 import org.netbeans.modules.maven.actions.ActionsUtil;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
@@ -50,7 +52,9 @@ public class OpenScmURLAction extends AbstractAction {
 
             URLDisplayer.getDefault().showURL(new URL(scm.getUrl()));
         } catch (MalformedURLException ex) {
-            Exceptions.printStackTrace(ex);
+            NotifyDescriptor nd = new NotifyDescriptor.Message(NbBundle.getMessage(OpenScmURLAction.class, "ERR_Url", scm.getUrl()),
+                    NotifyDescriptor.ERROR_MESSAGE);
+            DialogDisplayer.getDefault().notify(nd);
         }
     }
 
