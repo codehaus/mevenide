@@ -28,7 +28,6 @@ import org.netbeans.modules.maven.actions.ActionsUtil;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
