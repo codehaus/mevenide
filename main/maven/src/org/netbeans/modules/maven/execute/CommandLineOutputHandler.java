@@ -40,7 +40,8 @@ import org.openide.windows.OutputWriter;
  */
 class CommandLineOutputHandler extends AbstractOutputHandler {
 
-    private static final RequestProcessor PROCESSOR = new RequestProcessor("Maven ComandLine Output Redirection", 5); //NOI18N
+    //8 means 4 paralel builds, one for input, one for output.
+    private static final RequestProcessor PROCESSOR = new RequestProcessor("Maven ComandLine Output Redirection", 8); //NOI18N
     private InputOutput inputOutput;
     private Pattern linePattern = Pattern.compile("\\[(DEBUG|INFO|WARN|ERROR|FATAL)\\] (.*)"); //NOI18N
     private Pattern startPattern = Pattern.compile("\\[INFO\\] \\[(.*):(.*)\\]"); //NOI18N
@@ -193,6 +194,7 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
         private InputOutput inputOutput;
         private OutputStream str;
         private boolean stopIn = false;
+        private Thread runningThread;
 
         public Input(OutputStream out, InputOutput inputOutput) {
             str = out;
@@ -201,9 +203,15 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
 
         public void stopInput() {
             stopIn = true;
+            try {
+                inputOutput.getIn().close();
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
 
         public void run() {
+            runningThread = Thread.currentThread();
             Reader in = inputOutput.getIn();
             try {
                 while (true) {
