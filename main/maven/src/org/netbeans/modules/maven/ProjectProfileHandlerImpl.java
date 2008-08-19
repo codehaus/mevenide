@@ -91,10 +91,12 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
         
         File basedir = FileUtil.normalizeFile(mavenProject.getBasedir());
         FileObject fileObject = FileUtil.toFileObject(basedir);
-        //read from profiles.xml
-        Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getActiveProfiles().iterator();
-        while (it2.hasNext()) {
-            prifileides.add((String) it2.next());
+        if (fileObject != null) {//144159
+            //read from profiles.xml
+            Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getActiveProfiles().iterator();
+            while (it2.hasNext()) {
+                prifileides.add((String) it2.next());
+            }
         }
         prifileides.addAll(getActiveProfiles(shared));
         return new ArrayList<String>(prifileides);
@@ -161,10 +163,12 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
         File basedir = FileUtil.normalizeFile(file.getParentFile());
         FileObject fileObject = FileUtil.toFileObject(basedir);
         //read from profiles.xml
-        Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
-        while (it2.hasNext()) {
-            org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile) it2.next();
-            profileIds.add(prof.getId());
+        if (fileObject != null) { //144159
+            Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
+            while (it2.hasNext()) {
+                org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile) it2.next();
+                profileIds.add(prof.getId());
+            }
         }
     }
     
