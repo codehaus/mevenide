@@ -29,7 +29,6 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.netbeans.plugins:netbeans-deploy-plugin:2.0:deploy</goal>
         </goals>
         <properties>
             <netbeans.deploy>true</netbeans.deploy>
