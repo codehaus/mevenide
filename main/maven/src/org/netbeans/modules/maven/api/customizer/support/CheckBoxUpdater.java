@@ -14,63 +14,68 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.netbeans.modules.maven.api.customizer.support;
 
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.JCheckBox;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.event.ChangeEvent;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author mkleint
  */
-public abstract class CheckBoxUpdater implements ActionListener, AncestorListener {
+public abstract class CheckBoxUpdater implements ItemListener, AncestorListener {
 
     private JCheckBox component;
-    
     private boolean inherited = false;
-    
+
     public CheckBoxUpdater(JCheckBox comp) {
         component = comp;
         component.addAncestorListener(this);
     }
-    
+
     public abstract Boolean getValue();
+
     public abstract boolean getDefaultValue();
+
     public abstract void setValue(Boolean value);
 
     private void setModelValue() {
         if (inherited) {
             inherited = false;
             component.setFont(component.getFont().deriveFont(Font.BOLD));
-            
+
             component.setToolTipText(""); //NOI18N
+        } else {
+            component.setToolTipText(NbBundle.getMessage(CheckBoxUpdater.class, "MSG_Value_Inherited")); //NOI18N
+            inherited = true;
+            component.setFont(component.getFont().deriveFont(Font.PLAIN));
         }
         boolean val = component.isSelected();
         setValue(val == getDefaultValue() ? null : val);
     }
-    
-    public void actionPerformed(ActionEvent e) {
+
+    public void itemStateChanged(ItemEvent e) {
         setModelValue();
     }
 
     public void ancestorAdded(AncestorEvent event) {
         setCheckBoxValue(getValue(), getDefaultValue(), component);
-        component.addActionListener(this);
+        component.addItemListener(this);
     }
 
     public void ancestorRemoved(AncestorEvent event) {
-        component.removeActionListener(this);
+        component.removeItemListener(this);
     }
 
     public void ancestorMoved(AncestorEvent event) {
     }
-    
+
     private void setCheckBoxValue(Boolean value, boolean defValue, JCheckBox component) {
         if (value != null) {
             component.setSelected(value.booleanValue());
@@ -82,7 +87,6 @@ public abstract class CheckBoxUpdater implements ActionListener, AncestorListene
             component.setToolTipText(NbBundle.getMessage(CheckBoxUpdater.class, "MSG_Value_Inherited")); //NOI18N
             inherited = true;
             component.setFont(component.getFont().deriveFont(Font.PLAIN));
-      }
+        }
     }
-
 }
