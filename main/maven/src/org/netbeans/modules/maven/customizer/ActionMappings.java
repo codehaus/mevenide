@@ -101,7 +101,7 @@ public class ActionMappings extends javax.swing.JPanel {
                 if (e.getComponent() == txtProfiles) {
                     lblHint.setText(NbBundle.getMessage(ActionMappings.class, "ActinMappings.txtProfiles.hint"));
                 }
-                if (e.getComponent() == txtProperties) {
+                if (e.getComponent() == taProperties) {
                     lblHint.setText(NbBundle.getMessage(ActionMappings.class, "ActinMappings.txtProperties.hint"));
                 }
             }
@@ -111,7 +111,7 @@ public class ActionMappings extends javax.swing.JPanel {
         };
         txtGoals.addFocusListener(focus);
         txtProfiles.addFocusListener(focus);
-        txtProperties.addFocusListener(focus);
+        taProperties.addFocusListener(focus);
         goalcompleter = new TextValueCompleter(Collections.<String>emptyList(), txtGoals, " "); //NOI18N
         profilecompleter = new TextValueCompleter(Collections.<String>emptyList(), txtProfiles, " "); //NOI18N
     }
@@ -290,11 +290,13 @@ public class ActionMappings extends javax.swing.JPanel {
         lblProfiles = new javax.swing.JLabel();
         txtProfiles = new javax.swing.JTextField();
         lblProperties = new javax.swing.JLabel();
-        txtProperties = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        taProperties = new javax.swing.JTextArea();
         cbRecursively = new javax.swing.JCheckBox();
         cbSkipTests = new javax.swing.JCheckBox();
-        lblHint = new javax.swing.JLabel();
         lblMappings = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        lblHint = new javax.swing.JLabel();
 
         org.openide.awt.Mnemonics.setLocalizedText(cbCommandLine, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_UseExternal")); // NOI18N
         cbCommandLine.setToolTipText(org.openide.util.NbBundle.getMessage(ActionMappings.class, "TLT_UseExternal")); // NOI18N
@@ -335,7 +337,12 @@ public class ActionMappings extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(lblProfiles, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.lblProfiles.text")); // NOI18N
 
+        lblProperties.setLabelFor(taProperties);
         org.openide.awt.Mnemonics.setLocalizedText(lblProperties, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.lblProperties.text")); // NOI18N
+
+        taProperties.setColumns(20);
+        taProperties.setRows(5);
+        jScrollPane3.setViewportView(taProperties);
 
         org.openide.awt.Mnemonics.setLocalizedText(cbRecursively, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.cbRecursively.text")); // NOI18N
         cbRecursively.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -343,51 +350,53 @@ public class ActionMappings extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.cbSkipTests.text")); // NOI18N
         cbSkipTests.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        lblHint.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-
         lblMappings.setLabelFor(lstMappings);
         org.openide.awt.Mnemonics.setLocalizedText(lblMappings, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_Actions")); // NOI18N
         lblMappings.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        lblHint.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        jScrollPane2.setViewportView(lblHint);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(cbCommandLine)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 61, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 112, Short.MAX_VALUE)
                         .add(btnSetup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 210, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(lblGoals)
                             .add(lblProfiles)
                             .add(lblProperties))
                         .add(16, 16, 16)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(cbRecursively)
-                                .add(18, 18, 18)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(cbSkipTests))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
-                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
-                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)))
+                    .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                                 .add(lblConfiguration)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(comConfiguration, 0, 299, Short.MAX_VALUE))
+                                .add(comConfiguration, 0, 350, Short.MAX_VALUE))
                             .add(org.jdesktop.layout.GroupLayout.LEADING, lblMappings)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(btnRemove)
-                            .add(btnAdd))))
+                            .add(btnAdd)))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -421,16 +430,15 @@ public class ActionMappings extends javax.swing.JPanel {
                     .add(lblProfiles)
                     .add(txtProfiles, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(lblProperties)
-                    .add(txtProperties, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jScrollPane3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(cbRecursively)
                     .add(cbSkipTests))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 105, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -498,19 +506,19 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             MappingWrapper wr = (MappingWrapper)obj;
             NetbeansActionMapping mapp = wr.getMapping();
             txtGoals.setEditable(true);
-            txtProperties.setEditable(true);
+            taProperties.setEditable(true);
             txtProfiles.setEditable(true);
             cbSkipTests.setEnabled(true);
             
             txtGoals.getDocument().removeDocumentListener(goalsListener);
             txtProfiles.getDocument().removeDocumentListener(profilesListener);
-            txtProperties.getDocument().removeDocumentListener(propertiesListener);
+            taProperties.getDocument().removeDocumentListener(propertiesListener);
             cbRecursively.removeActionListener(recursiveListener);
             cbSkipTests.removeActionListener(testListener);
             
             txtGoals.setText(createSpaceSeparatedList(mapp != null ? mapp.getGoals() : Collections.EMPTY_LIST));
             txtProfiles.setText(createSpaceSeparatedList(mapp != null ? mapp.getActivatedProfiles() : Collections.EMPTY_LIST));
-            txtProperties.setText(createPropertiesList(mapp != null ? mapp.getProperties() : new Properties()));
+            taProperties.setText(createPropertiesList(mapp != null ? mapp.getProperties() : new Properties()));
             if (handle != null && "pom".equals(handle.getProject().getPackaging())) { //NOI18N
                 cbRecursively.setEnabled(true);
                 cbRecursively.setSelected(mapp != null ? mapp.isRecursive() : true);
@@ -521,7 +529,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             }
             txtGoals.getDocument().addDocumentListener(goalsListener);
             txtProfiles.getDocument().addDocumentListener(profilesListener);
-            txtProperties.getDocument().addDocumentListener(propertiesListener);
+            taProperties.getDocument().addDocumentListener(propertiesListener);
             cbRecursively.addActionListener(recursiveListener);
             cbSkipTests.addActionListener(testListener);
             updateColor(wr);
@@ -602,18 +610,18 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         comConfiguration.removeActionListener(comboListener);
         txtGoals.getDocument().removeDocumentListener(goalsListener);
         txtProfiles.getDocument().removeDocumentListener(profilesListener);
-        txtProperties.getDocument().removeDocumentListener(propertiesListener);
+        taProperties.getDocument().removeDocumentListener(propertiesListener);
         
         txtGoals.setText(""); //NOI18N
         txtProfiles.setText(""); //NOI18N
-        txtProperties.setText(""); //NOI18N
+        taProperties.setText(""); //NOI18N
         
         txtGoals.getDocument().addDocumentListener(goalsListener);
         txtProfiles.getDocument().addDocumentListener(profilesListener);
-        txtProperties.getDocument().addDocumentListener(propertiesListener);
+        taProperties.getDocument().addDocumentListener(propertiesListener);
         
         txtGoals.setEditable(false);
-        txtProperties.setEditable(false);
+        taProperties.setEditable(false);
         txtProfiles.setEditable(false);
         updateColor(null);
         cbRecursively.setEnabled(false);
@@ -639,7 +647,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                     if (val.indexOf(" ") > -1) { //NOI18N
                         val = "\"" + val + "\""; //NOI18N
                     }
-                    str = str + elem + "=" + val + " "; //NOI18N
+                    str = str + elem + "=" + val + "\n"; //NOI18N
                 }
             }
         }
@@ -672,6 +680,8 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JCheckBox cbSkipTests;
     private javax.swing.JComboBox comConfiguration;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblConfiguration;
     private javax.swing.JLabel lblGoals;
     private javax.swing.JLabel lblHint;
@@ -679,13 +689,13 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JLabel lblProfiles;
     private javax.swing.JLabel lblProperties;
     private javax.swing.JList lstMappings;
+    private javax.swing.JTextArea taProperties;
     private javax.swing.JTextField txtGoals;
     private javax.swing.JTextField txtProfiles;
-    private javax.swing.JTextField txtProperties;
     // End of variables declaration//GEN-END:variables
     
     private void writeProperties(final NetbeansActionMapping mapp) {
-        String text = txtProperties.getText();
+        String text = taProperties.getText();
         PropertySplitter split = new PropertySplitter(text);
         String tok = split.nextPair();
         Properties props = new Properties();
