@@ -29,7 +29,6 @@ package org.netbeans.modules.maven.api.execute;
 public interface PrerequisitesChecker {
     
     /**
-     * @param actionName
      * @param config
      * @return true if the execution shall continue., otherwise it will be aborted.
      */
