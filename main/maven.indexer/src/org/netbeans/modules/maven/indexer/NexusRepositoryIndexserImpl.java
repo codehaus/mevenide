@@ -16,6 +16,7 @@
  */
 package org.netbeans.modules.maven.indexer;
 
+import hidden.org.codehaus.plexus.util.FileUtils;
 import java.util.Map;
 import org.apache.lucene.document.Document;
 import org.netbeans.modules.maven.indexer.api.QueryField;
@@ -32,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,11 +68,13 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.Mutex;
 import org.openide.util.MutexException;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 import org.sonatype.nexus.index.ArtifactAvailablility;
 import org.sonatype.nexus.index.ArtifactContextProducer;
@@ -157,18 +161,36 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     //always call from mutex.writeAccess
     private void loadIndexingContext(final RepositoryInfo... repoids) throws IOException {
         assert MUTEX.isWriteAccess();
-         
+        
         for (RepositoryInfo info : repoids) {
             LOGGER.finer("Loading Context :" + info.getId());//NOI18N
             if (info.isLocal() || info.isRemoteDownloadable()) {
-                indexer.addIndexingContextForced( 
-                        info.getId(), // context id
-                        info.getId(), // repository id
-                        info.isLocal() ? new File(info.getRepositoryPath()) : null, // repository folder
-                        new File(getDefaultIndexLocation(), info.getId()), // index folder
-                        info.isRemoteDownloadable() ? info.getRepositoryUrl() : null, // repositoryUrl
-                        info.isRemoteDownloadable() ? info.getIndexUpdateUrl() : null, // index update url
-                        NB_INDEX);
+               File loc = new File(getDefaultIndexLocation(), info.getId()); // index folder
+                try {
+                    indexer.addIndexingContextForced( 
+                            info.getId(), // context id
+                            info.getId(), // repository id
+                            info.isLocal() ? new File(info.getRepositoryPath()) : null, // repository folder
+                            loc,
+                            info.isRemoteDownloadable() ? info.getRepositoryUrl() : null, // repositoryUrl
+                            info.isRemoteDownloadable() ? info.getIndexUpdateUrl() : null, // index update url
+                            NB_INDEX);
+                } catch (IOException ex) {
+                    LOGGER.info("Found a broken index at " + loc.getAbsolutePath()); //NOI18N
+                    LOGGER.log(Level.FINE, "Caused by ", ex); //NOI18N
+                    FileUtils.deleteDirectory(loc);
+                    StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(NexusRepositoryIndexserImpl.class, "MSG_Reconstruct_Index"));
+                    checkIndexAvailability(info);
+
+                    indexer.addIndexingContextForced( 
+                            info.getId(), // context id
+                            info.getId(), // repository id
+                            info.isLocal() ? new File(info.getRepositoryPath()) : null, // repository folder
+                            loc,
+                            info.isRemoteDownloadable() ? info.getRepositoryUrl() : null, // repositoryUrl
+                            info.isRemoteDownloadable() ? info.getIndexUpdateUrl() : null, // index update url
+                            NB_INDEX);
+                }
             }
         }
     }
@@ -177,7 +199,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     //TODO mkleint: do we really want to start index whenever it's missing?
     // what about just silently returning empty values and let the scheduled
     // idexing kick in..
-    private void checkIndexAvailability(final RepositoryInfo... ids) throws MutexException {
+    private void checkIndexAvailability(final RepositoryInfo... ids) {
         assert MUTEX.isWriteAccess();
        
         for (RepositoryInfo id : ids) {
@@ -376,7 +398,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     }
 
     public File getDefaultIndexLocation()  {
-        File repo = new File(repository.getBasedir(), ".index/nexus");
+        File repo = new File(repository.getBasedir(), ".index/nexus"); //NOI18N
         if (!repo.exists()) {
             repo.mkdirs();
         }
