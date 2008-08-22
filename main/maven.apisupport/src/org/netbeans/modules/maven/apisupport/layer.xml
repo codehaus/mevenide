@@ -12,7 +12,7 @@
                     <attr name="repoUrl" stringvalue="http://deadlock.netbeans.org/maven2/"/>
                     <attr name="repoIndexUrl" stringvalue="http://deadlock.netbeans.org/maven2/.index/netbeans/"/>
                     <attr name="instanceOf" stringvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo" />
-                    <attr name="instanceCreate" methodvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo.createRepositoryInfo"/>>
+                    <attr name="instanceCreate" methodvalue="org.netbeans.modules.maven.indexer.spi.RepositoryInfo.createRepositoryInfo"/>
                 </file>
             </folder>
             <folder name="Lookup">
