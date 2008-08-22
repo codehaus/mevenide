@@ -66,6 +66,7 @@ public class WriterUtils {
             String encoding = newModel.getModelEncoding() != null ? newModel.getModelEncoding() : "UTF-8";
             outStr = new OutputStreamWriter(pom.getOutputStream(lock), encoding);
             Format form = Format.getRawFormat().setEncoding(encoding);
+            form = form.setLineSeparator(System.getProperty("line.separator")); //NOI18N
             writer.write(newModel, doc, outStr, form);
             outStr.close();
             outStr = null;
@@ -124,6 +125,7 @@ public class WriterUtils {
                     String encoding = profilesRoot.getModelEncoding() != null ? profilesRoot.getModelEncoding() : "UTF-8";
                     outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
                     Format form = Format.getRawFormat().setEncoding(encoding);
+                    form = form.setLineSeparator(System.getProperty("line.separator")); //NOI18N
                     writer.write(profilesRoot, doc, outStr, form);
                 } catch (JDOMException exc){
                     exc.printStackTrace();
@@ -168,6 +170,7 @@ public class WriterUtils {
                     String encoding = settings.getModelEncoding() != null ? settings.getModelEncoding() : "UTF-8";
                     outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
                     Format form = Format.getRawFormat().setEncoding(encoding);
+                    form = form.setLineSeparator(System.getProperty("line.separator")); //NOI18N
                     writer.write(settings, doc, outStr, form);
                 } catch (JDOMException exc){
                     exc.printStackTrace();

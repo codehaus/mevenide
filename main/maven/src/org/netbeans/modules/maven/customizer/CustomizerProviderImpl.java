@@ -331,6 +331,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                     String encoding = mapping.getModelEncoding() != null ? mapping.getModelEncoding() : "UTF-8"; //NOI18N
                     outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
                     Format form = Format.getRawFormat().setEncoding(encoding);
+                    form = form.setLineSeparator(System.getProperty("line.separator")); //NOI18N
                     writer.write(mapping, doc, outStr, form);
                 } catch (JDOMException exc){
                     throw (IOException) new IOException("Cannot parse the nbactions.xml by JDOM.").initCause(exc); //NOI18N
