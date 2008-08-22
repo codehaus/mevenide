@@ -116,7 +116,6 @@ public class SettingsPanel extends javax.swing.JPanel {
         rbPluginUpdate.addActionListener(listener);
         comIndex.addActionListener(listener);
         initEmbeddedVersion();
-        initExternalVersion();
     }
 
     private void initEmbeddedVersion()
@@ -700,6 +699,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         txtCommandLine.getDocument().removeDocumentListener(docList);
         File command = MavenExecutionSettings.getDefault().getCommandLinePath();
         txtCommandLine.setText(command != null ? command.getAbsolutePath() : ""); //NOI18N
+        initExternalVersion();
         txtCommandLine.getDocument().addDocumentListener(docList);
         
         cbSnapshots.setSelected(RepositoryPreferences.getInstance().isIncludeSnapshots());
