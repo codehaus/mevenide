@@ -25,6 +25,7 @@
             </folder>
             <folder name="ProjectActions">
                 <file name="NBMReload.instance">
+                    <attr name="instanceOf" stringvalue="javax.swing.Action" />
                     <attr name="instanceCreate" methodvalue="org.netbeans.modules.maven.apisupport.NbmActionGoalProvider.createReloadAction"/>
                     <attr name="position" intvalue="1000"/>
                 </file>
