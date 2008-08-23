@@ -34,7 +34,9 @@ public class MavenSpringLookupProvider implements LookupProvider {
         if (project == null) {
             throw new IllegalStateException("Lookup " + baseContext + " does not contain a Project");
         }
-        return Lookups.singleton(new MavenSpringConfigProviderImpl(project));
+        return Lookups.fixed(
+                new MavenSpringConfigProviderImpl(project),
+                new RecommendedTemplatesImpl(project));
     }
 
 
