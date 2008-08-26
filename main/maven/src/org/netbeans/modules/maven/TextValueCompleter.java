@@ -353,7 +353,6 @@ public class TextValueCompleter implements DocumentListener {
     public void setValueList(Collection<String> values) {
         assert SwingUtilities.isEventDispatchThread();
         completionListModel.removeAllElements();
-        setLoading(false);
         completions = values;
         if (field.isFocusOwner() && completionList.isDisplayable() && completionList.isVisible()) {
             buildAndShowPopup(); 

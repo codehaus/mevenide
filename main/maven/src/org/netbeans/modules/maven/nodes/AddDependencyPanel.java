@@ -71,18 +71,11 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         artifactCompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtArtifactId);
         versionCompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtVersion);
         txtGroupId.addFocusListener(new FocusAdapter() {
-
             @Override
             public void focusLost(FocusEvent e) {
-                if (txtGroupId.getText().trim().length() == 0) {
-                    artifactCompleter.setValueList(Collections.<String>emptyList());
-                    versionCompleter.setValueList(Collections.<String>emptyList());
-                    return;
-                }
                 artifactCompleter.setLoading(true);
                 versionCompleter.setLoading(true);
                 RequestProcessor.getDefault().post(new Runnable() {
-
                     public void run() {
                         populateArtifact();
                         if (txtArtifactId.getText().trim().length() > 0) {
@@ -92,18 +85,12 @@ public class AddDependencyPanel extends javax.swing.JPanel {
                 });
             }
         });
-
+        
         txtArtifactId.addFocusListener(new FocusAdapter() {
-
             @Override
             public void focusLost(FocusEvent e) {
-                if (txtArtifactId.getText().trim().length() == 0) {
-                    versionCompleter.setValueList(Collections.<String>emptySet());
-                    return;
-                }
                 versionCompleter.setLoading(true);
                 RequestProcessor.getDefault().post(new Runnable() {
-
                     public void run() {
                         populateVersion();
                     }
@@ -133,12 +120,11 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         checkValidState();
         groupCompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
-
             public void run() {
                 populateGroupId();
             }
         });
-
+        
     }
 
     public JButton getOkButton() {
@@ -265,12 +251,11 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtGroupId;
     private javax.swing.JTextField txtVersion;
     // End of variables declaration//GEN-END:variables
-
+    
     private void populateGroupId() {
         assert !SwingUtilities.isEventDispatchThread();
         final List<String> lst = new ArrayList<String>(RepositoryQueries.getGroups());
         SwingUtilities.invokeLater(new Runnable() {
-
             public void run() {
                 groupCompleter.setValueList(lst);
             }
@@ -283,7 +268,6 @@ public class AddDependencyPanel extends javax.swing.JPanel {
 
         final List<String> lst = new ArrayList<String>(RepositoryQueries.getArtifacts(txtGroupId.getText().trim()));
         SwingUtilities.invokeLater(new Runnable() {
-
             public void run() {
                 artifactCompleter.setValueList(lst);
             }
@@ -303,7 +287,6 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         }
         Collections.sort(vers);
         SwingUtilities.invokeLater(new Runnable() {
-
             public void run() {
                 versionCompleter.setValueList(vers);
             }
