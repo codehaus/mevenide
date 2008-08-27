@@ -295,7 +295,4 @@
             </plugins>
         </pluginManagement>
     </build>
-    <modules>
-        <module>netbeans</module>
-    </modules>
 </project>
