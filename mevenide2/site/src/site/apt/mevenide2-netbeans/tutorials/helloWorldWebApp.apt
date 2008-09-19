@@ -1,5 +1,9 @@
 Hello World Web Application
 
+ <<Please note: The sources for NetBeans Maven support have been moved to netbeans.org. Any tutorials referenced
+from this site might be outdated and not reflecting the current UI and feature set in NetBeans 6.5 and beyond.>>
+See the ultimate source of information - {{{http://wiki.netbeans.org/MavenBestPractices}Best Practices for Apache Maven in NetBeans 6.x}} article
+
   This simple tutorial will show you how to create a simple web application using mevenide2-netbeans. After the application will be created, we will run it using the Bundled Tomcat server launched by Netbeans IDE, and seen the result in your favourite browser.
 
   For convenience reason, we use here the Bundled Tomcat Server provided by default in Netbeans, but, it is possible to use other web containers.

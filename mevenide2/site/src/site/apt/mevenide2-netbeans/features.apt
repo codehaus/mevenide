@@ -1,8 +1,11 @@
 Features
 
+ <<Please note: The sources for NetBeans Maven support have been moved to netbeans.org. Any tutorials referenced
+from this site might be outdated and not reflecting the current UI and feature set in NetBeans 6.5 and beyond.>>
+See the ultimate source of information - {{{http://wiki.netbeans.org/MavenBestPractices}Best Practices for Apache Maven in NetBeans 6.x}} article
+
   The current features are described below, to file bugs or request additional 
-features, file an issue at the {{{http://jira.codehaus.org/browse/MEVENIDE}bug tracking system}}
-subcomponent <<mevenide2-netbeans>>.
+features, file an issue at the netbeans.org {{{http://www.netbeans.org/issues/enter_bug.cgi?component=maven}bug tracking system}}
 
 * Projects
 

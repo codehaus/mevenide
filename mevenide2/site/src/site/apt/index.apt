@@ -3,7 +3,14 @@ Introduction
     Mevenide2-Netbeans is a Netbeans plugin which integrate all the maven2 project management possibilities into Netbeans.
 It allows to open any Maven project natively within the IDE without any imports.
 
+ <<Please note: The sources for NetBeans Maven support have been moved to netbeans.org. Any tutorials referenced
+from this site might be outdated and not reflecting the current UI and feature set in NetBeans 6.5 and beyond.>>
+See the ultimate source of information - {{{http://wiki.netbeans.org/MavenBestPractices}Best Practices for Apache Maven in NetBeans 6.x}} article
+
 * News:
+
+   <<2008/09/10 The sources of maven support for NetBeans were moved to hg.netbeans.org. For 6.5 and beyond
+Maven support will be part of NetBeans itself (on update center and later in standard distribution)>>
     
     2008/08/15 - The latest version (3.1.4) of 3.1.x series was released, it works in 6.1. It can be installed through the 6.1 update center.
 Alternatively it can be downloaded as a {{{http://mevenide.codehaus.org/release/mevenide2-netbeans-3.1.4.zip}zip file}}. Please do not install this version into 6.5 beta and later NetBeans builds.

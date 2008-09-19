@@ -1,5 +1,9 @@
 NetBeans IDE specific properties
 
+ <<Please note: The sources for NetBeans Maven support have been moved to netbeans.org. Any tutorials referenced
+from this site might be outdated and not reflecting the current UI and feature set in NetBeans 6.5 and beyond.>>
+See the ultimate source of information - {{{http://wiki.netbeans.org/MavenBestPractices}Best Practices for Apache Maven in NetBeans 6.x}} article
+
   There are a few magic properties that can be used to tweak NetBeans IDE. Some are
 set by the UI in the IDE as well. 
 
