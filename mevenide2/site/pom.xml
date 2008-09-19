@@ -50,17 +50,6 @@
                       </configuration>
                   </execution>
                   <execution>
-                      <id>paypal</id>
-                      <phase>site</phase>
-                      <goals>
-                          <goal>postprocess</goal>
-                      </goals>
-                      <configuration>
-                          <token>DONATE_PAYPAL_PLACEHOLDER</token>
-                          <replaceContent>${basedir}/src/resources/paypal.snippet</replaceContent>
-                      </configuration>
-                  </execution>
-                  <execution>
                       <id>ohloh</id>
                       <phase>site</phase>
                       <goals>
