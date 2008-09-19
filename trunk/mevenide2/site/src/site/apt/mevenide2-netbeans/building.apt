@@ -1,11 +1,11 @@
 Building Mevenide 2 for Netbeans
 
-  These are instructions to build Mevenide2, the support for Maven 2.
+ <<Please note: The sources for NetBeans Maven support have been moved to netbeans.org.
+These instructions only apply to the already released versions in svn branches.
+The svn trunk was removed.>>
 
- NOTE: Please note that we are in the process of migrating to hg.netbeans.org sourcecode and the instructions here
-do not reflect the situation of the current development branch.
+  These are instructions to build Mevenide2, the support for Maven 2 in versions 3.1.x
 
- You can get daily build binaries at {{{http://deadlock.netbeans.org/hudson/job/mevenide/}deadlock.netbeans.org}}.
 
 * Prerequisites
 

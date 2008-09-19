@@ -1,5 +1,9 @@
 NetBeans IDE embedded Maven Plugins
 
+ <<Please note: The sources for NetBeans Maven support have been moved to netbeans.org.
+The latest sources (for NetBeans IDE 6.5) don't require any of the NetBeans specific
+maven plugins to operate.>>
+
  The Maven integration for some features relies on a number of Maven plugins
 that run as part of the Maven build in the IDE and connect with the IDE's features.
 
