@@ -264,7 +264,7 @@ public final class NbMavenProject implements Project {
     public void fireProjectReload() {
         oldProject = project;
         project = null;
-        getProjectDirectory().refresh();
+        FileUtil.refreshFor(FileUtil.toFile(getProjectDirectory()));
         projectInfo.reset();
         problemReporter.clearReports();
         ACCESSOR.doFireReload(watcher);
