@@ -8,8 +8,8 @@
     <name>Continuum :: Netbeans support</name>
     <description>Support for Apache Continuum continuous integration servers.</description>
     <properties>
-        <continuum.release>1.1</continuum.release>
-        <netbeans.release>RELEASE61</netbeans.release>
+        <continuum.release>1.2</continuum.release>
+        <netbeans.release>RELEASE65BETA</netbeans.release>
     </properties>
     <dependencies>
         <dependency>
@@ -44,17 +44,17 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.maven.continuum</groupId>
+            <groupId>org.apache.continuum</groupId>
             <artifactId>continuum-xmlrpc-client</artifactId>
             <version>${continuum.release}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.maven.continuum</groupId>
+            <groupId>org.apache.continuum</groupId>
             <artifactId>continuum-xmlrpc-api</artifactId>
             <version>${continuum.release}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.maven.continuum</groupId>
+            <groupId>org.apache.continuum</groupId>
             <artifactId>continuum-api</artifactId>
             <version>${continuum.release}</version>
         </dependency>
@@ -92,7 +92,7 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.3</version>
-        </dependency>
+        </dependency>       
     </dependencies>
     <build>
         <plugins>
@@ -139,12 +139,10 @@
             <id>netbeans</id>
             <name>repository hosting netbeans.org api artifacts</name>
             <url>http://deadlock.netbeans.org/maven2</url>
-            <releases>
-                <updatePolicy>never</updatePolicy>
+             <releases>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
-                <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>
     </repositories>
